@@ -9,6 +9,15 @@ export function ProjectCard({ project }: { project: Project }) {
       to={`/projects/${project.id}`}
       className="group flex h-full flex-col bg-surface p-6 transition-colors duration-200 hover:bg-raised"
     >
+      {project.image ? (
+        <img
+          src={project.image}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="mb-5 aspect-[16/10] w-full rounded-sm border border-line object-cover"
+        />
+      ) : null}
       <div className="flex items-center justify-between font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
         <span>{project.year}</span>
         <span>{project.category}</span>

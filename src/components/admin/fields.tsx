@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "../../utils/format";
 
 const inputCls =
@@ -77,6 +77,71 @@ export function Toggle({
       />
       {label}
     </label>
+  );
+}
+
+const fileInputCls =
+  "font-mono text-xs text-ink-faint file:mr-3 file:cursor-pointer file:rounded file:border file:border-line file:bg-bg file:px-3 file:py-1.5 file:font-mono file:text-xs file:text-ink-dim hover:file:border-accent";
+
+/** URL input + live preview + optional upload button (uploads via the admin upload API). */
+export function ImageField({
+  label,
+  value,
+  onChange,
+  uploadImage,
+  hint,
+  objectFit = "cover",
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  uploadImage?: (file: File) => Promise<string>;
+  hint?: string;
+  objectFit?: "cover" | "contain";
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  return (
+    <Field label={label} hint={hint}>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <TextInput value={value} placeholder="url or path" onChange={onChange} />
+          {value ? (
+            <img
+              src={value}
+              alt=""
+              width={64}
+              height={64}
+              className={cn("size-16 shrink-0 rounded border border-line bg-bg", objectFit === "cover" ? "object-cover" : "object-contain")}
+            />
+          ) : null}
+        </div>
+        {uploadImage ? (
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              accept="image/*"
+              className={fileInputCls}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) {
+                  setUploading(true);
+                  setUploadError("");
+                  uploadImage(f)
+                    .then(onChange)
+                    .catch((err: unknown) => setUploadError(err instanceof Error ? err.message : "Upload failed"))
+                    .finally(() => setUploading(false));
+                }
+                e.target.value = "";
+              }}
+            />
+            {uploading ? <span className="font-mono text-xs text-ink-faint">Uploading…</span> : null}
+            {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
+          </div>
+        ) : null}
+      </div>
+    </Field>
   );
 }
 

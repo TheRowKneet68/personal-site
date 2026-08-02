@@ -233,6 +233,16 @@ export function ProjectDetailPage() {
           <h1 className="text-display mt-6 max-w-3xl font-bold">{project.title}</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-dim">{project.tagline}</p>
 
+          {project.image ? (
+            <img
+              src={project.image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="mt-10 max-h-[30rem] w-full rounded-sm border border-line object-cover"
+            />
+          ) : null}
+
           {(project.links?.github || project.links?.demo) && (
             <div className="mt-9 flex flex-wrap gap-3">
               {project.links?.demo && (

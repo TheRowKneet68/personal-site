@@ -268,17 +268,18 @@ export function AdminPage() {
             )}
             {tab === "projects" && (
               <AdminCard title="Projects" kicker={`${content.projects.length} projects. Open one to edit its fields, case study and links.`}>
-                <ProjectsSection value={content.projects} onChange={(v) => setContent({ ...content, projects: v })} />
+                <ProjectsSection value={content.projects} onChange={(v) => setContent({ ...content, projects: v })} uploadImage={uploadImage} />
               </AdminCard>
             )}
             {tab === "achievements" && (
               <AdminCard title="Achievements">
-                <AchievementsSection value={content.achievements} onChange={(v) => setContent({ ...content, achievements: v })} />
+                <AchievementsSection value={content.achievements} onChange={(v) => setContent({ ...content, achievements: v })} uploadImage={uploadImage} />
                 <div className="mt-6 border-t border-line pt-5">
                   <p className="mb-3 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">featured in</p>
                   <FeaturedInSection
                     value={content.profile.featured_in ?? []}
                     onChange={(v) => patchProfile({ ...content.profile, featured_in: v })}
+                    uploadImage={uploadImage}
                   />
                 </div>
               </AdminCard>

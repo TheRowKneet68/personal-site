@@ -28,6 +28,15 @@ export function FeaturedIn() {
                   rel="noopener noreferrer"
                   className="group flex h-full flex-col justify-between gap-6 p-6 transition-colors hover:bg-surface"
                 >
+                  {o.image ? (
+                    <img
+                      src={o.image}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[4/3] w-full rounded-sm border border-line object-cover"
+                    />
+                  ) : null}
                   <span className="font-serif text-xl text-ink transition-colors group-hover:text-accent-ink">
                     {o.name}
                   </span>

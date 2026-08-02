@@ -1,7 +1,7 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, Testimonial } from "../../types";
 import { cn } from "../../utils/format";
-import { Field, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
+import { Field, ImageField, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
 
 /* ---------------- generic repeater ---------------- */
 
@@ -108,22 +108,6 @@ export function BasicsSection({
   uploadImage?: (file: File) => Promise<string>;
 }) {
   const set = (patch: Partial<Profile>) => onChange({ ...value, ...patch });
-  const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState("");
-
-  const handleFile = async (file: File, field: "portrait" | "logo") => {
-    if (!uploadImage) return;
-    setUploading(true);
-    setUploadError("");
-    try {
-      set({ [field]: await uploadImage(file) });
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setUploading(false);
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
@@ -144,59 +128,17 @@ export function BasicsSection({
             <TextInput value={value[k]} onChange={(v) => set({ [k]: v })} />
           </Field>
         ))}
-        <Field label="Logo" hint="URL or path to the logo image shown in the header and footer.">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <TextInput value={value.logo ?? ""} placeholder="/images/logo.svg" onChange={(v) => set({ logo: v })} />
-              {value.logo ? (
-                <img src={value.logo} alt="" width={44} height={44} className="size-11 shrink-0 rounded border border-line object-contain" />
-              ) : null}
-            </div>
-            {uploadImage ? (
-              <div className="flex items-center gap-3">
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="font-mono text-xs text-ink-faint file:mr-3 file:cursor-pointer file:rounded file:border file:border-line file:bg-bg file:px-3 file:py-1.5 file:font-mono file:text-xs file:text-ink-dim hover:file:border-accent"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) void handleFile(f, "logo");
-                    e.target.value = "";
-                  }}
-                />
-                {uploading ? <span className="font-mono text-xs text-ink-faint">Uploading…</span> : null}
-                {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
-              </div>
-            ) : null}
-          </div>
+        <Field label="Logo" hint="Shown in the header and footer.">
+          <ImageField label="" value={value.logo ?? ""} onChange={(v) => set({ logo: v })} uploadImage={uploadImage} objectFit="contain" />
         </Field>
       </div>
-      <Field label="Portrait" hint="The photo shown in the About section. Upload a new one or paste a URL.">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <TextInput value={value.portrait ?? ""} placeholder="/images/me.jpg" onChange={(v) => set({ portrait: v })} />
-            {value.portrait ? (
-              <img src={value.portrait} alt="" width={44} height={44} className="size-11 shrink-0 rounded border border-line object-cover" />
-            ) : null}
-          </div>
-          {uploadImage ? (
-            <div className="flex items-center gap-3">
-              <input
-                type="file"
-                accept="image/*"
-                className="font-mono text-xs text-ink-faint file:mr-3 file:cursor-pointer file:rounded file:border file:border-line file:bg-bg file:px-3 file:py-1.5 file:font-mono file:text-xs file:text-ink-dim hover:file:border-accent"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) void handleFile(f, "portrait");
-                  e.target.value = "";
-                }}
-              />
-              {uploading ? <span className="font-mono text-xs text-ink-faint">Uploading…</span> : null}
-              {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
-            </div>
-          ) : null}
-        </div>
-      </Field>
+      <ImageField
+        label="Portrait"
+        hint="The photo shown in the About section. Upload a new one or paste a URL."
+        value={value.portrait ?? ""}
+        onChange={(v) => set({ portrait: v })}
+        uploadImage={uploadImage}
+      />
       <Field label="Socials" hint="Key = platform name, value = URL.">
         <MapEditor value={value.socials} onChange={(v) => set({ socials: v })} keyPlaceholder="platform" valuePlaceholder="url" itemLabel="social" />
       </Field>
@@ -355,7 +297,15 @@ function CaseStudyEditor({ value, update }: { value: CaseStudy | undefined; upda
   );
 }
 
-export function ProjectsSection({ value, onChange }: { value: Project[]; onChange: (v: Project[]) => void }) {
+export function ProjectsSection({
+  value,
+  onChange,
+  uploadImage,
+}: {
+  value: Project[];
+  onChange: (v: Project[]) => void;
+  uploadImage?: (file: File) => Promise<string>;
+}) {
   return (
     <Repeater
       items={value}
@@ -387,6 +337,13 @@ export function ProjectsSection({ value, onChange }: { value: Project[]; onChang
         const item = raw as Project;
         return (
           <div className="space-y-3">
+            <ImageField
+              label="Cover image"
+              hint="Shown on the project card and detail page."
+              value={item.image ?? ""}
+              onChange={(v) => update({ image: v })}
+              uploadImage={uploadImage}
+            />
             <div className="grid gap-3 md:grid-cols-2">
               <Field label="ID" hint="Used in the URL /projects/:id. Change carefully.">
                 <TextInput value={item.id ?? ""} onChange={(v) => update({ id: v })} />
@@ -406,9 +363,17 @@ export function ProjectsSection({ value, onChange }: { value: Project[]; onChang
   );
 }
 
-export function AchievementsSection({ value, onChange }: { value: Achievement[]; onChange: (v: Achievement[]) => void }) {
+export function AchievementsSection({
+  value,
+  onChange,
+  uploadImage,
+}: {
+  value: Achievement[];
+  onChange: (v: Achievement[]) => void;
+  uploadImage?: (file: File) => Promise<string>;
+}) {
   return (
-    <Repeater
+    <Repeater<Achievement>
       items={value}
       onChange={onChange}
       itemLabel="achievement"
@@ -421,17 +386,58 @@ export function AchievementsSection({ value, onChange }: { value: Achievement[];
       ]}
       newItem={() => ({ id: crypto.randomUUID().slice(0, 8), event: "", title: "", year: "", result: "", detail: "" })}
       titleOf={(a) => `${a.year} — ${a.event}`}
+      renderDetail={(raw, update) => {
+        const item = raw as Achievement;
+        return (
+          <div className="space-y-3">
+            <ImageField
+              label="Certificate / photo"
+              hint="Optional. Shows as a thumbnail in the wins list."
+              value={item.image ?? ""}
+              onChange={(v) => update({ image: v })}
+              uploadImage={uploadImage}
+            />
+          </div>
+        );
+      }}
     />
   );
 }
 
-export function FeaturedInSection({ value, onChange }: { value: FeaturedIn[]; onChange: (v: FeaturedIn[]) => void }) {
+export function FeaturedInSection({
+  value,
+  onChange,
+  uploadImage,
+}: {
+  value: FeaturedIn[];
+  onChange: (v: FeaturedIn[]) => void;
+  uploadImage?: (file: File) => Promise<string>;
+}) {
   return (
-    <PairList
-      value={value}
-      fields={{ keyA: "name", labelA: "Outlet", keyB: "url", labelB: "URL" }}
-      itemLabel="outlet"
+    <Repeater<FeaturedIn>
+      items={value}
       onChange={onChange}
+      itemLabel="outlet"
+      fields={[
+        { key: "name", label: "Outlet", type: "text" },
+        { key: "url", label: "URL", type: "text" },
+      ]}
+      newItem={() => ({ name: "", url: "" })}
+      titleOf={(o) => o.name}
+      renderDetail={(raw, update) => {
+        const item = raw as FeaturedIn;
+        return (
+          <div className="space-y-3">
+            <ImageField
+              label="Preview image"
+              hint="Shown as a thumbnail in the featured-in grid."
+              value={item.image ?? ""}
+              onChange={(v) => update({ image: v })}
+              uploadImage={uploadImage}
+            />
+          </div>
+        );
+      }}
     />
   );
 }
