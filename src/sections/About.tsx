@@ -85,7 +85,7 @@ export function About() {
               <h3 className="mono-label mt-10 mb-6">the journey so far</h3>
               <ol className="relative space-y-8 border-l border-line pl-6">
                 {(experience ?? []).map((e) => (
-                  <li key={e.year} className="relative">
+                  <li key={`${e.year}-${e.title}`} className="relative">
                     <span
                       className="absolute -left-[29px] top-1.5 size-2 rounded-full border border-line-strong bg-bg"
                       aria-hidden
