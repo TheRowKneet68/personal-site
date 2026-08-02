@@ -75,7 +75,7 @@ export function Hero() {
           {hasPortrait1 && (
             <motion.div
               {...fade(0.12)}
-              className="relative hidden shrink-0 md:mx-0 md:mt-[-1.6rem] md:block md:max-w-[370px]"
+              className="relative hidden shrink-0 md:mx-0 md:mt-[-2.2rem] md:block md:max-w-[370px]"
             >
               <div className="overflow-hidden rounded-full border border-line bg-surface p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
                 <img
