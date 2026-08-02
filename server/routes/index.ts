@@ -12,6 +12,8 @@ import {
   postVisitor,
 } from "../controllers/message.controller.js";
 import { getHealth, getStats } from "../controllers/stats.controller.js";
+import { getContent, login, updateContent } from "../controllers/admin.controller.js";
+import { requireAdmin } from "../middleware/auth.js";
 
 export const api = Router();
 
@@ -22,6 +24,10 @@ api.get("/skills", getSkills);
 api.get("/experience", getExperience);
 api.get("/profile", getProfile);
 api.get("/stats", getStats);
+
+api.post("/admin/login", login);
+api.get("/admin/content", requireAdmin, getContent);
+api.put("/admin/content", requireAdmin, updateContent);
 
 api.post(
   "/contact",

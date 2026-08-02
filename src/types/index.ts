@@ -123,6 +123,13 @@ export interface StatsResponse {
   storage: "supabase" | "json";
 }
 
+/** Shape used by the admin panel — profile.tech/focus double as the skills. */
+export interface AdminContent {
+  profile: Profile;
+  projects: Project[];
+  achievements: Achievement[];
+}
+
 export interface ApiError {
   error: string;
 }

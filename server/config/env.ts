@@ -13,6 +13,8 @@ export const env = {
   githubToken: process.env.GITHUB_TOKEN || "",
   githubUser: process.env.GITHUB_USER || "TheRowKneet68",
 
+  adminPassword: process.env.ADMIN_PASSWORD || "@TheRowKneet",
+
   corsOrigins: (process.env.CORS_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean),
   geolocate: process.env.IP_GEOLOCATION === "true",
 } as const;

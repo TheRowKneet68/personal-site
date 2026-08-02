@@ -92,7 +92,7 @@ export function About() {
                     />
                     <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">{e.year}</p>
                     <h4 className="mt-1 font-semibold text-ink">{e.title}</h4>
-                    <p className="mt-1 text-sm leading-relaxed text-ink-dim">{e.note}</p>
+                    <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-ink-dim">{e.note}</p>
                   </li>
                 ))}
               </ol>

@@ -142,32 +142,37 @@
       {
         "year": "2021",
         "title": "Learning by Building",
-        "note": "Built home automation systems, RC cars, relay circuits, and IR-controlled projects. Countless experiments, failures, and lessons became the foundation of everything that followed."
+        "note": "Built home automation systems, RC cars, relay circuits, IR-controlled devices, and countless small prototypes. Every failure taught me something new about hardware and software."
       },
       {
         "year": "2022",
         "title": "GRAVAS",
-        "note": "Developed my first major engineering project and showcased it at Rojgar Mela. It was the moment I realized I wanted to build real-world technology for a living."
+        "note": "Developed my first major engineering project and showcased it at the Rojgar Mela, confirming my passion for building real-world technology."
       },
       {
         "year": "2023",
-        "title": "From Projects to Products",
-        "note": "Focused on embedded systems, IoT, and hardware-software integration while developing practical solutions that could move beyond classroom prototypes."
+        "title": "Beyond the Classroom",
+        "note": "Focused on Embedded Systems, IoT, PCB design, firmware development, and hardware-software integration, transforming ideas into working prototypes."
       },
       {
         "year": "2024",
         "title": "Suraksha Ghar",
-        "note": "Built a complete IoT home automation ecosystem featuring custom firmware, hardware integration, and a companion mobile application — my first product designed for real-world use."
+        "note": "Designed and built a complete IoT home automation ecosystem featuring custom firmware, embedded hardware, web dashboard, and mobile application — my first product built for real-world deployment."
       },
       {
         "year": "2025",
-        "title": "National Recognition",
-        "note": "Won multiple awards across Nepal's engineering competitions including UDAAN 2025 (Winner), OCTATE 2025 (Public Choice Award), Innosphere 1.0 (First Runner-Up), and Hackathon Nova, while earning recognition for technical innovation and leadership."
+        "title": "A Breakthrough Year",
+        "note": "February 7, 2025\n🏆 Winner — UDAAN 2025 Project Expo\n📜 Certificate of Appreciation — UDAAN 2025 Participant\nPresented Suraksha360 at IOE Paschimanchal Campus and secured the overall Winner title.\n\nFebruary 12–13, 2025\n🏆 People's Choice Award — OCTATE 2025\nReceived the Public Choice Award at the National Level Technical Festival, recognizing both technical innovation and audience impact.\n\nJune 8, 2025\n🥈 First Runner-Up — Innosphere 1.0 Hardware Project Exhibition\nRecognized among the top hardware innovations organized by the Tech Club of Pokhara University.\n\n🤝 Community Partner — Hackathon Nova\nReceived a Certificate of Appreciation for supporting Hackathon Nova through Suraksha Ghar and contributing to innovation and collaboration.\n\n🙌 Volunteer — Hackathon Nova\nRecognized for volunteering and helping organize one of the college's largest hackathons.\n\n🎖 CAPEC Leadership Recognition\nAwarded a Certificate of Appreciation for dedication, leadership, and contribution as an active member of CAPEC (Computer Association of Pokhara Engineering College).\n\nDecember 26, 2025\n📌 Appointed Joint Secretary — CAPEC\nOfficially appointed Joint Secretary for the 2026 tenure, recognizing leadership, commitment, and service to the engineering community."
       },
       {
         "year": "2026",
+        "title": "Engineering at Scale",
+        "note": "January 28–29, 2026 — 9th PEC Tech Expo\n🥈 First Runner-Up — Civil Project Competition\n🏅 Consolation Prize — Computer & IT Project Competition\nShowcased projects across disciplines: Suraksha360, HerLegal, RUDRA-I Rocket, Construction of Roundabout with Pedestrian Bridge at Prithvichowk, and Laser Tag.\n\n🚀 Launched the RUDRA-I experimental rocket during the expo, demonstrating its communication and recovery system in front of visitors and judges. The launch was covered by multiple local media outlets, making it one of the event's highlights.\n\nFeatured in the Media\n📰 ICT Frame — RUDRA-1 Rocket Launch: Innovation at the 9th PEC Tech Expo\n📰 WOW Magazine Nepal — Facebook Coverage\n📹 24 Ghanta Nepal — Instagram Reel\n📹 Digital Nepal — Instagram Reel\n📘 Routine of Education — Facebook Feature\n\nApril 4, 2026 — Fishtail University Fair\nPresented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions.\n\nJune 25–26, 2026\n🏆 1st Position — GCES IT Expo\nSuraksha360 earned First Place, recognizing months of engineering, iteration, and real-world product development."
+      },
+      {
+        "year": "Present",
         "title": "Building What's Next",
-        "note": "Leading the development of projects including Swasthya Sathi, SwiftIgnite v2, Suraksha360, and commercial web solutions while serving as Joint Secretary of CAPEC and continuing to build products that solve real-world problems."
+        "note": "Currently developing projects including Swasthya Sathi, SwiftIgnite v2, commercial web platforms, AI-powered embedded systems, and next-generation IoT solutions while continuing to compete, innovate, and build products that solve real-world problems."
       }
     ],
     "fun_facts": [

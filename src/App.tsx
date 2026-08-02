@@ -11,6 +11,7 @@ const ProjectDetailPage = lazy(() =>
   import("./pages/ProjectDetailPage").then((m) => ({ default: m.ProjectDetailPage })),
 );
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage })));
+const AdminPage = lazy(() => import("./pages/AdminPage").then((m) => ({ default: m.AdminPage })));
 
 function RoutesShell() {
   const { status } = useData();
@@ -20,9 +21,21 @@ function RoutesShell() {
       <LoadingScreen show={status === "loading"} />
       <Suspense fallback={null}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/projects/:id" element={<ProjectDetailPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route
+            path="*"
+            element={
+              <Layout>
+                <Suspense fallback={null}>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+                </Suspense>
+              </Layout>
+            }
+          />
         </Routes>
       </Suspense>
     </>

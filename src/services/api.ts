@@ -1,4 +1,5 @@
 import type {
+  AdminContent,
   ApiError,
   ExperienceResponse,
   ProfileResponse,
@@ -17,10 +18,10 @@ export class ApiClientError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
     ...init,
+    headers: { "Content-Type": "application/json", ...(init.headers as Record<string, string> | undefined) },
   });
   if (!res.ok) {
     let message = `request failed (${res.status})`;
@@ -58,4 +59,22 @@ export const api = {
   trackVisit: () => {
     fetch("/api/visitors", { method: "POST", keepalive: true }).catch(() => undefined);
   },
+
+  /* ---- Admin ---- */
+
+  adminLogin: (password: string) =>
+    request<{ token: string }>("/api/admin/login", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    }),
+
+  getAdminContent: (token: string) =>
+    request<AdminContent>("/api/admin/content", { headers: { Authorization: `Bearer ${token}` } }),
+
+  saveAdminContent: (token: string, content: AdminContent) =>
+    request<{ ok: boolean }>("/api/admin/content", {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify(content),
+    }),
 };

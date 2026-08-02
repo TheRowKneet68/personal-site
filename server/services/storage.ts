@@ -20,8 +20,20 @@ const __dirname = (() => {
     return process.cwd();
   }
 })();
-const SERVER_ROOT = path.resolve(__dirname, "..");
-const DATA_FILE = path.join(SERVER_ROOT, "..", "data.json");
+/** Walk up to the repo root where data.json lives. Needed because the module
+    sits at server/services in tsx dev but server/dist/services when compiled. */
+function findDataFile(startDir: string): string {
+  let dir = startDir;
+  while (true) {
+    const candidate = path.join(dir, "data.json");
+    if (existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) return path.join(startDir, "..", "..", "..", "data.json");
+    dir = parent;
+  }
+}
+const DATA_FILE = findDataFile(__dirname);
+const SERVER_ROOT = path.join(path.dirname(DATA_FILE), "server");
 const DYNAMIC_FILE = path.join(SERVER_ROOT, "data.dynamic.json");
 
 /** Read data.json from disk, or fall back to the bundled snapshot when the
@@ -65,6 +77,7 @@ interface DynamicData {
 export interface StorageBackend {
   mode(): "supabase" | "json";
   getContent(): Promise<Content>;
+  updateContent(content: Content): Promise<void>;
   addMessage(m: NewMessage): Promise<void>;
   addVisitor(v: NewVisitor): Promise<void>;
   addSubscriber(email: string): Promise<{ subscribed: boolean }>;
@@ -96,6 +109,16 @@ const jsonBackend: StorageBackend = {
   mode: () => "json",
   async getContent() {
     return normalizeFromFile(readDataFile());
+  },
+  /** Persist edits into data.json — the source of truth for the JSON backend. */
+  async updateContent(content) {
+    const data = {
+      profile: content.profile,
+      projects: content.projects,
+      achievements: content.achievements,
+    };
+    mkdirSync(path.dirname(DATA_FILE), { recursive: true });
+    writeFileSync(DATA_FILE, JSON.stringify(data, null, 2) + "\n");
   },
   async addMessage(m) {
     const data = readDynamic();
@@ -148,6 +171,24 @@ const supabaseBackend: StorageBackend = {
       skills: skills ?? [],
       experience: experience ?? [],
     });
+  },
+  /** Upsert edited rows and delete any row dropped from the content. */
+  async updateContent(content) {
+    const client = getSupabase();
+    const rows = contentToRows(content);
+    for (const table of CONTENT_TABLES) {
+      const incoming = rows[table];
+      const { error } = await client.from(table).upsert(incoming);
+      if (error) throw new Error(`update ${table}: ${error.message}`);
+      const { data: existing, error: listErr } = await client.from(table).select("id");
+      if (listErr) throw new Error(`list ${table}: ${listErr.message}`);
+      const keep = new Set(incoming.map((r) => r.id));
+      const stale = (existing ?? []).filter((r) => !keep.has(r.id)).map((r) => r.id);
+      if (stale.length > 0) {
+        const { error: delErr } = await client.from(table).delete().in("id", stale);
+        if (delErr) throw new Error(`delete ${table}: ${delErr.message}`);
+      }
+    }
   },
   async addMessage(m) {
     const { error } = await getSupabase()
@@ -203,6 +244,7 @@ export const storage: Storage = {
     const backend = hasSupabase() ? supabaseBackend : jsonBackend;
     return backend.getContent();
   },
+  updateContent: (c) => (hasSupabase() ? supabaseBackend : jsonBackend).updateContent(c),
   addMessage: (m) => (hasSupabase() ? supabaseBackend : jsonBackend).addMessage(m),
   addVisitor: (v) => (hasSupabase() ? supabaseBackend : jsonBackend).addVisitor(v),
   addSubscriber: (email) => (hasSupabase() ? supabaseBackend : jsonBackend).addSubscriber(email),
