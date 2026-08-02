@@ -32,6 +32,24 @@ export async function getContent(_req: Request, res: Response): Promise<void> {
   }
 }
 
+/** GET /api/admin/messages — contact form submissions (auth required). */
+export async function listMessages(_req: Request, res: Response): Promise<void> {
+  try {
+    res.json({ messages: await storage.listMessages() });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+}
+
+/** GET /api/admin/subscribers — newsletter emails (auth required). */
+export async function listSubscribers(_req: Request, res: Response): Promise<void> {
+  try {
+    res.json({ subscribers: await storage.listSubscribers() });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+}
+
 /** PUT /api/admin/content — persist edits (auth required). */
 export async function updateContent(req: Request, res: Response): Promise<void> {
   try {

@@ -365,12 +365,15 @@ export function FeaturedInSection({ value, onChange }: { value: FeaturedIn[]; on
 
 /* ---------------- shared section wrapper ---------------- */
 
-export function AdminCard({ title, kicker, children }: { title: string; kicker?: string; children?: ReactNode }) {
+export function AdminCard({ title, kicker, actions, children }: { title: string; kicker?: string; actions?: ReactNode; children?: ReactNode }) {
   return (
     <div className={cn("rounded-lg border border-line bg-surface p-5")}>
-      <div className="mb-4">
-        <h2 className="font-serif text-xl text-ink">{title}</h2>
-        {kicker ? <p className="mt-1 text-sm text-ink-faint">{kicker}</p> : null}
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="font-serif text-xl text-ink">{title}</h2>
+          {kicker ? <p className="mt-1 text-sm text-ink-faint">{kicker}</p> : null}
+        </div>
+        {actions}
       </div>
       {children}
     </div>

@@ -82,6 +82,8 @@ export interface StorageBackend {
   addVisitor(v: NewVisitor): Promise<void>;
   addSubscriber(email: string): Promise<{ subscribed: boolean }>;
   getCounts(): Promise<Counts>;
+  listMessages(): Promise<(NewMessage & { created_at?: string })[]>;
+  listSubscribers(): Promise<string[]>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -152,6 +154,12 @@ const jsonBackend: StorageBackend = {
   async getCounts() {
     const data = readDynamic();
     return { messages: data.messages.length, visitors: data.visitors.length, subscribers: data.subscribers.length };
+  },
+  async listMessages() {
+    return readDynamic().messages;
+  },
+  async listSubscribers() {
+    return readDynamic().subscribers;
   },
 };
 
@@ -239,6 +247,23 @@ const supabaseBackend: StorageBackend = {
     ]);
     return { messages, visitors, subscribers };
   },
+  async listMessages() {
+    const { data, error } = await getSupabase()
+      .from("contact_messages")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(`supabase messages: ${error.message}`);
+    return (data ?? []) as (NewMessage & { created_at?: string })[];
+  },
+  async listSubscribers() {
+    const { data, error } = await getSupabase()
+      .from("newsletter")
+      .select("email")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(`supabase subscribers: ${error.message}`);
+    return (data ?? []).map((r) => (r as { email: string }).email);
+  },
 };
 
 /* ------------------------------------------------------------------ */
@@ -261,6 +286,8 @@ export const storage: Storage = {
   addVisitor: (v) => (hasSupabase() ? supabaseBackend : jsonBackend).addVisitor(v),
   addSubscriber: (email) => (hasSupabase() ? supabaseBackend : jsonBackend).addSubscriber(email),
   getCounts: () => (hasSupabase() ? supabaseBackend : jsonBackend).getCounts(),
+  listMessages: () => (hasSupabase() ? supabaseBackend : jsonBackend).listMessages(),
+  listSubscribers: () => (hasSupabase() ? supabaseBackend : jsonBackend).listSubscribers(),
 
   /** Write data.json content into Supabase (service role). */
   async seed() {

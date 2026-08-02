@@ -12,7 +12,7 @@ import {
   postVisitor,
 } from "../controllers/message.controller.js";
 import { getHealth, getStats } from "../controllers/stats.controller.js";
-import { getContent, login, updateContent } from "../controllers/admin.controller.js";
+import { getContent, listMessages, listSubscribers, login, updateContent } from "../controllers/admin.controller.js";
 import { requireAdmin } from "../middleware/auth.js";
 
 export const api = Router();
@@ -28,6 +28,8 @@ api.get("/stats", getStats);
 api.post("/admin/login", login);
 api.get("/admin/content", requireAdmin, getContent);
 api.put("/admin/content", requireAdmin, updateContent);
+api.get("/admin/messages", requireAdmin, listMessages);
+api.get("/admin/subscribers", requireAdmin, listSubscribers);
 
 api.post(
   "/contact",

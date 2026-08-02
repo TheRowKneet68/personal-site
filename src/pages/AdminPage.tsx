@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ExternalLink } from "lucide-react";
+import { Copy, ExternalLink, RefreshCw, Send } from "lucide-react";
 import { api, ApiClientError } from "../services/api";
-import type { AdminContent, Profile } from "../types";
+import type { AdminContent, ContactMessage, Profile } from "../types";
 import { cn } from "../utils/format";
 import { ThemeToggle } from "../components/ThemeToggle";
 import {
@@ -20,7 +20,7 @@ import {
 
 const TOKEN_KEY = "rk-admin-token";
 
-type Tab = "basics" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "testimonials";
+type Tab = "basics" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "testimonials" | "inbox" | "subscribers";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "basics", label: "Basics" },
@@ -31,6 +31,8 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "projects", label: "Projects" },
   { id: "achievements", label: "Achievements" },
   { id: "testimonials", label: "Testimonials" },
+  { id: "inbox", label: "Inbox" },
+  { id: "subscribers", label: "Subscribers" },
 ];
 
 const inputCls =
@@ -91,6 +93,10 @@ export function AdminPage() {
   const [loadError, setLoadError] = useState("");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveError, setSaveError] = useState("");
+  const [messages, setMessages] = useState<ContactMessage[] | null>(null);
+  const [subscribers, setSubscribers] = useState<string[] | null>(null);
+  const [inboxError, setInboxError] = useState("");
+  const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
   const logout = () => {
@@ -117,9 +123,30 @@ export function AdminPage() {
     [],
   );
 
+  const loadInbox = useCallback(async (t: string) => {
+    try {
+      const [m, s] = await Promise.all([api.adminMessages(t), api.adminSubscribers(t)]);
+      setMessages(m.messages);
+      setSubscribers(s.subscribers);
+      setInboxError("");
+    } catch (err) {
+      setInboxError(err instanceof ApiClientError ? err.message : "Failed to load inbox");
+    }
+  }, []);
+
   useEffect(() => {
-    if (token) void load(token);
-  }, [token, load]);
+    if (token) {
+      void load(token);
+      void loadInbox(token);
+    }
+  }, [token, load, loadInbox]);
+
+  const copyAllEmails = async () => {
+    if (!subscribers) return;
+    await navigator.clipboard.writeText(subscribers.join("\n"));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const save = async () => {
     if (!token || !content) return;
@@ -244,6 +271,83 @@ export function AdminPage() {
                   value={content.profile.testimonials ?? []}
                   onChange={(v) => patchProfile({ ...content.profile, testimonials: v })}
                 />
+              </AdminCard>
+            )}
+            {tab === "inbox" && (
+              <AdminCard
+                title="Inbox"
+                kicker="Messages received from the contact form."
+                actions={
+                  <button className={cn(btnCls, "inline-flex items-center gap-1.5")} onClick={() => void loadInbox(token)}>
+                    <RefreshCw className="size-3.5" aria-hidden /> refresh
+                  </button>
+                }
+              >
+                {inboxError ? <p className="text-sm text-warn">{inboxError}</p> : null}
+                {messages === null ? (
+                  <p className="text-sm text-ink-faint">Loading…</p>
+                ) : messages.length === 0 ? (
+                  <p className="text-sm text-ink-faint">No messages yet.</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {messages.map((m, i) => (
+                      <li key={`${m.created_at}-${i}`} className="rounded-md border border-line bg-bg p-4">
+                        <div className="flex flex-wrap items-baseline justify-between gap-2">
+                          <p className="font-mono text-sm text-ink">
+                            {m.name} <span className="text-ink-faint">&lt;{m.email}&gt;</span>
+                          </p>
+                          <span className="font-mono text-xs text-ink-faint">
+                            {m.created_at ? new Date(m.created_at).toLocaleString() : ""}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-sm font-semibold text-ink-dim">{m.subject}</p>
+                        <p className="mt-2 whitespace-pre-line text-sm text-ink-dim">{m.message}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </AdminCard>
+            )}
+            {tab === "subscribers" && (
+              <AdminCard
+                title="Subscribers"
+                kicker="Emails signed up to the newsletter."
+                actions={
+                  <div className="flex items-center gap-2">
+                    <button className={cn(btnCls, "inline-flex items-center gap-1.5")} onClick={() => void loadInbox(token)}>
+                      <RefreshCw className="size-3.5" aria-hidden /> refresh
+                    </button>
+                    <button className={cn(btnCls, "inline-flex items-center gap-1.5")} onClick={() => void copyAllEmails()}>
+                      <Copy className="size-3.5" aria-hidden /> {copied ? "copied ✓" : "copy all"}
+                    </button>
+                    {subscribers && subscribers.length > 0 ? (
+                      <a
+                        href={`mailto:?bcc=${subscribers.join(",")}&subject=${encodeURIComponent("TheRowKneet — ")}`}
+                        className={cn(btnCls, "inline-flex items-center gap-1.5")}
+                      >
+                        <Send className="size-3.5" aria-hidden /> email all
+                      </a>
+                    ) : null}
+                  </div>
+                }
+              >
+                {inboxError ? <p className="text-sm text-warn">{inboxError}</p> : null}
+                {subscribers === null ? (
+                  <p className="text-sm text-ink-faint">Loading…</p>
+                ) : subscribers.length === 0 ? (
+                  <p className="text-sm text-ink-faint">No subscribers yet.</p>
+                ) : (
+                  <ul className="space-y-1.5">
+                    {subscribers.map((email) => (
+                      <li key={email} className="flex items-center justify-between gap-3 rounded-md border border-line bg-bg px-3 py-2">
+                        <span className="font-mono text-sm text-ink">{email}</span>
+                        <a href={`mailto:${email}`} className={cn(btnCls, "inline-flex items-center gap-1.5 px-3 py-1")}>
+                          <Send className="size-3.5" aria-hidden /> email
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </AdminCard>
             )}
           </>

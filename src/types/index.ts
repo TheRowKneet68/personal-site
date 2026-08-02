@@ -137,6 +137,15 @@ export interface AdminContent {
   achievements: Achievement[];
 }
 
+export interface ContactMessage {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  ip?: string;
+  created_at?: string;
+}
+
 export interface ApiError {
   error: string;
 }

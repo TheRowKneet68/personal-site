@@ -1,6 +1,7 @@
 import type {
   AdminContent,
   ApiError,
+  ContactMessage,
   ExperienceResponse,
   ProfileResponse,
   ProjectsResponse,
@@ -77,4 +78,10 @@ export const api = {
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify(content),
     }),
+
+  adminMessages: (token: string) =>
+    request<{ messages: ContactMessage[] }>("/api/admin/messages", { headers: { Authorization: `Bearer ${token}` } }),
+
+  adminSubscribers: (token: string) =>
+    request<{ subscribers: string[] }>("/api/admin/subscribers", { headers: { Authorization: `Bearer ${token}` } }),
 };
