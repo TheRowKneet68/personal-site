@@ -12,9 +12,9 @@ export function Marquee() {
   if (items.length === 0) return null;
 
   const row = (key: string) => (
-    <span key={key} className="flex shrink-0 items-center gap-10 pr-10" aria-hidden>
+    <span key={key} className="marquee-row flex shrink-0 items-center gap-10 pr-10" aria-hidden>
       {items.map((item) => (
-        <span key={`${key}-${item}`} className="flex items-center gap-10 font-mono text-sm text-ink-faint">
+        <span key={`${key}-${item}`} className="marquee-item flex items-center gap-10 font-mono text-sm text-ink-faint">
           <span>{item}</span>
           <span className="text-accent">◆</span>
         </span>
@@ -23,7 +23,7 @@ export function Marquee() {
   );
 
   return (
-    <div className="border-y border-line bg-surface py-4">
+    <div className="overflow-hidden border-y border-line bg-surface py-4">
       <div className="marquee-track" aria-hidden>
         {row("a")}
         {row("b")}

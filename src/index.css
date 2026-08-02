@@ -102,8 +102,13 @@
 /*  Base                                                            */
 /* ------------------------------------------------------------------ */
 @layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   * {
     border-color: var(--rk-border);
+    min-width: 0;
   }
 
   html {
@@ -123,6 +128,25 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  p,
+  li,
+  span,
+  a,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  label,
+  button,
+  input,
+  textarea,
+  select {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   ::selection {
@@ -287,16 +311,38 @@
   /* marquee */
   .marquee-track {
     display: flex;
-    gap: 2.5rem;
     width: max-content;
+    min-width: 100%;
+    gap: 2.5rem;
+    overflow: hidden;
+    white-space: nowrap;
     animation: rk-marquee 32s linear infinite;
   }
   .marquee-track:hover {
     animation-play-state: paused;
   }
+  .marquee-row,
+  .marquee-item {
+    flex-shrink: 0;
+  }
   @keyframes rk-marquee {
     to {
       transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .marquee-track {
+      gap: 1rem;
+      animation-duration: 44s;
+    }
+    .marquee-row {
+      gap: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    .marquee-item {
+      gap: 0.5rem;
+      font-size: 0.68rem;
     }
   }
 
