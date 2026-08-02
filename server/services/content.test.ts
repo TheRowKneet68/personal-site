@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { dedupeRowsById } from "./content.ts";
+import { dedupeRowsById } from "./content.js";
 
 test("dedupes content rows before upsert to avoid duplicate primary keys", () => {
   const rows = [

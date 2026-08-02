@@ -17,5 +17,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node"]
   },
-  "include": ["data.embedded.ts", "index.ts", "app.ts", "api/**/*.ts", "config/**/*.ts", "routes/**/*.ts", "controllers/**/*.ts", "middleware/**/*.ts", "services/**/*.ts", "lib/**/*.ts", "scripts/**/*.ts"]
+  "include": ["data.embedded.ts", "index.ts", "app.ts", "api/**/*.ts", "config/**/*.ts", "routes/**/*.ts", "controllers/**/*.ts", "middleware/**/*.ts", "services/**/*.ts", "lib/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["**/*.test.ts"]
 }
