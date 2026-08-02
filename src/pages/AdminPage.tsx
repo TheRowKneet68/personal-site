@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Copy, ExternalLink, RefreshCw, Send } from "lucide-react";
+import { Copy, ExternalLink, RefreshCw, Send, Trash2 } from "lucide-react";
 import { api, ApiClientError } from "../services/api";
 import type { AdminContent, ContactMessage, Profile } from "../types";
 import { cn } from "../utils/format";
@@ -147,6 +147,26 @@ export function AdminPage() {
     await navigator.clipboard.writeText(subscribers.join("\n"));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const deleteMessage = async (id: string) => {
+    if (!token) return;
+    try {
+      await api.adminDeleteMessage(token, id);
+      setMessages((ms) => (ms ? ms.filter((m) => (m.id ?? m.created_at) !== id) : ms));
+    } catch (err) {
+      setInboxError(err instanceof ApiClientError ? err.message : "Delete failed");
+    }
+  };
+
+  const deleteSubscriber = async (email: string) => {
+    if (!token) return;
+    try {
+      await api.adminDeleteSubscriber(token, email);
+      setSubscribers((s) => (s ? s.filter((e) => e !== email) : s));
+    } catch (err) {
+      setInboxError(err instanceof ApiClientError ? err.message : "Delete failed");
+    }
   };
 
   const save = async () => {
@@ -327,6 +347,14 @@ export function AdminPage() {
                             >
                               <Send className="size-3.5" aria-hidden /> reply
                             </a>
+                            <button
+                              className={cn(btnCls, "inline-flex items-center gap-1.5 px-3 py-1 text-warn hover:border-warn hover:text-warn")}
+                              onClick={() => void deleteMessage(m.id ?? m.created_at ?? "")}
+                              title="Delete this message"
+                              disabled={!m.id && !m.created_at}
+                            >
+                              <Trash2 className="size-3.5" aria-hidden /> delete
+                            </button>
                           </div>
                         </div>
                         <p className="mt-1 text-sm font-semibold text-ink-dim">{m.subject}</p>
@@ -370,9 +398,18 @@ export function AdminPage() {
                     {subscribers.map((email) => (
                       <li key={email} className="flex items-center justify-between gap-3 rounded-md border border-line bg-bg px-3 py-2">
                         <span className="font-mono text-sm text-ink">{email}</span>
-                        <a href={`mailto:${email}`} className={cn(btnCls, "inline-flex items-center gap-1.5 px-3 py-1")}>
-                          <Send className="size-3.5" aria-hidden /> email
-                        </a>
+                        <div className="flex items-center gap-2">
+                          <a href={`mailto:${email}`} className={cn(btnCls, "inline-flex items-center gap-1.5 px-3 py-1")}>
+                            <Send className="size-3.5" aria-hidden /> email
+                          </a>
+                          <button
+                            className={cn(btnCls, "inline-flex items-center gap-1.5 px-3 py-1 text-warn hover:border-warn hover:text-warn")}
+                            onClick={() => void deleteSubscriber(email)}
+                            title="Remove this subscriber"
+                          >
+                            <Trash2 className="size-3.5" aria-hidden /> delete
+                          </button>
+                        </div>
                       </li>
                     ))}
                   </ul>

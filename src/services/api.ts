@@ -85,6 +85,18 @@ export const api = {
   adminSubscribers: (token: string) =>
     request<{ subscribers: string[] }>("/api/admin/subscribers", { headers: { Authorization: `Bearer ${token}` } }),
 
+  adminDeleteMessage: (token: string, id: string) =>
+    request<{ ok: boolean }>(`/api/admin/messages/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+
+  adminDeleteSubscriber: (token: string, email: string) =>
+    request<{ ok: boolean }>(`/api/admin/subscribers/${encodeURIComponent(email)}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+
   adminUpload: (token: string, payload: { data: string; contentType: string; name: string }) =>
     request<{ url: string }>("/api/admin/upload", {
       method: "POST",

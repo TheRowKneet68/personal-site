@@ -84,6 +84,8 @@ export interface StorageBackend {
   getCounts(): Promise<Counts>;
   listMessages(): Promise<(NewMessage & { created_at?: string })[]>;
   listSubscribers(): Promise<string[]>;
+  deleteMessage(id: string): Promise<void>;
+  deleteSubscriber(email: string): Promise<void>;
   uploadImage(name: string, contentType: string, buffer: Buffer): Promise<string>;
 }
 
@@ -161,6 +163,17 @@ const jsonBackend: StorageBackend = {
   },
   async listSubscribers() {
     return readDynamic().subscribers;
+  },
+  /** JSON messages carry no id — the frontend passes created_at as the id. */
+  async deleteMessage(id) {
+    const data = readDynamic();
+    data.messages = data.messages.filter((m) => (m as NewMessage & { created_at?: string }).created_at !== id);
+    writeDynamic(data);
+  },
+  async deleteSubscriber(email) {
+    const data = readDynamic();
+    data.subscribers = data.subscribers.filter((e) => e !== email);
+    writeDynamic(data);
   },
   /** Best-effort local save (repo public/images) — Vercel is read-only, Supabase is the durable path. */
   async uploadImage(name, _contentType, buffer) {
@@ -282,6 +295,14 @@ const supabaseBackend: StorageBackend = {
     if (error) throw new Error(`supabase subscribers: ${error.message}`);
     return (data ?? []).map((r) => (r as { email: string }).email);
   },
+  async deleteMessage(id) {
+    const { error } = await getSupabase().from("contact_messages").delete().eq("id", id);
+    if (error) throw new Error(`supabase delete message: ${error.message}`);
+  },
+  async deleteSubscriber(email) {
+    const { error } = await getSupabase().from("newsletter").delete().eq("email", email);
+    if (error) throw new Error(`supabase delete subscriber: ${error.message}`);
+  },
   /** Upload to the public "images" bucket (created on demand) and return its URL. */
   async uploadImage(name, contentType, buffer) {
     const client = getSupabase();
@@ -323,6 +344,8 @@ export const storage: Storage = {
   getCounts: () => (hasSupabase() ? supabaseBackend : jsonBackend).getCounts(),
   listMessages: () => (hasSupabase() ? supabaseBackend : jsonBackend).listMessages(),
   listSubscribers: () => (hasSupabase() ? supabaseBackend : jsonBackend).listSubscribers(),
+  deleteMessage: (id) => (hasSupabase() ? supabaseBackend : jsonBackend).deleteMessage(id),
+  deleteSubscriber: (email) => (hasSupabase() ? supabaseBackend : jsonBackend).deleteSubscriber(email),
   uploadImage: (n, c, b) => (hasSupabase() ? supabaseBackend : jsonBackend).uploadImage(n, c, b),
 
   /** Write data.json content into Supabase (service role). */

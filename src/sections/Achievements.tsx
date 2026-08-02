@@ -1,12 +1,25 @@
 import { useData } from "../context/DataContext";
+import type { Achievement } from "../types";
 import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
 import { Reveal } from "../components/Reveal";
 import { cn } from "../utils/format";
 
+/** Wins sorted by placement: 1st, 2nd, 3rd, then everything else in list order. */
+function placementRank(a: Achievement): number {
+  const s = a.result.toLowerCase();
+  const m = /(\d+)(?:st|nd|rd|th)/.exec(s);
+  if (m) return Number(m[1]);
+  if (s.includes("first runner-up")) return 2;
+  if (s.includes("second runner-up")) return 3;
+  if (s.includes("winner")) return 1;
+  return Number.MAX_SAFE_INTEGER;
+}
+
 export function Achievements() {
   const { achievements } = useData();
   if (!achievements) return null;
+  const sorted = [...achievements].sort((a, b) => placementRank(a) - placementRank(b));
 
   return (
     <section id="wins" className="scroll-mt-24 border-t border-line py-24 md:py-32">
@@ -19,7 +32,7 @@ export function Achievements() {
 
         <Reveal>
           <ol className="border-t border-line">
-            {achievements.map((a) => {
+            {sorted.map((a) => {
               const highlighted = /1st|winner|runner-up|choice|appointed|award/i.test(a.result);
               return (
                 <li

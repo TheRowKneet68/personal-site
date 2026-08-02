@@ -12,7 +12,7 @@ import {
   postVisitor,
 } from "../controllers/message.controller.js";
 import { getHealth, getStats } from "../controllers/stats.controller.js";
-import { getContent, listMessages, listSubscribers, login, updateContent, uploadImage } from "../controllers/admin.controller.js";
+import { getContent, deleteMessage, deleteSubscriber, listMessages, listSubscribers, login, updateContent, uploadImage } from "../controllers/admin.controller.js";
 import { requireAdmin } from "../middleware/auth.js";
 
 export const api = Router();
@@ -30,6 +30,8 @@ api.get("/admin/content", requireAdmin, getContent);
 api.put("/admin/content", requireAdmin, updateContent);
 api.get("/admin/messages", requireAdmin, listMessages);
 api.get("/admin/subscribers", requireAdmin, listSubscribers);
+api.delete("/admin/messages/:id", requireAdmin, deleteMessage);
+api.delete("/admin/subscribers/:email", requireAdmin, deleteSubscriber);
 api.post("/admin/upload", requireAdmin, uploadImage);
 
 api.post(

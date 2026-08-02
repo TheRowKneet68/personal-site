@@ -50,6 +50,26 @@ export async function listSubscribers(_req: Request, res: Response): Promise<voi
   }
 }
 
+/** DELETE /api/admin/messages/:id — remove a contact message (auth required). */
+export async function deleteMessage(req: Request, res: Response): Promise<void> {
+  try {
+    await storage.deleteMessage(String(req.params.id));
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+}
+
+/** DELETE /api/admin/subscribers/:email — remove a newsletter subscriber (auth required). */
+export async function deleteSubscriber(req: Request, res: Response): Promise<void> {
+  try {
+    await storage.deleteSubscriber(String(req.params.email));
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+}
+
 /** POST /api/admin/upload — save an image, return its public URL (auth required). */
 export async function uploadImage(req: Request, res: Response): Promise<void> {
   try {
