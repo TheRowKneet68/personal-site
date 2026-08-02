@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getSupabase } from "../config/supabase.js";
 import { hasSupabase } from "../config/env.js";
-import rawData from "../../data.json" with { type: "json" };
+import { EMBEDDED_DATA } from "../data.embedded.js";
 import {
   contentToRows,
   normalizeFromFile,
@@ -24,15 +24,15 @@ const SERVER_ROOT = path.resolve(__dirname, "..");
 const DATA_FILE = path.join(SERVER_ROOT, "..", "data.json");
 const DYNAMIC_FILE = path.join(SERVER_ROOT, "data.dynamic.json");
 
-/** Read data.json from disk, or fall back to the bundled copy when the file
-    isn't reachable (Vercel bundles this module; the on-disk path isn't
-    reliable there). `rawData` is still read live locally so content edits
-    show up without a restart. */
+/** Read data.json from disk, or fall back to the bundled snapshot when the
+    file isn't reachable (Vercel bundles this module; the on-disk path isn't
+    reliable there). Still read live locally so content edits show up without
+    a restart. */
 function readDataFile(): Parameters<typeof normalizeFromFile>[0] {
   try {
     return JSON.parse(readFileSync(DATA_FILE, "utf8")) as Parameters<typeof normalizeFromFile>[0];
   } catch {
-    return rawData;
+    return EMBEDDED_DATA;
   }
 }
 
