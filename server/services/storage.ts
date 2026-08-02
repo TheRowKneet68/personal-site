@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getSupabase } from "../config/supabase.js";
 import { hasSupabase } from "../config/env.js";
+import rawData from "../../data.json" with { type: "json" };
 import {
   contentToRows,
   normalizeFromFile,
@@ -11,10 +12,29 @@ import {
   type ContentRow,
 } from "./content.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = (() => {
+  try {
+    return path.dirname(fileURLToPath(import.meta.url));
+  } catch {
+    // Vercel bundles this module; import.meta.url is undefined there.
+    return process.cwd();
+  }
+})();
 const SERVER_ROOT = path.resolve(__dirname, "..");
 const DATA_FILE = path.join(SERVER_ROOT, "..", "data.json");
 const DYNAMIC_FILE = path.join(SERVER_ROOT, "data.dynamic.json");
+
+/** Read data.json from disk, or fall back to the bundled copy when the file
+    isn't reachable (Vercel bundles this module; the on-disk path isn't
+    reliable there). `rawData` is still read live locally so content edits
+    show up without a restart. */
+function readDataFile(): Parameters<typeof normalizeFromFile>[0] {
+  try {
+    return JSON.parse(readFileSync(DATA_FILE, "utf8")) as Parameters<typeof normalizeFromFile>[0];
+  } catch {
+    return rawData;
+  }
+}
 
 export interface NewMessage {
   name: string;
@@ -63,15 +83,19 @@ function readDynamic(): DynamicData {
 }
 
 function writeDynamic(data: DynamicData): void {
-  mkdirSync(SERVER_ROOT, { recursive: true });
-  writeFileSync(DYNAMIC_FILE, JSON.stringify(data, null, 2));
+  try {
+    mkdirSync(SERVER_ROOT, { recursive: true });
+    writeFileSync(DYNAMIC_FILE, JSON.stringify(data, null, 2));
+  } catch {
+    // Vercel's filesystem is ephemeral — a failed write shouldn't 500 the
+    // request. Supabase is the durable backend; JSON fallback is best-effort.
+  }
 }
 
 const jsonBackend: StorageBackend = {
   mode: () => "json",
   async getContent() {
-    const raw = JSON.parse(readFileSync(DATA_FILE, "utf8")) as Parameters<typeof normalizeFromFile>[0];
-    return normalizeFromFile(raw);
+    return normalizeFromFile(readDataFile());
   },
   async addMessage(m) {
     const data = readDynamic();
@@ -188,8 +212,7 @@ export const storage: Storage = {
   async seed() {
     if (!hasSupabase()) return { mode: "json", ok: true };
     const client = getSupabase();
-    const raw = JSON.parse(readFileSync(DATA_FILE, "utf8"));
-    const rows = contentToRows(normalizeFromFile(raw));
+    const rows = contentToRows(normalizeFromFile(readDataFile()));
     for (const table of CONTENT_TABLES) {
       const { error } = await client.from(table).upsert(rows[table]);
       if (error) throw new Error(`seed ${table}: ${error.message}`);
