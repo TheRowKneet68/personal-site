@@ -1091,6 +1091,30 @@ export const EMBEDDED_DATA = {
   ],
   "achievements": [
     {
+      "id": "pec-tech-expo-2022",
+      "event": "PEC Tech Expo 2022",
+      "title": "RUDRA-1 & Suraksha360",
+      "year": "2022",
+      "result": "1st Place",
+      "detail": "Won with RUDRA-1 — camera-based robotics, and Suraksha360 — smart security. First taste of what building weird things gets you."
+    },
+    {
+      "id": "gces-it-expo-2024",
+      "event": "GCES IT Expo 2024",
+      "title": "Suraksha360",
+      "year": "2024",
+      "result": "1st Place",
+      "detail": "Took Suraksha360 to the 11th GCES IT Expo and won."
+    },
+    {
+      "id": "surakshaghar-shipped",
+      "event": "SurakshaGhar",
+      "title": "Home automation ecosystem",
+      "year": "2024",
+      "result": "Shipped",
+      "detail": "Home automation ecosystem — 4-channel relay switch, RFID door lock, PIR detection, web control and a companion app. Custom PCB designed in EasyEDA, from breadboard to production switch."
+    },
+    {
       "id": "udaan-2025",
       "event": "UDAAN 2025 — Project Expo (IOE Paschimanchal Campus, WRC)",
       "title": "Suraksha360",
@@ -1147,6 +1171,22 @@ export const EMBEDDED_DATA = {
       "detail": "Certificate of Appreciation for leadership and dedication as a member (2024–2025 tenure)."
     },
     {
+      "id": "swiftignite",
+      "event": "SwiftIgnite",
+      "title": "Keyless motorcycle ignition",
+      "year": "2025",
+      "result": "v2 planned",
+      "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database."
+    },
+    {
+      "id": "call-motor-control",
+      "event": "Call-Based Smart Motor Control",
+      "title": "Market-launched",
+      "year": "2025",
+      "result": "Market-launched",
+      "detail": "Launched to market 27 May 2025 — control industrial and agricultural motors with a phone call. No internet needed, no app, no subscription."
+    },
+    {
       "id": "capec-joint-secretary",
       "event": "CAPEC",
       "title": "Joint Secretary, 2026",
@@ -1177,6 +1217,14 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "result": "Participant",
       "detail": "28–29 Jan 2026 — Participation certificates: Construction of Roundabout with Pedestrian Bridge at Prithvichowk, HerLegal, Surakshya 360, Suraksha360, Rudra 1, RUDRA-I, and Laser Tag."
+    },
+    {
+      "id": "fishtail-fair-2026",
+      "event": "Fishtail University Fair",
+      "title": "Suraksha360",
+      "year": "2026",
+      "result": "Presented",
+      "detail": "4 Apr 2026 — Presented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions."
     },
     {
       "id": "codefest-2026",

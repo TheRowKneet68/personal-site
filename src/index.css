@@ -48,8 +48,8 @@
   --rk-border: #e2ded2;
   --rk-border-strong: #c9c3b4;
   --rk-ink: #1a1b17;
-  --rk-ink-dim: #56574e;
-  --rk-ink-faint: #7d7d73;
+  --rk-ink-dim: #4c4d43;
+  --rk-ink-faint: #63645a;
   --rk-accent: #c9f24b;
   --rk-accent-ink: #3f4d00;
   --rk-accent-soft: rgba(63, 77, 0, 0.08);
@@ -65,8 +65,8 @@
   --rk-border: #26282c;
   --rk-border-strong: #3a3d42;
   --rk-ink: #e8e6e1;
-  --rk-ink-dim: #a3a19b;
-  --rk-ink-faint: #6f6d66;
+  --rk-ink-dim: #b0aea7;
+  --rk-ink-faint: #8a8881;
   --rk-accent: #c9f24b;
   --rk-accent-ink: #e2ff8a;
   --rk-accent-soft: rgba(201, 242, 75, 0.1);
@@ -120,6 +120,9 @@
     line-height: 1.6;
     overflow-x: hidden;
     transition: background-color 0.35s ease, color 0.35s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   ::selection {
@@ -186,11 +189,41 @@
 
   .mono-label {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--rk-ink-faint);
   }
+
+  /* readability floor — the site leans on tiny mono eyebrows/metadata that
+     fall below a comfortable reading size. Bump them so labels stay legible
+     without touching layout (they're still the smallest text on screen). */
+  .text-\[0\.6rem\] {
+    font-size: 0.72rem;
+  }
+  .text-\[0\.62rem\] {
+    font-size: 0.75rem;
+  }
+  .text-\[0\.65rem\] {
+    font-size: 0.78rem;
+  }
+  .text-\[0\.68rem\] {
+    font-size: 0.8rem;
+  }
+  .text-\[0\.7rem\] {
+    font-size: 0.8rem;
+  }
+  .text-\[0\.72rem\] {
+    font-size: 0.82rem;
+  }
+  /* wide letter-spacing on small uppercase text slows reading — pull it in */
+  .tracking-\[0\.14em\] {
+    letter-spacing: 0.09em;
+  }
+  .tracking-\[0\.12em\] {
+    letter-spacing: 0.08em;
+  }
+
 
   /* container — editorial measure */
   .container-rk {
