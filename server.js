@@ -26,7 +26,11 @@ const MIME = {
   ".woff2": "font/woff2",
 };
 
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+try {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+} catch (e) {
+  if (!process.env.VERCEL) throw e;
+}
 
 function readData() {
   return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
@@ -85,6 +89,7 @@ function serveStatic(req, res, urlPath) {
 }
 
 const server = http.createServer((req, res) => {
+  try {
   const url = new URL(req.url, "http://localhost");
   const p = url.pathname;
 
@@ -204,6 +209,13 @@ const server = http.createServer((req, res) => {
 
   // ---- static ----
   serveStatic(req, res, p);
+  } catch (e) {
+    if (e && e.code === "EROFS") {
+      return send(res, 503, { error: "editing is disabled on the serverless deployment (read-only filesystem)" });
+    }
+    console.error(e);
+    send(res, 500, { error: "internal error" });
+  }
 });
 
 server.listen(PORT, () => {
