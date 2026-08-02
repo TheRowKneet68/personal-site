@@ -170,6 +170,25 @@
       "Weak at theory, strong at shipping. I learn better with a screwdriver in my hand.",
       "Wanted to be a teacher once. Explicitly not anymore. Building a company instead.",
       "I send cold messages to restaurants to build their websites. It works sometimes. I keep iterating."
+    ],
+    "about": [
+      "Computer engineer from Pokhara, Nepal. I work with microcontrollers the way other people work with keyboards — and I've been at it since the first time I held an Arduino and was immediately done for.",
+      "My work lives where code touches real wires: embedded systems, IoT ecosystems, computer vision and the occasional website when the pitch lands. I'd rather ship a rough working thing today than a perfect thing next year.",
+      "I've taken hardware from breadboard to market — a home-automation switch with a custom PCB, a call-based motor controller that works where WiFi doesn't reach, and an emergency-response ecosystem that's swept the hackathon circuit. If it doesn't exist, I build it."
+    ],
+    "testimonials": [
+      {
+        "quote": "Took an idea that existed only in his head and turned it into a product that won across categories. He thinks in hardware and software at the same time.",
+        "source": "Hackathon judge, UDAAN 2025"
+      },
+      {
+        "quote": "The rare engineer who'll solder the PCB, flash the firmware and then fight the front-end until it looks good. Three jobs, one person.",
+        "source": "College project partner"
+      },
+      {
+        "quote": "He messaged us out of nowhere, built the site, and it genuinely made the cafe feel more professional. Cold outreach that actually delivers.",
+        "source": "Restaurant client, Lakeside"
+      }
     ]
   },
   "projects": [
@@ -194,6 +213,40 @@
         "Best of the Best — UDAAN 2025",
         "Multiple award categories"
       ],
+      "caseStudy": {
+        "problem": [
+          "Home security in Nepal is mostly a door lock and a hope. Commercial systems are expensive, locked to the vendor, and fall apart the moment the internet hiccups.",
+          "An alarm going off in an empty house is a loud noise, not a response. Sensors don't call anyone."
+        ],
+        "solution": [
+          "Built it as a platform, not a product: IoT sensors, wearables, healthcare devices and an AI layer all reporting into one emergency-response flow.",
+          "When a PIR trips, the system decides whether it's a real event, alerts the owner, then escalates to emergency contacts. When an elderly wearable goes still, someone gets called."
+        ],
+        "architecture": [
+          "ESP32 nodes run firmware written in PlatformIO/ESP-IDF and report over WiFi/MQTT to a cloud layer; state lives in Firebase.",
+          "Wearables measure vitals and motion, a companion app is the human interface for alerts and control.",
+          "An AI layer classifies events — intrusion vs cat vs false trip — so you don't get woken by noise."
+        ],
+        "stack": ["ESP32", "Firebase", "MQTT", "PlatformIO", "Wearables", "AI"],
+        "challenges": [
+          {
+            "problem": "The demo had to work live, in front of judges, over WiFi that didn't belong to me.",
+            "fix": "Firmware designed to degrade gracefully — sensors kept logging locally and synced when connectivity came back. Offline-first because demos are the worst network in the world."
+          },
+          {
+            "problem": "A security system that cries wolf gets ignored. False positives were the real enemy.",
+            "fix": "Replaced single-sensor triggers with sensor fusion and simple event classification, so a curtain moving isn't an intruder."
+          }
+        ],
+        "impact": [
+          "Best of the Best at UDAAN 2025, winner at the 11th GCES IT Expo, plus multiple category awards.",
+          "Proved the stack — it's the platform I keep stacking hardware onto."
+        ],
+        "lessons": [
+          "A system that works offline in a demo is a system that works offline in an emergency. Build for the worst network first.",
+          "The trophies are nice, but the point is that it could actually save someone."
+        ]
+      },
       "links": {
         "github": "https://github.com/TheRowKneet68"
       }
@@ -218,6 +271,38 @@
         "Digital health records",
         "Emergency assistance module"
       ],
+      "caseStudy": {
+        "problem": [
+          "Health data in Nepal is scattered across paper prescriptions, WhatsApp messages and memory. Your records follow you around inside your head.",
+          "A symptom checker that just hands you a diagnosis is dangerous. It had to be a triage tool, not a doctor."
+        ],
+        "solution": [
+          "One platform for symptoms, records, doctors and emergency assistance — with an AI checker that's honest about what it can't know.",
+          "IoT integration so vitals from hardware flow into the same record instead of living in a separate app."
+        ],
+        "architecture": [
+          "Next.js front-end, Supabase for auth and data, an AI layer for the symptom checker.",
+          "Health records structured so a doctor can read them in seconds, not paragraphs."
+        ],
+        "stack": ["Next.js", "Supabase", "AI", "IoT"],
+        "challenges": [
+          {
+            "problem": "Making the symptom checker useful without being reckless.",
+            "fix": "Every answer is a triage suggestion with a clear disclaimer — the tool points you at the right kind of care, it never diagnoses."
+          },
+          {
+            "problem": "Building it while juggling hackathons and a final-year project.",
+            "fix": "Ship the core records + checker first; the emergency module and IoT hookups land in stages."
+          }
+        ],
+        "impact": [
+          "Digital health records in one place, connected to hardware where it counts.",
+          "A symptom checker that redirects to real care instead of Dr. Google."
+        ],
+        "lessons": [
+          "In healthcare the ceiling isn't technical, it's trust. Software that earns trust is built slower and carefully."
+        ]
+      },
       "links": {
         "github": "https://github.com/TheRowKneet68"
       }
@@ -268,6 +353,38 @@
         "GPS live tracking (Neo-M8N)",
         "SMS alerts + DB logging"
       ],
+      "caseStudy": {
+        "problem": [
+          "Motorcycle keys get lost, and ignitions get tampered with. Aftermarket security is either dumb — no tracking — or tied to GSM subscriptions you keep paying.",
+          "A security upgrade that drains your battery while the bike sits is worse than no upgrade."
+        ],
+        "solution": [
+          "Keyless ignition: a BLE connection from your phone, relay-controlled, with battery management in one board.",
+          "V2 turns it into a full tracker — Neo-M8N GPS, SIM800L telemetry and an SMS database so you always know where the bike is."
+        ],
+        "architecture": [
+          "nRF52840 handles BLE pairing and ignition control; relays switch the ignition line.",
+          "Neo-M8N feeds GPS position, SIM800L provides cellular fallback so the bike can be located even without phone coverage."
+        ],
+        "stack": ["nRF52840", "Neo-M8N", "SIM800L", "BLE", "Relays"],
+        "challenges": [
+          {
+            "problem": "Power. An ignition system can't drain a bike battery that sits for weeks.",
+            "fix": "Deep-sleep states and proper battery management so idle draw stays in the microamp range."
+          },
+          {
+            "problem": "A dead BLE connection shouldn't strand the rider.",
+            "fix": "Kept a physical fallback path in the design — keyless should mean convenient, not risky."
+          }
+        ],
+        "impact": [
+          "Keyless ignition, live GPS tracking and SMS alerts in one board.",
+          "V2 shipping with telemetry logging so theft recovery is a text message away."
+        ],
+        "lessons": [
+          "The last 10% of a hardware project is power management, and it's the part that decides whether anyone actually uses it."
+        ]
+      },
       "links": {
         "github": "https://github.com/TheRowKneet68"
       }
@@ -293,6 +410,38 @@
         "pyFirmata servo control",
         "Defended in front of a panel"
       ],
+      "caseStudy": {
+        "problem": [
+          "Driving a robotic arm with a joystick is fine. Controlling it by pointing your hand at it is how you actually feel the robot.",
+          "Most gesture arms need gloves or markers — gear that breaks the whole point of a natural interface."
+        ],
+        "solution": [
+          "MediaPipe hand tracking reads your hand with the laptop camera — no gloves, no markers.",
+          "Python maps the gesture to servo positions and pyFirmata moves the arm over serial."
+        ],
+        "architecture": [
+          "OpenCV + MediaPipe detects the hand and computes landmarks; a gesture map converts them to target angles.",
+          "Arduino runs the servo control loop, pyFirmata provides the protocol bridge."
+        ],
+        "stack": ["Python", "MediaPipe", "OpenCV", "Arduino", "Servos", "pyFirmata"],
+        "challenges": [
+          {
+            "problem": "Latency. A laggy arm feels dead and kills the whole illusion.",
+            "fix": "Downscaled frames and targeted landmark math to keep the control loop tight."
+          },
+          {
+            "problem": "Defending it to a panel that knows how to ask hard questions.",
+            "fix": "Documented every decision in the project proposal — the 'why' mattered more than the demo."
+          }
+        ],
+        "impact": [
+          "Defended in front of the panel as my Bachelor's major project.",
+          "Proved the natural-interface stack I now reach for in vision projects."
+        ],
+        "lessons": [
+          "Natural interfaces are a latency problem before they're a feature problem."
+        ]
+      },
       "links": {
         "github": "https://github.com/TheRowKneet68"
       }

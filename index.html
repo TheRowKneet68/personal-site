@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ronit Baniya Gupta — TheRowKneet · Hardware &amp; Software Engineer</title>
+    <meta
+      name="description"
+      content="Ronit Baniya Gupta (TheRowKneet) — computer engineer from Pokhara, Nepal. I build embedded systems, IoT ecosystems, computer vision and web products. If it doesn't exist, I build it."
+    />
+    <meta name="author" content="Ronit Baniya Gupta" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <link rel="canonical" href="https://therowkneet.vercel.app/" />
+
+    <meta name="theme-color" content="#0b0c0e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TheRowKneet" />
+    <meta property="og:title" content="Ronit Baniya Gupta — TheRowKneet · Hardware &amp; Software Engineer" />
+    <meta
+      property="og:description"
+      content="Embedded systems, IoT ecosystems, computer vision and web products — built from a workbench in Pokhara, Nepal."
+    />
+    <meta property="og:url" content="https://therowkneet.vercel.app/" />
+    <meta property="og:image" content="https://therowkneet.vercel.app/images/me.jpg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ronit Baniya Gupta — TheRowKneet" />
+    <meta
+      name="twitter:description"
+      content="I build embedded systems, IoT ecosystems and web products. If it doesn't exist, I build it."
+    />
+    <meta name="twitter:image" content="https://therowkneet.vercel.app/images/me.jpg" />
+
+    <link rel="preload" href="/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("rk-theme");
+          var theme =
+            stored === "dark" || stored === "light"
+              ? stored
+              : window.matchMedia("(prefers-color-scheme: light)").matches
+                ? "light"
+                : "dark";
+          document.documentElement.classList.remove("light", "dark");
+          document.documentElement.classList.add(theme);
+        } catch (_) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ronit Baniya Gupta",
+        "alternateName": "TheRowKneet",
+        "jobTitle": "Computer Engineer",
+        "url": "https://therowkneet.vercel.app/",
+        "image": "https://therowkneet.vercel.app/images/me.jpg",
+        "email": "mailto:ronitbaniya68@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Pokhara",
+          "addressCountry": "Nepal"
+        },
+        "sameAs": [
+          "https://github.com/TheRowKneet68",
+          "https://www.linkedin.com/in/jr-erronitbaniya/",
+          "https://www.facebook.com/TheRowKneet/",
+          "https://www.instagram.com/jr.er_ronitbaniya68"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <h1>Ronit Baniya Gupta — TheRowKneet</h1>
+      <p>
+        Computer engineer from Pokhara, Nepal building embedded systems, IoT and web products.
+        Email me at ronitbaniya68@gmail.com.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

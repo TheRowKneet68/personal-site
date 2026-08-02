@@ -1,0 +1,22 @@
+node_modules/
+dist/
+*.local
+.env
+.env.*
+!.env.example
+
+# vercel
+.vercel/
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# server runtime state
+server/data.dynamic.json
+server/.env
+
+# typescript build cache
+*.tsbuildinfo

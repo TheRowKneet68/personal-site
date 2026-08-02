@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ */
+/*  Fonts (self-hosted — no third-party request on the critical path)  */
+/* ------------------------------------------------------------------ */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("/fonts/bricolage.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif-italic.woff2") format("woff2");
+}
+
+/* ------------------------------------------------------------------ */
+/*  Semantic tokens — flip with .dark so utilities read the same names */
+/* ------------------------------------------------------------------ */
+:root {
+  --rk-bg: #f6f4ef;
+  --rk-surface: #fffefb;
+  --rk-raised: #f0ede5;
+  --rk-border: #e2ded2;
+  --rk-border-strong: #c9c3b4;
+  --rk-ink: #1a1b17;
+  --rk-ink-dim: #56574e;
+  --rk-ink-faint: #7d7d73;
+  --rk-accent: #c9f24b;
+  --rk-accent-ink: #3f4d00;
+  --rk-accent-soft: rgba(63, 77, 0, 0.08);
+  --rk-warn: #b26500;
+  --rk-warn-soft: rgba(178, 101, 0, 0.1);
+  --rk-shadow: rgba(26, 27, 23, 0.12);
+}
+
+.dark {
+  --rk-bg: #0b0c0e;
+  --rk-surface: #131417;
+  --rk-raised: #1a1c1f;
+  --rk-border: #26282c;
+  --rk-border-strong: #3a3d42;
+  --rk-ink: #e8e6e1;
+  --rk-ink-dim: #a3a19b;
+  --rk-ink-faint: #6f6d66;
+  --rk-accent: #c9f24b;
+  --rk-accent-ink: #e2ff8a;
+  --rk-accent-soft: rgba(201, 242, 75, 0.1);
+  --rk-warn: #ffb347;
+  --rk-warn-soft: rgba(255, 179, 71, 0.12);
+  --rk-shadow: rgba(0, 0, 0, 0.5);
+}
+
+@theme inline {
+  --color-bg: var(--rk-bg);
+  --color-surface: var(--rk-surface);
+  --color-raised: var(--rk-raised);
+  --color-line: var(--rk-border);
+  --color-line-strong: var(--rk-border-strong);
+  --color-ink: var(--rk-ink);
+  --color-ink-dim: var(--rk-ink-dim);
+  --color-ink-faint: var(--rk-ink-faint);
+  --color-accent: var(--rk-accent);
+  --color-accent-ink: var(--rk-accent-ink);
+  --color-accent-soft: var(--rk-accent-soft);
+  --color-warn: var(--rk-warn);
+  --color-warn-soft: var(--rk-warn-soft);
+
+  --font-sans: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+
+  --shadow-card: 0 1px 2px var(--rk-shadow), 0 8px 24px -12px var(--rk-shadow);
+  --shadow-card-lg: 0 2px 4px var(--rk-shadow), 0 24px 48px -24px var(--rk-shadow);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                            */
+/* ------------------------------------------------------------------ */
+@layer base {
+  * {
+    border-color: var(--rk-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--rk-bg);
+    color: var(--rk-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "ss03";
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background-color 0.35s ease, color 0.35s ease;
+  }
+
+  ::selection {
+    background-color: var(--rk-accent);
+    color: #11120c;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--rk-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--rk-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--rk-border-strong);
+    border-radius: 8px;
+    border: 2px solid var(--rk-bg);
+  }
+}
+
+@layer utilities {
+  /* editorial display sizes */
+  .text-hero {
+    font-size: clamp(2.75rem, 8vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+  .text-display {
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .text-section {
+    font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+
+  /* serif italic accent — the human note */
+  .accent-serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--rk-accent-ink);
+  }
+
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--rk-ink-faint);
+  }
+
+  /* container — editorial measure */
+  .container-rk {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+  }
+
+  .hairline {
+    border-top: 1px solid var(--rk-border);
+  }
+
+  .hairline-b {
+    border-bottom: 1px solid var(--rk-border);
+  }
+
+  /* animated underline for text links */
+  .link-underline {
+    background-image: linear-gradient(var(--rk-accent), var(--rk-accent));
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.28s ease, color 0.28s ease;
+  }
+  .link-underline:hover {
+    background-size: 100% 1.5px;
+    color: var(--rk-accent-ink);
+  }
+
+  .prose-rk p {
+    margin-bottom: 1rem;
+  }
+  .prose-rk strong {
+    font-weight: 700;
+  }
+
+  /* marquee */
+  .marquee-track {
+    display: flex;
+    gap: 2.5rem;
+    width: max-content;
+    animation: rk-marquee 32s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes rk-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}

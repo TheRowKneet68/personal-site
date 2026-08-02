@@ -1,0 +1,98 @@
+-- =====================================================================
+-- TheRowKneet portfolio — Supabase schema
+-- Content rows are stored as jsonb payloads keyed by id (admin-editable,
+-- flexible for new fields). Dynamic tables are column-typed for queries.
+-- =====================================================================
+
+-- ---------- Content tables (admin reads/writes via service role) ------
+create table if not exists profile (
+  id         text primary key,
+  data       jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists projects (
+  id         text primary key,
+  data       jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists achievements (
+  id         text primary key,
+  data       jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists skills (
+  id         text primary key,
+  data       jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists experience (
+  id         text primary key,
+  data       jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ---------- Dynamic tables --------------------------------------------
+create table if not exists contact_messages (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  email      text not null,
+  subject    text not null default '',
+  message    text not null,
+  ip         text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists visitors (
+  id         uuid primary key default gen_random_uuid(),
+  country    text,
+  city       text,
+  device     text,
+  browser    text,
+  ip         text,
+  visited_at timestamptz not null default now()
+);
+
+create table if not exists newsletter (
+  id         uuid primary key default gen_random_uuid(),
+  email      text not null unique,
+  created_at timestamptz not null default now()
+);
+
+-- ---------- Indexes ----------------------------------------------------
+create index if not exists contact_messages_created_at_idx on contact_messages (created_at desc);
+create index if not exists visitors_visited_at_idx on visitors (visited_at desc);
+create index if not exists newsletter_created_at_idx on newsletter (created_at desc);
+
+-- ---------- Row Level Security ----------------------------------------
+-- Anonymous visitors may read public content and submit forms.
+-- The service role bypasses RLS, so writes from the API are unaffected.
+
+alter table profile enable row level security;
+alter table projects enable row level security;
+alter table achievements enable row level security;
+alter table skills enable row level security;
+alter table experience enable row level security;
+alter table contact_messages enable row level security;
+alter table visitors enable row level security;
+alter table newsletter enable row level security;
+
+create policy "public read content" on profile for select to anon using (true);
+create policy "public read projects" on projects for select to anon using (true);
+create policy "public read achievements" on achievements for select to anon using (true);
+create policy "public read skills" on skills for select to anon using (true);
+create policy "public read experience" on experience for select to anon using (true);
+
+create policy "public submit contact" on contact_messages for insert to anon with check (true);
+create policy "public submit visitor" on visitors for insert to anon with check (true);
+create policy "public subscribe" on newsletter for insert to anon with check (true);
+
+-- Use the SQL editor in the Supabase dashboard to run this file.
+-- Then: `npm run server:seed` to load data.json into the tables.

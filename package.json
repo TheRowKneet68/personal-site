@@ -1,10 +1,51 @@
 {
-  "name": "ronit-personal-webpage",
-  "version": "1.0.0",
+  "name": "therowkneet-portfolio",
+  "version": "2.0.0",
   "private": true,
-  "description": "TheRowKneet — personal site. zero dependencies, just node.",
-  "main": "server.js",
+  "type": "module",
+  "description": "Ronit Baniya Gupta (TheRowKneet) — production portfolio. React + Vite frontend, Express + Supabase backend.",
+  "workspaces": [
+    "server"
+  ],
   "scripts": {
-    "start": "node server.js"
+    "dev": "concurrently -n web,api -c green,cyan \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "vite",
+    "dev:api": "npm run dev -w server",
+    "build": "npm run resume && npm run sitemap && tsc -b && vite build",
+    "preview": "vite preview",
+    "start:api": "npm run start -w server",
+    "server:seed": "npm run seed -w server",
+    "resume": "node scripts/make-resume-pdf.mjs",
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "typecheck": "tsc -b",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "express": "^5.2.1",
+    "framer-motion": "^11.11.0",
+    "lucide-react": "^0.454.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "globals": "^15.12.0",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.15.0",
+    "vite": "^6.0.0"
   }
 }
