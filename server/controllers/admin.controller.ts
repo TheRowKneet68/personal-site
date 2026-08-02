@@ -50,6 +50,27 @@ export async function listSubscribers(_req: Request, res: Response): Promise<voi
   }
 }
 
+/** POST /api/admin/upload — save an image, return its public URL (auth required). */
+export async function uploadImage(req: Request, res: Response): Promise<void> {
+  try {
+    const { data, contentType, name } = (req.body ?? {}) as { data?: string; contentType?: string; name?: string };
+    if (typeof data !== "string" || !data) {
+      res.status(400).json({ error: "Image data (base64) is required" });
+      return;
+    }
+    const buffer = Buffer.from(data, "base64");
+    if (buffer.length === 0) {
+      res.status(400).json({ error: "Image data is empty" });
+      return;
+    }
+    const safeName = /^[a-zA-Z0-9._-]+$/.test(name || "") ? (name as string) : `upload-${Date.now()}.jpg`;
+    const url = await storage.uploadImage(safeName, contentType || "image/jpeg", buffer);
+    res.json({ url });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+}
+
 /** PUT /api/admin/content — persist edits (auth required). */
 export async function updateContent(req: Request, res: Response): Promise<void> {
   try {

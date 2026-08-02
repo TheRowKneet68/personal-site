@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, Testimonial } from "../../types";
 import { cn } from "../../utils/format";
 import { Field, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
@@ -98,8 +98,32 @@ export function Repeater<T extends object>({
 
 /* ---------------- profile sections ---------------- */
 
-export function BasicsSection({ value, onChange }: { value: Profile; onChange: (p: Profile) => void }) {
+export function BasicsSection({
+  value,
+  onChange,
+  uploadImage,
+}: {
+  value: Profile;
+  onChange: (p: Profile) => void;
+  uploadImage?: (file: File) => Promise<string>;
+}) {
   const set = (patch: Partial<Profile>) => onChange({ ...value, ...patch });
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  const handleFile = async (file: File, field: "portrait" | "logo") => {
+    if (!uploadImage) return;
+    setUploading(true);
+    setUploadError("");
+    try {
+      set({ [field]: await uploadImage(file) });
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
@@ -121,9 +145,58 @@ export function BasicsSection({ value, onChange }: { value: Profile; onChange: (
           </Field>
         ))}
         <Field label="Logo" hint="URL or path to the logo image shown in the header and footer.">
-          <TextInput value={value.logo ?? ""} placeholder="/images/logo.svg" onChange={(v) => set({ logo: v })} />
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <TextInput value={value.logo ?? ""} placeholder="/images/logo.svg" onChange={(v) => set({ logo: v })} />
+              {value.logo ? (
+                <img src={value.logo} alt="" width={44} height={44} className="size-11 shrink-0 rounded border border-line object-contain" />
+              ) : null}
+            </div>
+            {uploadImage ? (
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="font-mono text-xs text-ink-faint file:mr-3 file:cursor-pointer file:rounded file:border file:border-line file:bg-bg file:px-3 file:py-1.5 file:font-mono file:text-xs file:text-ink-dim hover:file:border-accent"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void handleFile(f, "logo");
+                    e.target.value = "";
+                  }}
+                />
+                {uploading ? <span className="font-mono text-xs text-ink-faint">Uploading…</span> : null}
+                {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
+              </div>
+            ) : null}
+          </div>
         </Field>
       </div>
+      <Field label="Portrait" hint="The photo shown in the About section. Upload a new one or paste a URL.">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <TextInput value={value.portrait ?? ""} placeholder="/images/me.jpg" onChange={(v) => set({ portrait: v })} />
+            {value.portrait ? (
+              <img src={value.portrait} alt="" width={44} height={44} className="size-11 shrink-0 rounded border border-line object-cover" />
+            ) : null}
+          </div>
+          {uploadImage ? (
+            <div className="flex items-center gap-3">
+              <input
+                type="file"
+                accept="image/*"
+                className="font-mono text-xs text-ink-faint file:mr-3 file:cursor-pointer file:rounded file:border file:border-line file:bg-bg file:px-3 file:py-1.5 file:font-mono file:text-xs file:text-ink-dim hover:file:border-accent"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) void handleFile(f, "portrait");
+                  e.target.value = "";
+                }}
+              />
+              {uploading ? <span className="font-mono text-xs text-ink-faint">Uploading…</span> : null}
+              {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
+            </div>
+          ) : null}
+        </div>
+      </Field>
       <Field label="Socials" hint="Key = platform name, value = URL.">
         <MapEditor value={value.socials} onChange={(v) => set({ socials: v })} keyPlaceholder="platform" valuePlaceholder="url" itemLabel="social" />
       </Field>

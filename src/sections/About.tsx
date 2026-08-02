@@ -20,13 +20,13 @@ export function About() {
           <Reveal className="lg:sticky lg:top-28 lg:self-start">
             <figure className="relative">
               <img
-                src="/images/me.jpg"
+                src={profile.portrait || "/images/me.jpg"}
                 alt="Portrait of Ronit Baniya Gupta at his workbench"
                 width={640}
                 height={800}
                 loading="lazy"
                 decoding="async"
-                className="aspect-[4/5] w-full border border-line object-cover grayscale contrast-[1.05] transition-[filter] duration-500 hover:grayscale-0"
+                className="aspect-[4/5] w-full border border-line object-cover"
               />
               <figcaption className="mt-3 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.12em] text-ink-faint">
                 <span>therowkneet@location ~/pokhara</span>

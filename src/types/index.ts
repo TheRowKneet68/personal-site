@@ -28,6 +28,7 @@ export interface Profile {
   name: string;
   handle: string;
   logo?: string;
+  portrait?: string;
   role: string;
   slogan: string;
   location: string;

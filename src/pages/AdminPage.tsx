@@ -164,6 +164,24 @@ export function AdminPage() {
 
   const patchProfile = (profile: Profile) => setContent((c) => (c ? { ...c, profile } : c));
 
+  const uploadImage = useCallback(
+    async (file: File) => {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result as string);
+        r.onerror = () => reject(new Error("Couldn't read file"));
+        r.readAsDataURL(file);
+      });
+      const comma = dataUrl.indexOf(",");
+      const b64 = dataUrl.slice(comma + 1);
+      const contentType = /^data:(.*?);/.exec(dataUrl.slice(0, comma))?.[1] ?? "image/jpeg";
+      const name = file.name.replace(/[^a-zA-Z0-9._-]/g, "-") || `upload-${Date.now()}.jpg`;
+      const { url } = await api.adminUpload(token!, { data: b64, contentType, name });
+      return url;
+    },
+    [token],
+  );
+
   if (!token) return <LoginView onLogin={(t) => { localStorage.setItem(TOKEN_KEY, t); setToken(t); }} />;
 
   return (
@@ -225,7 +243,7 @@ export function AdminPage() {
           <>
             {tab === "basics" && (
               <AdminCard title="Basics" kicker="Identity, contact details and social links.">
-                <BasicsSection value={content.profile} onChange={patchProfile} />
+                <BasicsSection value={content.profile} onChange={patchProfile} uploadImage={uploadImage} />
               </AdminCard>
             )}
             {tab === "about" && (

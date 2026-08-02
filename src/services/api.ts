@@ -84,4 +84,11 @@ export const api = {
 
   adminSubscribers: (token: string) =>
     request<{ subscribers: string[] }>("/api/admin/subscribers", { headers: { Authorization: `Bearer ${token}` } }),
+
+  adminUpload: (token: string, payload: { data: string; contentType: string; name: string }) =>
+    request<{ url: string }>("/api/admin/upload", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify(payload),
+    }),
 };

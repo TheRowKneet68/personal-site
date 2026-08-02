@@ -84,6 +84,7 @@ export interface StorageBackend {
   getCounts(): Promise<Counts>;
   listMessages(): Promise<(NewMessage & { created_at?: string })[]>;
   listSubscribers(): Promise<string[]>;
+  uploadImage(name: string, contentType: string, buffer: Buffer): Promise<string>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -160,6 +161,23 @@ const jsonBackend: StorageBackend = {
   },
   async listSubscribers() {
     return readDynamic().subscribers;
+  },
+  /** Best-effort local save (repo public/images) — Vercel is read-only, Supabase is the durable path. */
+  async uploadImage(name, contentType, buffer) {
+    const dir = path.join(path.dirname(DATA_FILE), "public", "images");
+    const dest = path.join(dir, name);
+    try {
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(dest, buffer);
+      return `/images/${name}`;
+    } catch (err) {
+      const code = (err as NodeJS.ErrnoException)?.code;
+      throw new Error(
+        code === "EROFS" || code === "EACCES" || code === "ENOSPC"
+          ? "Local image storage is read-only here — configure Supabase to upload images on the deployed server."
+          : `Failed to write image: ${code ?? (err as Error).message}`,
+      );
+    }
   },
 };
 
@@ -264,6 +282,23 @@ const supabaseBackend: StorageBackend = {
     if (error) throw new Error(`supabase subscribers: ${error.message}`);
     return (data ?? []).map((r) => (r as { email: string }).email);
   },
+  /** Upload to the public "images" bucket (created on demand) and return its URL. */
+  async uploadImage(name, contentType, buffer) {
+    const client = getSupabase();
+    const bucket = "images";
+    const { error: missing } = await client.storage.getBucket(bucket);
+    if (missing) {
+      const { error: createErr } = await client.storage.createBucket(bucket, { public: true });
+      if (createErr) throw new Error(`supabase storage: ${createErr.message}`);
+    }
+    const { error } = await client.storage.from(bucket).upload(name, buffer, {
+      contentType,
+      cacheControl: "3600",
+      upsert: true,
+    });
+    if (error) throw new Error(`supabase storage: ${error.message}`);
+    return client.storage.from(bucket).getPublicUrl(name).data.publicUrl;
+  },
 };
 
 /* ------------------------------------------------------------------ */
@@ -288,6 +323,7 @@ export const storage: Storage = {
   getCounts: () => (hasSupabase() ? supabaseBackend : jsonBackend).getCounts(),
   listMessages: () => (hasSupabase() ? supabaseBackend : jsonBackend).listMessages(),
   listSubscribers: () => (hasSupabase() ? supabaseBackend : jsonBackend).listSubscribers(),
+  uploadImage: (n, c, b) => (hasSupabase() ? supabaseBackend : jsonBackend).uploadImage(n, c, b),
 
   /** Write data.json content into Supabase (service role). */
   async seed() {
