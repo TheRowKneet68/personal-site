@@ -21,7 +21,7 @@ export function GitHubStats() {
     <section className="border-t border-line py-24 md:py-32">
       <Container>
         <SectionHeading
-          index="04"
+          index="05"
           title={<>github <em className="accent-serif">stats</em></>}
           kicker="Pulled live from the account — no screenshot, no inflation."
         />

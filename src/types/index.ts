@@ -19,6 +19,11 @@ export interface Testimonial {
   source: string;
 }
 
+export interface FeaturedIn {
+  name: string;
+  url: string;
+}
+
 export interface Profile {
   name: string;
   handle: string;
@@ -39,6 +44,7 @@ export interface Profile {
   journey: ExperienceEntry[];
   fun_facts: string[];
   testimonials?: Testimonial[];
+  featured_in?: FeaturedIn[];
 }
 
 export interface CaseStudy {

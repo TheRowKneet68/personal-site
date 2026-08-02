@@ -16,7 +16,7 @@ export function Contact() {
     <section id="contact" className="scroll-mt-24 border-t border-line py-24 md:py-32">
       <Container>
         <SectionHeading
-          index="06"
+          index="07"
           title={<>let's <em className="accent-serif">build</em></>}
           kicker="Got an idea that doesn't exist yet? A hackathon team short an embedded guy? My phone is always within reach of my soldering iron."
         />

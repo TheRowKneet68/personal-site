@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Achievement, CaseStudy, ExperienceEntry, Principle, Profile, Project, Testimonial } from "../../types";
+import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, Testimonial } from "../../types";
 import { cn } from "../../utils/format";
 import { Field, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
 
@@ -345,6 +345,17 @@ export function AchievementsSection({ value, onChange }: { value: Achievement[];
       ]}
       newItem={() => ({ id: crypto.randomUUID().slice(0, 8), event: "", title: "", year: "", result: "", detail: "" })}
       titleOf={(a) => `${a.year} — ${a.event}`}
+    />
+  );
+}
+
+export function FeaturedInSection({ value, onChange }: { value: FeaturedIn[]; onChange: (v: FeaturedIn[]) => void }) {
+  return (
+    <PairList
+      value={value}
+      fields={{ keyA: "name", labelA: "Outlet", keyB: "url", labelB: "URL" }}
+      itemLabel="outlet"
+      onChange={onChange}
     />
   );
 }

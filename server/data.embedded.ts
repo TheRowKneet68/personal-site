@@ -201,6 +201,28 @@ export const EMBEDDED_DATA = {
         "quote": "He messaged us out of nowhere, built the site, and it genuinely made the cafe feel more professional. Cold outreach that actually delivers.",
         "source": "Restaurant client, Lakeside"
       }
+    ],
+    "featured_in": [
+      {
+        "name": "ICT Frame",
+        "url": "https://ictframe.com/rudra-1-rocket-launch/"
+      },
+      {
+        "name": "WOW Magazine Nepal",
+        "url": "https://www.facebook.com/wowmagazinenepal/posts/students-of-pokhara-engineering-college-successfully-launched-an-experimental-ro/1500618618739581/"
+      },
+      {
+        "name": "24 Ghanta Nepal",
+        "url": "https://www.instagram.com/reel/DUSxwYtk5ET/?hl=en"
+      },
+      {
+        "name": "Digital Nepal",
+        "url": "https://www.instagram.com/reel/DUV38WUj5NT/"
+      },
+      {
+        "name": "Routine of Education",
+        "url": "https://www.facebook.com/share/p/1FEQQ6gvGB/"
+      }
     ]
   },
   "projects": [

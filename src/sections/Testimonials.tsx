@@ -14,7 +14,7 @@ export function Testimonials() {
     <section className="border-t border-line py-24 md:py-32">
       <Container>
         <SectionHeading
-          index="05"
+          index="06"
           title={<>words from <em className="accent-serif">people</em></>}
           kicker="What teammates, clients and judges said. Full quotes coming as I collect them properly."
         />

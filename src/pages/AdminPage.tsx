@@ -7,6 +7,7 @@ import {
   AchievementsSection,
   AdminCard,
   BasicsSection,
+  FeaturedInSection,
   JourneySection,
   PrinciplesSection,
   ProjectsSection,
@@ -206,6 +207,13 @@ export function AdminPage() {
             {tab === "achievements" && (
               <AdminCard title="Achievements">
                 <AchievementsSection value={content.achievements} onChange={(v) => setContent({ ...content, achievements: v })} />
+                <div className="mt-6 border-t border-line pt-5">
+                  <p className="mb-3 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">featured in</p>
+                  <FeaturedInSection
+                    value={content.profile.featured_in ?? []}
+                    onChange={(v) => patchProfile({ ...content.profile, featured_in: v })}
+                  />
+                </div>
               </AdminCard>
             )}
             {tab === "testimonials" && (

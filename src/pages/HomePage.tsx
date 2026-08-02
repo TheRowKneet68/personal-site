@@ -6,6 +6,7 @@ import { Marquee } from "../components/Marquee";
 import { About } from "../sections/About";
 import { Projects } from "../sections/Projects";
 import { Achievements } from "../sections/Achievements";
+import { FeaturedIn } from "../sections/FeaturedIn";
 import { GitHubStats } from "../sections/GitHubStats";
 import { Testimonials } from "../sections/Testimonials";
 import { Contact } from "../sections/Contact";
@@ -64,6 +65,7 @@ export function HomePage() {
       <About />
       <Projects />
       <Achievements />
+      <FeaturedIn />
       <GitHubStats />
       <Testimonials />
       <Contact />
