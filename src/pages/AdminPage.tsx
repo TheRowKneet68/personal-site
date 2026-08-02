@@ -205,7 +205,7 @@ export function AdminPage() {
               key={t.id}
               className={cn(
                 "shrink-0 rounded-md px-3 py-1.5 font-mono text-xs",
-                tab === t.id ? "bg-accent text-accent-ink" : "text-ink-dim hover:text-ink",
+                tab === t.id ? "bg-accent text-[#14150f]" : "text-ink-dim hover:text-ink",
               )}
               onClick={() => setTab(t.id)}
             >
@@ -296,9 +296,17 @@ export function AdminPage() {
                           <p className="font-mono text-sm text-ink">
                             {m.name} <span className="text-ink-faint">&lt;{m.email}&gt;</span>
                           </p>
-                          <span className="font-mono text-xs text-ink-faint">
-                            {m.created_at ? new Date(m.created_at).toLocaleString() : ""}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs text-ink-faint">
+                              {m.created_at ? new Date(m.created_at).toLocaleString() : ""}
+                            </span>
+                            <a
+                              href={`mailto:${m.email}?subject=${encodeURIComponent(`Re: ${m.subject || "your message"}`)}`}
+                              className={cn(btnCls, "inline-flex items-center gap-1.5 px-3 py-1")}
+                            >
+                              <Send className="size-3.5" aria-hidden /> reply
+                            </a>
+                          </div>
                         </div>
                         <p className="mt-1 text-sm font-semibold text-ink-dim">{m.subject}</p>
                         <p className="mt-2 whitespace-pre-line text-sm text-ink-dim">{m.message}</p>
