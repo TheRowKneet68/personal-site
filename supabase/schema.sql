@@ -8,8 +8,12 @@
 create table if not exists profile (
   id         text primary key,
   data       jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- For databases created before this column existed (re-runnable).
+alter table profile add column if not exists created_at timestamptz not null default now();
 
 create table if not exists projects (
   id         text primary key,
@@ -70,6 +74,27 @@ create table if not exists newsletter (
 create index if not exists contact_messages_created_at_idx on contact_messages (created_at desc);
 create index if not exists visitors_visited_at_idx on visitors (visited_at desc);
 create index if not exists newsletter_created_at_idx on newsletter (created_at desc);
+
+-- ---------- updated_at trigger -----------------------------------------
+-- Admin upserts replace the whole row; this keeps updated_at honest.
+create or replace function set_updated_at() returns trigger as $$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$$ language plpgsql;
+
+do $$
+declare t text;
+begin
+  foreach t in array array['profile','projects','achievements','skills','experience']
+  loop
+    execute format(
+      'create or replace trigger trg_%I_updated_at before update on %I for each row execute function set_updated_at()',
+      t, t
+    );
+  end loop;
+end $$;
 
 -- ---------- Row Level Security ----------------------------------------
 -- Anonymous visitors may read public content and submit forms.

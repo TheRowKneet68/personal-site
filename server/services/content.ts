@@ -113,7 +113,7 @@ export function contentToRows(content: Content): {
     projects: content.projects.map((p) => ({ id: p.id, data: p })),
     achievements: content.achievements.map((a) => ({ id: a.id, data: a })),
     skills: [{ id: "skills", data: content.skills }],
-    experience: content.experience.map((e) => ({ id: String(e.year), data: e })),
+    experience: content.experience.map((e) => ({ id: `${e.year}-${e.title}`, data: e })),
   };
 }
 
