@@ -47,9 +47,7 @@ export default function App() {
     <ThemeProvider>
       <CommandProvider>
         <DataProvider>
-          <Layout>
-            <RoutesShell />
-          </Layout>
+          <RoutesShell />
         </DataProvider>
       </CommandProvider>
     </ThemeProvider>
