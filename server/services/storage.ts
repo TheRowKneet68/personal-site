@@ -117,8 +117,20 @@ const jsonBackend: StorageBackend = {
       projects: content.projects,
       achievements: content.achievements,
     };
-    mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-    writeFileSync(DATA_FILE, JSON.stringify(data, null, 2) + "\n");
+    try {
+      mkdirSync(path.dirname(DATA_FILE), { recursive: true });
+      writeFileSync(DATA_FILE, JSON.stringify(data, null, 2) + "\n");
+    } catch (err) {
+      const code = (err as NodeJS.ErrnoException)?.code;
+      if (code === "EROFS" || code === "EACCES" || code === "ENOSPC") {
+        throw new Error(
+          "JSON storage can't write to this server's read-only filesystem. " +
+            "Configure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY on the deployed server " +
+            "(or run the admin locally where data.json is writable).",
+        );
+      }
+      throw err;
+    }
   },
   async addMessage(m) {
     const data = readDynamic();
