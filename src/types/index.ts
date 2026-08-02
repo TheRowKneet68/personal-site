@@ -30,6 +30,7 @@ export interface Profile {
   handle: string;
   logo?: string;
   portrait?: string;
+  portrait1?: string;
   role: string;
   slogan: string;
   location: string;

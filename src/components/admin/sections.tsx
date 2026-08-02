@@ -260,6 +260,13 @@ export function BasicsSection({
         onChange={(v) => set({ portrait: v })}
         uploadImage={uploadImage}
       />
+      <ImageField
+        label="Portrait 1 (Hero)"
+        hint="Optional circular portrait shown on the right side of the hero. Leave blank to hide it."
+        value={value.portrait1 ?? ""}
+        onChange={(v) => set({ portrait1: v })}
+        uploadImage={uploadImage}
+      />
       <Field label="Socials" hint="Key = platform name, value = URL.">
         <MapEditor value={value.socials} onChange={(v) => set({ socials: v })} keyPlaceholder="platform" valuePlaceholder="url" itemLabel="social" />
       </Field>
