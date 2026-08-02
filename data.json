@@ -137,32 +137,37 @@
       {
         "year": "2020",
         "title": "Started Diploma in Computer Engineering",
-        "note": "First time I held an Arduino, I was done for."
+        "note": "Picked up an Arduino for the first time and discovered embedded systems. That single board changed the direction of my career."
       },
       {
         "year": "2021",
-        "title": "First builds",
-        "note": "RC cars, relays, IR remotes. Learning by frying things."
+        "title": "Learning by Building",
+        "note": "Built home automation systems, RC cars, relay circuits, and IR-controlled projects. Countless experiments, failures, and lessons became the foundation of everything that followed."
       },
       {
         "year": "2022",
-        "title": "Air Mouse wins PEC Tech Expo",
-        "note": "First award. Confirmed I wanted to build weird things for a living."
+        "title": "GRAVAS",
+        "note": "Developed my first major engineering project and showcased it at Rojgar Mela. It was the moment I realized I wanted to build real-world technology for a living."
+      },
+      {
+        "year": "2023",
+        "title": "From Projects to Products",
+        "note": "Focused on embedded systems, IoT, and hardware-software integration while developing practical solutions that could move beyond classroom prototypes."
       },
       {
         "year": "2024",
-        "title": "SurakshaGhar — home automation at scale",
-        "note": "Full ecosystem: firmware, PCB, companion app. My first real product."
+        "title": "Suraksha Ghar",
+        "note": "Built a complete IoT home automation ecosystem featuring custom firmware, hardware integration, and a companion mobile application — my first product designed for real-world use."
       },
       {
         "year": "2025",
-        "title": "Suraksha360 sweeps hackathons",
-        "note": "GCES IT Expo, UDAAN, OCTATE. Best of best, multiple award categories."
+        "title": "National Recognition",
+        "note": "Won multiple awards across Nepal's engineering competitions including UDAAN 2025 (Winner), OCTATE 2025 (Public Choice Award), Innosphere 1.0 (First Runner-Up), and Hackathon Nova, while earning recognition for technical innovation and leadership."
       },
       {
         "year": "2026",
-        "title": "Now",
-        "note": "Swasthya Sathi, GRAVAS, SwiftIgnite v2, restaurant websites, and whatever breaks next."
+        "title": "Building What's Next",
+        "note": "Leading the development of projects including Swasthya Sathi, SwiftIgnite v2, Suraksha360, and commercial web solutions while serving as Joint Secretary of CAPEC and continuing to build products that solve real-world problems."
       }
     ],
     "fun_facts": [
@@ -1042,68 +1047,100 @@
   ],
   "achievements": [
     {
-      "id": "pec-tech-expo-9",
-      "event": "PEC Tech Expo",
-      "title": "RUDRA-1 & Suraksha360",
-      "year": "2022",
-      "result": "1st",
-      "detail": "Won with RUDRA-1 — camera-based robotics, and Suraksha360 — smart security. First taste of what building weird things gets you."
-    },
-    {
-      "id": "gces-it-expo-11",
-      "event": "GCES IT Expo",
-      "title": "Suraksha360",
-      "year": "2024",
-      "result": "1st",
-      "detail": "Took Suraksha360 to the 11th GCES IT Expo and won."
-    },
-    {
       "id": "udaan-2025",
-      "event": "UDAAN 2025",
+      "event": "UDAAN 2025 — Project Expo (IOE Paschimanchal Campus, WRC)",
       "title": "Suraksha360",
       "year": "2025",
-      "result": "1st",
-      "detail": "1st overall — plus Best Innovative Project, Best Demonstration, and Most Unique Project."
+      "result": "Winner",
+      "detail": "7 Feb 2025 — Won the UDAAN 2025 Project Expo with Suraksha360."
+    },
+    {
+      "id": "udaan-2025-participant",
+      "event": "UDAAN 2025 Project Expo",
+      "title": "Participant",
+      "year": "2025",
+      "result": "Certificate of Appreciation",
+      "detail": "7 Feb 2025 — Certificate of Appreciation for participation."
     },
     {
       "id": "octate-2025",
-      "event": "OCTATE 2025",
+      "event": "OCTATE 2025 — National Level Technical Festival",
       "title": "Suraksha360",
       "year": "2025",
-      "result": "2nd Runner-up",
-      "detail": "Best Project Demonstration, Most Creative Project, and Most Innovative Project (Public Choice)."
+      "result": "People's Choice Award",
+      "detail": "12–13 Feb 2025 — Won the People's Choice / Public Choice Award at the OCTATE 2025 National Level Technical Festival."
     },
     {
       "id": "innosphere-1",
-      "event": "Innosphere 1.0",
-      "title": "Suraksha360 ecosystem",
+      "event": "Innosphere 1.0 — Hardware Project Exhibition",
+      "title": "Suraksha360",
       "year": "2025",
-      "result": "1st Runner-up",
-      "detail": "Strong showing with the ecosystem I keep stacking hardware onto."
+      "result": "First Runner-Up",
+      "detail": "8 Jun 2025 — First Runner-Up at the Innosphere 1.0 Hardware Project Exhibition."
     },
     {
-      "id": "suraksha-ghar-launch",
-      "event": "SurakshaGhar",
-      "title": "SurakshaGhar",
-      "year": "2024",
-      "result": "Shipped",
-      "detail": "Home automation ecosystem — 4-channel relay switch, RFID door lock, PIR detection, web control and a companion app. Custom PCB designed in EasyEDA, from breadboard to production switch."
+      "id": "hackathon-nova-partner",
+      "event": "Hackathon Nova",
+      "title": "Suraksha Ghar — Community Partner",
+      "year": "2025",
+      "result": "Community Partner",
+      "detail": "Certificate of Appreciation as Community Partner (Suraksha Ghar)."
     },
     {
-      "id": "swiftignite",
-      "event": "SwiftIgnite",
-      "title": "SwiftIgnite",
+      "id": "hackathon-nova-volunteer",
+      "event": "Hackathon Nova",
+      "title": "Volunteer",
       "year": "2025",
-      "result": "v2 planned",
-      "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database."
+      "result": "Volunteer",
+      "detail": "Certificate of Appreciation as Volunteer."
     },
     {
-      "id": "call-motor-launch",
-      "event": "Call-Based Smart Motor Control",
-      "title": "Call-Based Smart Motor Control",
+      "id": "capec-leadership",
+      "event": "CAPEC",
+      "title": "Leadership & Dedication",
       "year": "2025",
-      "result": "Market-launched",
-      "detail": "Launched to market May 27, 2025 — control industrial/agricultural motors with a phone call. No internet needed, no app, no subscription."
+      "result": "Appreciation",
+      "detail": "Certificate of Appreciation for leadership and dedication as a member (2024–2025 tenure)."
+    },
+    {
+      "id": "capec-joint-secretary",
+      "event": "CAPEC",
+      "title": "Joint Secretary, 2026",
+      "year": "2026",
+      "result": "Appointed",
+      "detail": "26 Dec 2025 — Official appointment as Joint Secretary of CAPEC for 2026."
+    },
+    {
+      "id": "pec-2026-civil",
+      "event": "9th PEC Tech Expo 2026 — Civil Project Competition",
+      "title": "Suraksha360",
+      "year": "2026",
+      "result": "First Runner-Up",
+      "detail": "28–29 Jan 2026 — First Runner-Up in the Civil Project Competition."
+    },
+    {
+      "id": "pec-2026-it",
+      "event": "9th PEC Tech Expo 2026 — Computer & IT Project Competition",
+      "title": "Suraksha360",
+      "year": "2026",
+      "result": "Consolation",
+      "detail": "28–29 Jan 2026 — Consolation prize in the Computer & IT Project Competition."
+    },
+    {
+      "id": "pec-2026-participants",
+      "event": "9th PEC Tech Expo 2026",
+      "title": "Participant — multiple projects",
+      "year": "2026",
+      "result": "Participant",
+      "detail": "28–29 Jan 2026 — Participation certificates: Construction of Roundabout with Pedestrian Bridge at Prithvichowk, HerLegal, Surakshya 360, Suraksha360, Rudra 1, RUDRA-I, and Laser Tag."
+    },
+    {
+      "id": "codefest-2026",
+      "event": "Codefest 2026 — Gandaki Province",
+      "title": "Team Suraksha360",
+      "year": "2026",
+      "result": "Participated",
+      "detail": "Jul 2026 — Team Suraksha360 participated in the Codefest 2026 Gandaki province hackathon."
     }
   ]
 }

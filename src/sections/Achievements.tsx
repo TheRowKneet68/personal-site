@@ -20,7 +20,7 @@ export function Achievements() {
         <Reveal>
           <ol className="border-t border-line">
             {achievements.map((a) => {
-              const highlighted = /1st|winner|runner-up|best of/i.test(a.result) || a.result !== "Shipped";
+              const highlighted = /1st|winner|runner-up|choice|appointed|award/i.test(a.result);
               return (
                 <li
                   key={a.id}
