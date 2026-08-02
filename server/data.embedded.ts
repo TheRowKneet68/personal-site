@@ -1185,6 +1185,14 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "result": "Participated",
       "detail": "Jul 2026 — Team Suraksha360 participated in the Codefest 2026 Gandaki province hackathon."
+    },
+    {
+      "id": "gces-it-expo-2026",
+      "event": "GCES IT Expo 2026",
+      "title": "Suraksha360",
+      "year": "2026",
+      "result": "1st Position",
+      "detail": "25–26 Jun 2026 — Suraksha360 earned First Place at the GCES IT Expo, recognizing months of engineering, iteration, and real-world product development."
     }
   ]
 };
