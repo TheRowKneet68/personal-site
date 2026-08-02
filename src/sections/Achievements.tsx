@@ -31,16 +31,27 @@ export function Achievements() {
                     <p className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink-faint">{a.event}</p>
                     <h3 className="mt-1 text-lg font-semibold text-ink">{a.title}</h3>
                     <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-dim">{a.detail}</p>
-                    {a.image ? (
-                      <a href={a.image} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block" title="View certificate">
-                        <img
-                          src={a.image}
-                          alt=""
-                          loading="lazy"
-                          decoding="async"
-                          className="h-24 w-auto max-w-full rounded-sm border border-line object-cover transition-opacity hover:opacity-80"
-                        />
-                      </a>
+                    {a.images && a.images.length > 0 ? (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {a.images.map((src, i) => (
+                          <a
+                            key={i}
+                            href={src}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block"
+                            title="View certificate"
+                          >
+                            <img
+                              src={src}
+                              alt=""
+                              loading="lazy"
+                              decoding="async"
+                              className="h-24 w-auto max-w-full rounded-sm border border-line object-cover transition-opacity hover:opacity-80"
+                            />
+                          </a>
+                        ))}
+                      </div>
                     ) : null}
                   </div>
                   <span className="col-span-10 col-start-3 md:col-span-3 md:col-start-auto md:justify-self-end">

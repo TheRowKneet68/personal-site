@@ -233,14 +233,38 @@ export function ProjectDetailPage() {
           <h1 className="text-display mt-6 max-w-3xl font-bold">{project.title}</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-dim">{project.tagline}</p>
 
-          {project.image ? (
-            <img
-              src={project.image}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="mt-10 max-h-[30rem] w-full rounded-sm border border-line object-cover"
-            />
+          {project.images && project.images.length > 0 ? (
+            <div className="mt-10">
+              <img
+                src={project.images[0]}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="max-h-[30rem] w-full rounded-sm border border-line object-cover"
+              />
+              {project.images.length > 1 ? (
+                <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+                  {project.images.slice(1).map((src, i) => (
+                    <a
+                      key={i}
+                      href={src}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                      title="View full size"
+                    >
+                      <img
+                        src={src}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="aspect-[16/10] w-full rounded-sm border border-line object-cover transition-opacity hover:opacity-80"
+                      />
+                    </a>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           ) : null}
 
           {(project.links?.github || project.links?.demo) && (

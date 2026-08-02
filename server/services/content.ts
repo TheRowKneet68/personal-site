@@ -19,7 +19,7 @@ export interface ProfileRecord {
   journey: ExperienceEntry[];
   fun_facts: string[];
   testimonials?: { quote: string; source: string }[];
-  featured_in?: { name: string; url: string; image?: string }[];
+  featured_in?: { name: string; url: string; images?: string[] }[];
 }
 
 export interface CaseStudy {
@@ -41,6 +41,7 @@ export interface ProjectRecord {
   year: string;
   status: string;
   featured?: boolean;
+  images?: string[];
   tech: string[];
   description: string;
   highlights?: string[];
@@ -55,6 +56,7 @@ export interface AchievementRecord {
   year: string;
   result: string;
   detail: string;
+  images?: string[];
 }
 
 export interface ExperienceEntry {

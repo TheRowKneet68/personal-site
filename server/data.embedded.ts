@@ -221,7 +221,7 @@ export const EMBEDDED_DATA = {
       {
         "name": "ICT Frame",
         "url": "https://ictframe.com/rudra-1-rocket-launch/",
-        "image": "https://ictframe.com/wp-content/uploads/RUDRA-1-Rocket-Launch.jpg"
+        "images": ["https://ictframe.com/wp-content/uploads/RUDRA-1-Rocket-Launch.jpg"]
       },
       {
         "name": "WOW Magazine Nepal",

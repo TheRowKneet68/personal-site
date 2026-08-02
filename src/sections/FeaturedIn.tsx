@@ -9,7 +9,8 @@ type Preview = { kind: "video"; src: string } | { kind: "image"; src: string };
 
 /** Explicit image > Instagram reel embed > auto screenshot of the article. */
 function previewOf(o: FeaturedIn): Preview | null {
-  if (o.image) return { kind: "image", src: o.image };
+  const img = o.images?.[0];
+  if (img) return { kind: "image", src: img };
   const reel = /instagram\.com\/reel\/([A-Za-z0-9_-]+)/.exec(o.url ?? "");
   if (reel) return { kind: "video", src: `https://www.instagram.com/reel/${reel[1]}/embed/` };
   if (o.url) return { kind: "image", src: `https://s0.wp.com/mshots/v1/${encodeURIComponent(o.url)}?w=640` };

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, Testimonial } from "../../types";
 import { cn } from "../../utils/format";
-import { Field, ImageField, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
+import { Field, ImageField, ImageList, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
 
 /* ---------------- generic repeater ---------------- */
 
@@ -45,8 +45,12 @@ export function Repeater<T extends object>({
   const q = query.trim().toLowerCase();
   const rows = items.map((item, i) => ({ item, i })).filter(({ item }) => titleOf(item).toLowerCase().includes(q));
   const thumb = (item: T) => {
-    const v = (item as Record<string, unknown>).image;
-    return typeof v === "string" && v ? v : undefined;
+    const v = (item as Record<string, unknown>).images;
+    if (Array.isArray(v)) {
+      const first = v.find((x): x is string => typeof x === "string" && x.length > 0);
+      if (first) return first;
+    }
+    return undefined;
   };
   const btnCls =
     "rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent disabled:opacity-30";
@@ -370,7 +374,7 @@ export function ProjectsSection({
   uploadImage?: (file: File) => Promise<string>;
 }) {
   return (
-    <Repeater
+    <Repeater<Project>
       items={value}
       onChange={onChange}
       itemLabel="project"
@@ -401,11 +405,11 @@ export function ProjectsSection({
         const item = raw as Project;
         return (
           <div className="space-y-3">
-            <ImageField
-              label="Cover image"
-              hint="Shown on the project card and detail page."
-              value={item.image ?? ""}
-              onChange={(v) => update({ image: v })}
+            <ImageList
+              label="Images"
+              hint="Screenshots / photos. First image is the card cover and detail hero."
+              value={item.images ?? []}
+              onChange={(v) => update({ images: v })}
               uploadImage={uploadImage}
             />
             <div className="grid gap-3 md:grid-cols-2">
@@ -455,11 +459,11 @@ export function AchievementsSection({
         const item = raw as Achievement;
         return (
           <div className="space-y-3">
-            <ImageField
-              label="Certificate / photo"
-              hint="Optional. Shows as a thumbnail in the wins list."
-              value={item.image ?? ""}
-              onChange={(v) => update({ image: v })}
+            <ImageList
+              label="Certificates / photos"
+              hint="Shown as thumbnails in the wins list."
+              value={item.images ?? []}
+              onChange={(v) => update({ images: v })}
               uploadImage={uploadImage}
             />
           </div>
@@ -494,11 +498,11 @@ export function FeaturedInSection({
         const item = raw as FeaturedIn;
         return (
           <div className="space-y-3">
-            <ImageField
-              label="Preview image"
-              hint="Shown as a thumbnail in the featured-in grid."
-              value={item.image ?? ""}
-              onChange={(v) => update({ image: v })}
+            <ImageList
+              label="Preview images"
+              hint="First image is the preview shown in the featured-in grid."
+              value={item.images ?? []}
+              onChange={(v) => update({ images: v })}
               uploadImage={uploadImage}
             />
           </div>

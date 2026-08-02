@@ -9,9 +9,9 @@ export function ProjectCard({ project }: { project: Project }) {
       to={`/projects/${project.id}`}
       className="group flex h-full flex-col bg-surface p-6 transition-colors duration-200 hover:bg-raised"
     >
-      {project.image ? (
+      {project.images && project.images.length > 0 ? (
         <img
-          src={project.image}
+          src={project.images[0]}
           alt=""
           loading="lazy"
           decoding="async"

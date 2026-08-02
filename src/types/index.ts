@@ -22,7 +22,7 @@ export interface Testimonial {
 export interface FeaturedIn {
   name: string;
   url: string;
-  image?: string;
+  images?: string[];
 }
 
 export interface Profile {
@@ -69,7 +69,7 @@ export interface Project {
   year: string;
   status: string;
   featured?: boolean;
-  image?: string;
+  images?: string[];
   tech: string[];
   description: string;
   highlights?: string[];
@@ -84,7 +84,7 @@ export interface Achievement {
   year: string;
   result: string;
   detail: string;
-  image?: string;
+  images?: string[];
 }
 
 export interface Skills {

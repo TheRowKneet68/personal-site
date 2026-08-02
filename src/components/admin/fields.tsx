@@ -171,6 +171,106 @@ function RowActions({
   );
 }
 
+/** Manage many images: previews, per-image URL editing, reorder, remove, multi-file upload. */
+export function ImageList({
+  label,
+  value,
+  onChange,
+  uploadImage,
+  hint,
+  emptyText = "No images yet — add a few below.",
+}: {
+  label: string;
+  value: string[];
+  onChange: (v: string[]) => void;
+  uploadImage?: (file: File) => Promise<string>;
+  hint?: string;
+  emptyText?: string;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0 || !uploadImage) return;
+    setUploading(true);
+    setUploadError("");
+    try {
+      const urls: string[] = [];
+      for (const f of Array.from(files)) urls.push(await uploadImage(f));
+      onChange([...value, ...urls]);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+  return (
+    <Field label={label} hint={hint}>
+      <div className="space-y-3">
+        {value.length === 0 ? (
+          <p className="text-sm text-ink-faint">{emptyText}</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {value.map((url, i) => (
+              <div key={i} className="rounded-lg border border-line bg-bg p-2">
+                {url ? (
+                  <a href={url} target="_blank" rel="noopener noreferrer" title="Open full size">
+                    <img src={url} alt="" className="aspect-[4/3] w-full rounded object-cover" />
+                  </a>
+                ) : (
+                  <div className="flex aspect-[4/3] w-full items-center justify-center rounded bg-bg font-mono text-xs text-ink-faint">
+                    no image
+                  </div>
+                )}
+                <input
+                  className="mt-2 w-full rounded border border-line bg-bg px-2 py-1 font-mono text-xs text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
+                  value={url}
+                  placeholder="url or path"
+                  onChange={(e) => onChange(value.map((u, j) => (j === i ? e.target.value : u)))}
+                />
+                <div className="mt-2 flex items-center gap-1">
+                  <button type="button" className={btnCls} disabled={i === 0} onClick={() => onChange(move(value, i, i - 1))} title="Move up">
+                    ↑
+                  </button>
+                  <button type="button" className={btnCls} disabled={i === value.length - 1} onClick={() => onChange(move(value, i, i + 1))} title="Move down">
+                    ↓
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-auto rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-warn hover:border-warn hover:text-warn"
+                    onClick={() => onChange(value.filter((_, j) => j !== i))}
+                    title="Remove this image"
+                  >
+                    remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {uploadImage ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="inline-flex cursor-pointer items-center rounded border border-line px-3 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent">
+              {uploading ? "Uploading…" : "+ add image(s)"}
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  void handleFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            <span className="text-xs text-ink-faint">Pick several files at once. The first image is the cover.</span>
+            {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
+          </div>
+        ) : null}
+      </div>
+    </Field>
+  );
+}
+
 function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <button type="button" className={cn(btnCls, "px-3 py-1")} onClick={onClick}>
