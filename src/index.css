@@ -317,11 +317,7 @@
     overflow: hidden;
     white-space: nowrap;
     will-change: transform;
-    animation: rk-marquee 22s linear infinite;
-    transform: translate3d(0, 0, 0);
-  }
-  .marquee-track:hover {
-    animation-play-state: paused;
+    animation: rk-marquee 28s linear infinite;
   }
   .marquee-row,
   .marquee-item {

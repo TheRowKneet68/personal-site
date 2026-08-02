@@ -25,8 +25,7 @@ export function Marquee() {
   return (
     <div className="overflow-hidden border-y border-line bg-surface py-4">
       <div className="marquee-track" aria-hidden>
-        {row("a")}
-        {row("b")}
+        {Array.from({ length: 3 }, (_, index) => row(`track-${index}`))}
       </div>
     </div>
   );
