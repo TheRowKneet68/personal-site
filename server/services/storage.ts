@@ -6,6 +6,7 @@ import { hasSupabase } from "../config/env.js";
 import { EMBEDDED_DATA } from "../data.embedded.js";
 import {
   contentToRows,
+  dedupeRowsById,
   normalizeFromFile,
   rowsToContent,
   type Content,
@@ -227,8 +228,10 @@ const supabaseBackend: StorageBackend = {
   async updateContent(content) {
     const client = getSupabase();
     const rows = contentToRows(content);
+    const dedupedRows = { ...rows } as typeof rows;
     for (const table of CONTENT_TABLES) {
-      const incoming = rows[table];
+      dedupedRows[table] = dedupeRowsById(rows[table]);
+      const incoming = dedupedRows[table];
       const { error } = await client.from(table).upsert(incoming);
       if (error) throw new Error(`update ${table}: ${error.message}`);
       const { data: existing, error: listErr } = await client.from(table).select("id");

@@ -179,7 +179,18 @@ export function Repeater<T extends object>({
                 <button type="button" className={btnCls} disabled={sorted || i === items.length - 1} onClick={() => move(i, i + 1)} title="Move this item down">
                   ↓ down
                 </button>
-                <button type="button" className={btnCls} onClick={() => onChange([...items.slice(0, i + 1), { ...item }, ...items.slice(i + 1)])} title="Duplicate this item">
+                <button
+                  type="button"
+                  className={btnCls}
+                  onClick={() => {
+                    const duplicate = { ...item } as T & { id?: string };
+                    if (typeof duplicate.id === "string") {
+                      duplicate.id = `${duplicate.id}-copy-${crypto.randomUUID().slice(0, 8)}`;
+                    }
+                    onChange([...items.slice(0, i + 1), duplicate, ...items.slice(i + 1)]);
+                  }}
+                  title="Duplicate this item"
+                >
                   duplicate
                 </button>
                 <button

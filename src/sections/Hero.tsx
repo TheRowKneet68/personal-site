@@ -44,11 +44,11 @@ export function Hero() {
             both before anyone asks.
           </motion.p>
 
-          <motion.div {...fade(0.24)} className="mt-9 flex flex-wrap items-center gap-3">
-            <Button href="#work" variant="solid" withArrow>
+          <motion.div {...fade(0.24)} className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+            <Button href="#work" variant="solid" withArrow className="w-full sm:w-auto">
               see the work
             </Button>
-            <Button href="#contact" variant="outline">
+            <Button href="#contact" variant="outline" className="w-full sm:w-auto">
               get in touch
             </Button>
           </motion.div>

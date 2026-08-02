@@ -141,3 +141,11 @@ export function rowsToContent(rows: {
     experience,
   };
 }
+
+export function dedupeRowsById<T extends ContentRow>(rows: T[]): T[] {
+  const keep = new Map<string, T>();
+  for (const row of rows) {
+    keep.set(row.id, row);
+  }
+  return [...keep.values()];
+}

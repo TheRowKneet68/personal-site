@@ -42,7 +42,7 @@ export function Footer() {
           <p className="mono-label mb-4">reach me</p>
           <ul className="space-y-3 text-sm">
             <li>
-              <a href={`mailto:${SITE.email}`} className="inline-flex items-center gap-2 text-ink-dim transition-colors hover:text-ink">
+              <a href={`mailto:${SITE.email}`} className="inline-flex items-center gap-2 break-all text-ink-dim transition-colors hover:text-ink">
                 <Mail className="size-4 shrink-0" aria-hidden /> {SITE.email}
               </a>
             </li>
@@ -52,7 +52,7 @@ export function Footer() {
               </a>
             </li>
             <li className="inline-flex items-center gap-2 text-ink-dim">
-              <MapPin className="size-4 shrink-0" aria-hidden /> {profile?.location ?? "Pokhara, Nepal"}
+              <MapPin className="size-4 shrink-0" aria-hidden /> <span className="break-all">{profile?.location ?? "Pokhara, Nepal"}</span>
             </li>
             <li>
               <CopyButton text={SITE.email} label="copy email" />

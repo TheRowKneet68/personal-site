@@ -25,7 +25,7 @@ const AUTO_HIGHLIGHT = /\b1st\b|winner|first runner|second runner|people's choic
 export function Achievements() {
   const { achievements } = useData();
   if (!achievements) return null;
-  const sorted = [...achievements].sort((a, b) => placementRank(a) - placementRank(b));
+  const sorted = [...achievements].sort((a, b) => placementRank(a) - placementRank(b) || a.year.localeCompare(b.year));
 
   return (
     <section id="wins" className="scroll-mt-24 border-t border-line py-24 md:py-32">
