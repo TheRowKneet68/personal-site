@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { api } from "../services/api";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { ReadingProgress } from "./ReadingProgress";
 import { BackToTop } from "./BackToTop";
 
 const CommandPalette = lazy(() =>
@@ -35,7 +34,6 @@ export function Layout({ children }: { children: ReactNode }) {
       >
         skip to content
       </a>
-      <ReadingProgress />
       <Header />
       <main id="main" className="flex-1">
         {children}

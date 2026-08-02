@@ -12,8 +12,8 @@ export function Footer() {
     <footer className="border-t border-line bg-surface">
       <div className="container-rk grid gap-10 py-16 md:grid-cols-3">
         <div>
-          <p className="font-mono text-[0.8rem] font-bold tracking-[0.14em]">
-            RONIT&nbsp;BANIYA <span className="text-ink-faint">/</span> {SITE.handle}
+          <p className="font-mono text-[0.8rem] font-bold uppercase tracking-[0.14em]">
+            {profile?.name ?? "Ronit Baniya"} <span className="text-ink-faint">/</span> {profile?.handle ?? SITE.handle}
           </p>
           <p className="mt-3 max-w-xs text-sm text-ink-dim">
             Computer engineer from Pokhara, Nepal. Embedded systems, IoT, vision and web —

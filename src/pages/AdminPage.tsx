@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ExternalLink } from "lucide-react";
 import { api, ApiClientError } from "../services/api";
 import type { AdminContent, Profile } from "../types";
 import { cn } from "../utils/format";
+import { ThemeToggle } from "../components/ThemeToggle";
 import {
   AboutSection,
   AchievementsSection,
@@ -136,24 +139,40 @@ export function AdminPage() {
 
   return (
     <div className="min-h-screen bg-bg text-ink">
-      <header className="sticky top-0 z-10 border-b border-line bg-surface/90 backdrop-blur">
+      <div className="sticky top-0 z-10 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-          <h1 className="font-serif text-lg text-ink">admin — site content</h1>
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex min-w-0 items-center gap-2.5" title="Go to homepage">
+            <img
+              src={content?.profile.logo || "/images/logo.svg"}
+              alt=""
+              width={22}
+              height={22}
+              className="shrink-0"
+            />
+            <span className="truncate font-mono text-sm font-bold uppercase tracking-[0.12em]">
+              {content?.profile.name ?? "Admin"}
+            </span>
+            <span className="hidden font-mono text-xs text-ink-faint sm:inline">/ admin</span>
+          </Link>
+          <div className="flex shrink-0 items-center gap-3">
             {saveState === "saved" ? <span className="font-mono text-xs text-accent">saved ✓</span> : null}
             {saveState === "error" ? <span className="font-mono text-xs text-warn">{saveError}</span> : null}
+            <Link to="/" className={cn(btnCls, "inline-flex items-center gap-1.5")}>
+              <ExternalLink className="size-3.5" aria-hidden />
+              view site
+            </Link>
+            <ThemeToggle />
             <button className={btnCls} onClick={() => void save()} disabled={!content || saveState === "saving"}>
               {saveState === "saving" ? "Saving…" : "Save all"}
             </button>
             <button className={btnCls} onClick={logout}>Log out</button>
           </div>
         </div>
-      </header>
 
-      <nav className="sticky top-[57px] z-10 border-b border-line bg-bg">
-        <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2">
-          {TABS.map((t) => (
-            <button
+        <nav className="border-t border-line bg-bg">
+          <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2">
+            {TABS.map((t) => (
+              <button
               key={t.id}
               className={cn(
                 "shrink-0 rounded-md px-3 py-1.5 font-mono text-xs",
@@ -166,8 +185,9 @@ export function AdminPage() {
           ))}
         </div>
       </nav>
+    </div>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
+    <main className="mx-auto max-w-6xl px-4 py-8">
         {loadError ? (
           <AdminCard title="Something went wrong" kicker={loadError} />
         ) : !content ? (

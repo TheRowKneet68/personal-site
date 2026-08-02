@@ -120,6 +120,9 @@ export function BasicsSection({ value, onChange }: { value: Profile; onChange: (
             <TextInput value={value[k]} onChange={(v) => set({ [k]: v })} />
           </Field>
         ))}
+        <Field label="Logo" hint="URL or path to the logo image shown in the header and footer.">
+          <TextInput value={value.logo ?? ""} placeholder="/images/logo.svg" onChange={(v) => set({ logo: v })} />
+        </Field>
       </div>
       <Field label="Socials" hint="Key = platform name, value = URL.">
         <MapEditor value={value.socials} onChange={(v) => set({ socials: v })} keyPlaceholder="platform" valuePlaceholder="url" itemLabel="social" />

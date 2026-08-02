@@ -27,6 +27,7 @@ export interface FeaturedIn {
 export interface Profile {
   name: string;
   handle: string;
+  logo?: string;
   role: string;
   slogan: string;
   location: string;

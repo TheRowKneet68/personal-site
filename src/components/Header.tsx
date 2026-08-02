@@ -5,6 +5,7 @@ import { useState } from "react";
 import { cn } from "../utils/format";
 import { NAV_LINKS } from "../lib/constants";
 import { useCommandPalette } from "../context/CommandContext";
+import { useData } from "../context/DataContext";
 import { useScrolled } from "../hooks";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -26,6 +27,9 @@ export function Header() {
   const scrolled = useScrolled(16);
   const [menuOpen, setMenuOpen] = useState(false);
   const { setOpen } = useCommandPalette();
+  const { profile } = useData();
+  const name = profile?.name || "Ronit Baniya";
+  const logo = profile?.logo || "/images/logo.svg";
 
   return (
     <header
@@ -36,9 +40,9 @@ export function Header() {
     >
       <div className="container-rk flex h-16 items-center justify-between gap-6">
         <Link to="/" className="flex items-center gap-2.5" aria-label="TheRowKneet — home">
-          <img src="/images/logo.svg" alt="" width={26} height={26} className="shrink-0" />
-          <span className="font-mono text-[0.85rem] font-bold tracking-[0.14em]">
-            RONIT&nbsp;BANIYA
+          <img src={logo} alt="" width={26} height={26} className="shrink-0" />
+          <span className="font-mono text-[0.85rem] font-bold uppercase tracking-[0.14em]">
+            {name}
             <span className="ml-0.5 inline-block h-4 w-[7px] animate-pulse bg-accent align-middle" aria-hidden />
           </span>
         </Link>
