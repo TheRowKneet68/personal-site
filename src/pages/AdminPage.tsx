@@ -20,7 +20,7 @@ import {
 
 const TOKEN_KEY = "rk-admin-token";
 
-type Tab = "basics" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "testimonials" | "inbox" | "subscribers";
+type Tab = "basics" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "featured" | "testimonials" | "inbox" | "subscribers";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "basics", label: "Basics" },
@@ -30,6 +30,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "skills", label: "Skills" },
   { id: "projects", label: "Projects" },
   { id: "achievements", label: "Achievements" },
+  { id: "featured", label: "Featured In" },
   { id: "testimonials", label: "Testimonials" },
   { id: "inbox", label: "Inbox" },
   { id: "subscribers", label: "Subscribers" },
@@ -272,16 +273,17 @@ export function AdminPage() {
               </AdminCard>
             )}
             {tab === "achievements" && (
-              <AdminCard title="Achievements">
+              <AdminCard title="Achievements" kicker="Wins and battle entries from the site's Achievements section.">
                 <AchievementsSection value={content.achievements} onChange={(v) => setContent({ ...content, achievements: v })} uploadImage={uploadImage} />
-                <div className="mt-6 border-t border-line pt-5">
-                  <p className="mb-3 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">featured in</p>
-                  <FeaturedInSection
-                    value={content.profile.featured_in ?? []}
-                    onChange={(v) => patchProfile({ ...content.profile, featured_in: v })}
-                    uploadImage={uploadImage}
-                  />
-                </div>
+              </AdminCard>
+            )}
+            {tab === "featured" && (
+              <AdminCard title="Featured In" kicker="Media coverage — press releases, articles and reels. Each row gets a photo or video preview on the site.">
+                <FeaturedInSection
+                  value={content.profile.featured_in ?? []}
+                  onChange={(v) => patchProfile({ ...content.profile, featured_in: v })}
+                  uploadImage={uploadImage}
+                />
               </AdminCard>
             )}
             {tab === "testimonials" && (
