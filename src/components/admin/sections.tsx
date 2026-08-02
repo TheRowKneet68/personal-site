@@ -5,7 +5,7 @@ import { Field, ImageField, ImageList, MapEditor, PairList, StringList, TextArea
 
 /* ---------------- generic repeater ---------------- */
 
-type FieldType = "text" | "textarea" | "toggle" | "list";
+type FieldType = "text" | "textarea" | "toggle" | "list" | "select";
 
 interface FieldDef {
   key: string;
@@ -13,6 +13,7 @@ interface FieldDef {
   type: FieldType;
   placeholder?: string;
   hint?: string;
+  options?: string[];
 }
 
 export function Repeater<T extends object>({
@@ -146,6 +147,23 @@ export function Repeater<T extends object>({
                 }
                 if (f.type === "toggle") {
                   return <Toggle key={f.key} label={f.label} checked={Boolean(val)} onChange={(v) => update(i, { [f.key]: v } as Partial<T>)} />;
+                }
+                if (f.type === "select") {
+                  return (
+                    <Field key={f.key} label={f.label} hint={f.hint}>
+                      <select
+                        className="w-full rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+                        value={typeof val === "string" ? val : ""}
+                        onChange={(e) => update(i, { [f.key]: e.target.value } as Partial<T>)}
+                      >
+                        {(f.options ?? []).map((o) => (
+                          <option key={o} value={o}>
+                            {o === "" ? "— none —" : o}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                  );
                 }
                 return (
                   <Field key={f.key} label={f.label} hint={f.hint}>
@@ -486,6 +504,14 @@ export function AchievementsSection({
         { key: "title", label: "Title", type: "text" },
         { key: "year", label: "Year", type: "text", placeholder: "e.g. 2026" },
         { key: "result", label: "Result", type: "text", placeholder: "e.g. 1st place, finalist" },
+        {
+          key: "rank",
+          label: "Placement",
+          type: "select",
+          hint: "Controls the sort order on the site — 1 shows first, 2 second, etc. Leave none to auto-detect from the result.",
+          options: ["", ...Array.from({ length: 10 }, (_, i) => String(i + 1))],
+        },
+        { key: "highlight", label: "Highlight", type: "toggle" },
         { key: "detail", label: "Detail", type: "textarea" },
       ]}
       newItem={() => ({ id: crypto.randomUUID().slice(0, 8), event: "", title: "", year: "", result: "", detail: "" })}

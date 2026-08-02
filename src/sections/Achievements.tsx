@@ -7,11 +7,12 @@ import { cn } from "../utils/format";
 
 /** Wins sorted by placement: 1st, 1st Runner-Up, 2nd Runner-Up, People's Choice, Consolation, then the rest. */
 function placementRank(a: Achievement): number {
-  const s = a.result.toLowerCase();
-  if (/1st|1st place|1st position/.test(s)) return 1;
+  if (a.rank !== undefined && a.rank !== "" && a.rank !== null) return Number(a.rank) || Number.MAX_SAFE_INTEGER;
+  const s = a.result.toLowerCase().replace(/[-–—]/g, " ");
+  if (/\b1st\b/.test(s)) return 1;
   if (s.includes("winner")) return 1;
-  if (s.includes("first runner-up")) return 2;
-  if (s.includes("second runner-up")) return 3;
+  if (s.includes("first runner")) return 2;
+  if (s.includes("second runner")) return 3;
   if (s.includes("people's choice")) return 4;
   if (s.includes("consolation")) return 5;
   const m = /(\d+)(?:st|nd|rd|th)/.exec(s);
@@ -19,7 +20,7 @@ function placementRank(a: Achievement): number {
   return Number.MAX_SAFE_INTEGER;
 }
 
-const HIGHLIGHTED = /1st|winner|first runner-up|second runner-up|people's choice|consolation/i;
+const AUTO_HIGHLIGHT = /\b1st\b|winner|first runner|second runner|people's choice|consolation/i;
 
 export function Achievements() {
   const { achievements } = useData();
@@ -38,7 +39,7 @@ export function Achievements() {
         <Reveal>
           <ol className="border-t border-line">
             {sorted.map((a) => {
-              const highlighted = HIGHLIGHTED.test(a.result);
+              const highlighted = a.highlight ?? AUTO_HIGHLIGHT.test(a.result);
               return (
                 <li
                   key={a.id}
@@ -76,7 +77,7 @@ export function Achievements() {
                     <span
                       className={cn(
                         "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em]",
-                        highlighted ? "border-accent/40 text-accent-ink" : "border-line-strong text-ink-faint",
+                        highlighted ? "border-accent bg-accent/10 text-accent-ink" : "border-line-strong text-ink-faint",
                       )}
                     >
                       <span className="size-1.5 rounded-full bg-current" aria-hidden />

@@ -84,6 +84,8 @@ export interface Achievement {
   year: string;
   result: string;
   detail: string;
+  rank?: string;
+  highlight?: boolean;
   images?: string[];
 }
 
