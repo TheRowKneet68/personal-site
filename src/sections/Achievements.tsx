@@ -5,16 +5,21 @@ import { SectionHeading } from "../components/SectionHeading";
 import { Reveal } from "../components/Reveal";
 import { cn } from "../utils/format";
 
-/** Wins sorted by placement: 1st, 2nd, 3rd, then everything else in list order. */
+/** Wins sorted by placement: 1st, 1st Runner-Up, 2nd Runner-Up, People's Choice, Consolation, then the rest. */
 function placementRank(a: Achievement): number {
   const s = a.result.toLowerCase();
-  const m = /(\d+)(?:st|nd|rd|th)/.exec(s);
-  if (m) return Number(m[1]);
+  if (/1st|1st place|1st position/.test(s)) return 1;
+  if (s.includes("winner")) return 1;
   if (s.includes("first runner-up")) return 2;
   if (s.includes("second runner-up")) return 3;
-  if (s.includes("winner")) return 1;
+  if (s.includes("people's choice")) return 4;
+  if (s.includes("consolation")) return 5;
+  const m = /(\d+)(?:st|nd|rd|th)/.exec(s);
+  if (m) return Number(m[1]);
   return Number.MAX_SAFE_INTEGER;
 }
+
+const HIGHLIGHTED = /1st|winner|first runner-up|second runner-up|people's choice|consolation/i;
 
 export function Achievements() {
   const { achievements } = useData();
@@ -33,7 +38,7 @@ export function Achievements() {
         <Reveal>
           <ol className="border-t border-line">
             {sorted.map((a) => {
-              const highlighted = /1st|winner|runner-up|choice|appointed|award/i.test(a.result);
+              const highlighted = HIGHLIGHTED.test(a.result);
               return (
                 <li
                   key={a.id}
