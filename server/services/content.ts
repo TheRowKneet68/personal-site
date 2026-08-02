@@ -19,7 +19,7 @@ export interface ProfileRecord {
   journey: ExperienceEntry[];
   fun_facts: string[];
   testimonials?: { quote: string; source: string }[];
-  featured_in?: { name: string; url: string }[];
+  featured_in?: { name: string; url: string; image?: string }[];
 }
 
 export interface CaseStudy {
