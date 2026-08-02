@@ -8,7 +8,7 @@
     "phone": "+977 982-911-7277",
     "phone_raw": "+9779829117277",
     "whatsapp": "9779829117277",
-    "email": "therowkneet@proton.me",
+    "email": "ronitbaniya68@gmail.com",
     "socials": {
       "github": "https://github.com/TheRowKneet68",
       "linkedin": "https://www.linkedin.com/in/jr-erronitbaniya/",
@@ -310,10 +310,8 @@
         "Sensors",
         "Python"
       ],
-      "description": "One of my earliest projects — control the cursor by moving your hand in the air. Won the 9th PEC Tech Expo and basically told me which direction I was going in.",
-      "highlights": [
-        "Winner — 9th PEC Tech Expo"
-      ],
+      "description": "One of my earliest projects — control the cursor by moving your hand in the air. Basically told me which direction I was going in.",
+      "highlights": [],
       "links": {
         "github": "https://github.com/TheRowKneet68"
       }
@@ -522,14 +520,16 @@
       "tagline": "Camera-based robotics project",
       "category": "Robotics",
       "year": "2025",
-      "status": "proposal",
+      "status": "completed",
       "featured": false,
       "tech": [
         "Computer Vision",
         "Robotics"
       ],
-      "description": "A robotics project built around cameras and vision, complete with full project proposal documentation. In the early phase.",
-      "highlights": [],
+      "description": "A robotics project built around cameras and vision, complete with full project proposal documentation. Won the 9th PEC Tech Expo.",
+      "highlights": [
+        "Winner — 9th PEC Tech Expo"
+      ],
       "links": {}
     },
     {
@@ -538,7 +538,7 @@
       "tagline": "Personal voice assistant",
       "category": "AI & Health",
       "year": "2026",
-      "status": "side quest",
+      "status": "built",
       "featured": false,
       "tech": [
         "Python",
@@ -895,17 +895,17 @@
     {
       "id": "pec-tech-expo-9",
       "event": "PEC Tech Expo",
-      "title": "Air Mouse",
+      "title": "RUDRA-1",
       "year": "2022",
       "result": "1st",
-      "detail": "Winner with the Air Mouse — my hand-gesture mouse. First taste of what building weird things gets you."
+      "detail": "Won with RUDRA-1 — camera-based robotics. First taste of what building weird things gets you."
     },
     {
       "id": "gces-it-expo-11",
       "event": "GCES IT Expo",
       "title": "Suraksha360",
       "year": "2024",
-      "result": "Winner",
+      "result": "1st",
       "detail": "Took Suraksha360 to the 11th GCES IT Expo and won."
     },
     {
@@ -913,8 +913,8 @@
       "event": "UDAAN 2025",
       "title": "Suraksha360",
       "year": "2025",
-      "result": "Best of the Best",
-      "detail": "Best of the Best overall — plus Best Innovative Project, Best Demonstration, and Most Unique Project."
+      "result": "1st",
+      "detail": "1st overall — plus Best Innovative Project, Best Demonstration, and Most Unique Project."
     },
     {
       "id": "octate-2025",
@@ -931,6 +931,30 @@
       "year": "2025",
       "result": "1st Runner-up",
       "detail": "Strong showing with the ecosystem I keep stacking hardware onto."
+    },
+    {
+      "id": "suraksha-ghar-launch",
+      "event": "SurakshaGhar",
+      "title": "SurakshaGhar",
+      "year": "2024",
+      "result": "Shipped",
+      "detail": "Home automation ecosystem — 4-channel relay switch, RFID door lock, PIR detection, web control and a companion app. Custom PCB designed in EasyEDA, from breadboard to production switch."
+    },
+    {
+      "id": "swiftignite",
+      "event": "SwiftIgnite",
+      "title": "SwiftIgnite",
+      "year": "2025",
+      "result": "v2 planned",
+      "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database."
+    },
+    {
+      "id": "call-motor-launch",
+      "event": "Call-Based Smart Motor Control",
+      "title": "Call-Based Smart Motor Control",
+      "year": "2025",
+      "result": "Market-launched",
+      "detail": "Launched to market May 27, 2025 — control industrial/agricultural motors with a phone call. No internet needed, no app, no subscription."
     }
   ]
 }
