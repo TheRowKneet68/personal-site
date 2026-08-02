@@ -3,11 +3,10 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { store } = require("./db.js");
 
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, "public");
-const DATA_FILE = path.join(ROOT, "data.json");
-const UPLOAD_DIR = path.join(PUBLIC, "uploads");
 const PORT = process.env.PORT || 3000;
 
 const MIME = {
@@ -25,16 +24,6 @@ const MIME = {
   ".txt": "text/plain; charset=utf-8",
   ".woff2": "font/woff2",
 };
-
-try {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-} catch (e) {
-  if (!process.env.VERCEL) throw e;
-}
-
-function readData() {
-  return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-}
 
 // pass: set ADMIN_PASSWORD env or change the line below. stored as sha256.
 function hash(pw) {
@@ -63,10 +52,13 @@ function send(res, code, body) {
   res.end(data);
 }
 
-function saveData(data) {
-  const tmp = DATA_FILE + ".tmp";
-  fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
-  fs.renameSync(tmp, DATA_FILE);
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+    req.on("data", (c) => (body += c));
+    req.on("end", () => resolve(body));
+    req.on("error", reject);
+  });
 }
 
 function serveStatic(req, res, urlPath) {
@@ -88,127 +80,94 @@ function serveStatic(req, res, urlPath) {
   fs.createReadStream(file).pipe(res);
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   try {
-  const url = new URL(req.url, "http://localhost");
-  const p = url.pathname;
+    const url = new URL(req.url, "http://localhost");
+    const p = url.pathname;
 
-  if (req.method === "OPTIONS") {
-    res.writeHead(204, {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type,X-Auth-Token",
-    });
-    res.end();
-    return;
-  }
+    if (req.method === "OPTIONS") {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type,X-Auth-Token",
+      });
+      res.end();
+      return;
+    }
 
-  // ---- API ----
-  if (p === "/api/data" && req.method === "GET") {
-    return send(res, 200, readData());
-  }
+    // ---- API ----
+    if (p === "/api/data" && req.method === "GET") {
+      return send(res, 200, await store.getData());
+    }
 
-  if (p === "/api/login" && req.method === "POST") {
-    let body = "";
-    req.on("data", (c) => (body += c));
-    req.on("end", () => {
+    if (p === "/api/login" && req.method === "POST") {
       try {
-        const { password } = JSON.parse(body);
+        const { password } = JSON.parse(await readBody(req));
         if (hash(password) === ADMIN_HASH) return send(res, 200, { token: newToken() });
         send(res, 401, { error: "wrong password. nice try though." });
       } catch {
         send(res, 400, { error: "bad body" });
       }
-    });
-    return;
-  }
+      return;
+    }
 
-  if (p.startsWith("/api/") && req.method !== "GET") {
-    if (!authed(req)) return send(res, 401, { error: "not authed. log in on /admin.html" });
-  }
+    if (p.startsWith("/api/") && req.method !== "GET") {
+      if (!authed(req)) return send(res, 401, { error: "not authed. log in on /admin.html" });
+    }
 
-  if (p === "/api/projects" && req.method === "POST") {
-    let body = "";
-    req.on("data", (c) => (body += c));
-    req.on("end", () => {
-      const data = readData();
-      const pr = JSON.parse(body);
+    if (p === "/api/projects" && req.method === "POST") {
+      const data = await store.getData();
+      const pr = JSON.parse(await readBody(req));
       pr.id = (pr.id || pr.title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project-" + Date.now();
       pr.featured = !!pr.featured;
       data.projects.unshift(pr);
-      saveData(data);
-      send(res, 200, { ok: true, id: pr.id });
-    });
-    return;
-  }
+      await store.saveData(data);
+      return send(res, 200, { ok: true, id: pr.id });
+    }
 
-  if (p === "/api/achievements" && req.method === "POST") {
-    let body = "";
-    req.on("data", (c) => (body += c));
-    req.on("end", () => {
-      const data = readData();
-      const a = JSON.parse(body);
+    if (p === "/api/achievements" && req.method === "POST") {
+      const data = await store.getData();
+      const a = JSON.parse(await readBody(req));
       a.id = (a.id || a.event + "-" + a.year).toLowerCase().replace(/[^a-z0-9]+/g, "-");
       data.achievements.unshift(a);
-      saveData(data);
-      send(res, 200, { ok: true, id: a.id });
-    });
-    return;
-  }
+      await store.saveData(data);
+      return send(res, 200, { ok: true, id: a.id });
+    }
 
-  if (req.method === "DELETE" && (p.startsWith("/api/projects/") || p.startsWith("/api/achievements/"))) {
-    const parts = p.split("/"); // ["", "api", kind, id]
-    const key = parts[2];
-    const id = parts[3];
-    const data = readData();
-    const arr = key === "projects" ? data.projects : data.achievements;
-    data[key === "projects" ? "projects" : "achievements"] = arr.filter((x) => x.id !== id);
-    saveData(data);
-    send(res, 200, { ok: true });
-    return;
-  }
-
-  if (req.method === "PUT" && (p.startsWith("/api/projects/") || p.startsWith("/api/achievements/"))) {
-    const parts = p.split("/"); // ["", "api", kind, id]
-    const key = parts[2];
-    const id = parts[3];
-    let body = "";
-    req.on("data", (c) => (body += c));
-    req.on("end", () => {
-      const data = readData();
+    if (req.method === "DELETE" && (p.startsWith("/api/projects/") || p.startsWith("/api/achievements/"))) {
+      const parts = p.split("/"); // ["", "api", kind, id]
+      const key = parts[2];
+      const id = parts[3];
+      const data = await store.getData();
       const arr = key === "projects" ? data.projects : data.achievements;
-      const patch = JSON.parse(body);
+      data[key === "projects" ? "projects" : "achievements"] = arr.filter((x) => x.id !== id);
+      await store.saveData(data);
+      return send(res, 200, { ok: true });
+    }
+
+    if (req.method === "PUT" && (p.startsWith("/api/projects/") || p.startsWith("/api/achievements/"))) {
+      const parts = p.split("/"); // ["", "api", kind, id]
+      const key = parts[2];
+      const id = parts[3];
+      const data = await store.getData();
+      const arr = key === "projects" ? data.projects : data.achievements;
+      const patch = JSON.parse(await readBody(req));
       const idx = arr.findIndex((x) => x.id === id);
       if (idx === -1) return send(res, 404, { error: "not found" });
       arr[idx] = { ...arr[idx], ...patch, id };
-      saveData(data);
-      send(res, 200, { ok: true });
-    });
-    return;
-  }
+      await store.saveData(data);
+      return send(res, 200, { ok: true });
+    }
 
-  if (p === "/api/upload" && req.method === "POST") {
-    let body = "";
-    req.on("data", (c) => (body += c));
-    req.on("end", () => {
-      try {
-        const { name, dataUrl } = JSON.parse(body);
-        const m = /^data:(image\/[a-z+]+);base64,(.+)$/.exec(dataUrl);
-        if (!m) return send(res, 400, { error: "bad image data" });
-        const safe = (name || "image.png").replace(/[^a-z0-9.-]/gi, "").toLowerCase();
-        const ext = path.extname(safe) || "." + m[1].split("/")[1].replace("+", "");
-        const file = "img-" + Date.now() + ext;
-        fs.writeFileSync(path.join(UPLOAD_DIR, file), Buffer.from(m[2], "base64"));
-        send(res, 200, { ok: true, url: "/uploads/" + file });
-      } catch {
-        send(res, 400, { error: "upload failed" });
-      }
-    });
-    return;
-  }
+    if (p === "/api/upload" && req.method === "POST") {
+      const { name, dataUrl } = JSON.parse(await readBody(req));
+      const url = await store.uploadImage(name, dataUrl);
+      if (!url) return send(res, 400, { error: "bad image data" });
+      return send(res, 200, { ok: true, url });
+    }
 
-  // ---- static ----
-  serveStatic(req, res, p);
+    // ---- static ----
+    serveStatic(req, res, p);
   } catch (e) {
     if (e && e.code === "EROFS") {
       return send(res, 503, { error: "editing is disabled on the serverless deployment (read-only filesystem)" });
