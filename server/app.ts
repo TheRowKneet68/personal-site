@@ -8,6 +8,7 @@ export const app = express();
 app.disable("x-powered-by");
 app.set("trust proxy", true);
 
+app.use("/api/admin/upload", express.json({ limit: "10mb" }));
 app.use(express.json({ limit: "2mb" }));
 
 app.use((req, res, next) => {
