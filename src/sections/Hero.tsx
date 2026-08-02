@@ -75,13 +75,13 @@ export function Hero() {
           {hasPortrait1 && (
             <motion.div
               {...fade(0.12)}
-              className="relative mx-auto mt-2 w-full max-w-[280px] shrink-0 md:mx-0 md:mt-0 md:max-w-[340px]"
+              className="relative hidden shrink-0 md:mx-0 md:mt-[-0.75rem] md:block md:max-w-[370px]"
             >
               <div className="overflow-hidden rounded-full border border-line bg-surface p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
                 <img
                   src={portrait1}
                   alt={`${profile.name} portrait`}
-                  className="h-56 w-56 rounded-full object-cover md:h-72 md:w-72"
+                  className="h-[19rem] w-[19rem] rounded-full object-cover md:h-[24rem] md:w-[24rem]"
                 />
               </div>
             </motion.div>
