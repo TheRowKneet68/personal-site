@@ -24,6 +24,7 @@ export function Repeater<T extends object>({
   renderDetail,
   itemLabel = "item",
   view,
+  sorts,
 }: {
   items: T[];
   onChange: (v: T[]) => void;
@@ -33,8 +34,10 @@ export function Repeater<T extends object>({
   renderDetail?: (item: T, update: (patch: Partial<T>) => void) => ReactNode;
   itemLabel?: string;
   view?: (item: T) => string | undefined;
+  sorts?: { id: string; label: string; compare: (a: T, b: T) => number }[];
 }) {
   const [query, setQuery] = useState("");
+  const [sortKey, setSortKey] = useState("manual");
   const update = (i: number, patch: Partial<T>) => onChange(items.map((it, j) => (j === i ? { ...it, ...patch } : it)));
   const move = (from: number, to: number) => {
     const next = [...items];
@@ -43,7 +46,11 @@ export function Repeater<T extends object>({
     onChange(next);
   };
   const q = query.trim().toLowerCase();
-  const rows = items.map((item, i) => ({ item, i })).filter(({ item }) => titleOf(item).toLowerCase().includes(q));
+  const activeSort = sorts?.find((s) => s.id === sortKey);
+  let rows = items.map((item, i) => ({ item, i }));
+  if (q) rows = rows.filter(({ item }) => titleOf(item).toLowerCase().includes(q));
+  if (activeSort) rows = [...rows].sort((a, b) => activeSort.compare(a.item, b.item) || a.i - b.i);
+  const sorted = Boolean(activeSort);
   const thumb = (item: T) => {
     const v = (item as Record<string, unknown>).images;
     if (Array.isArray(v)) {
@@ -57,16 +64,34 @@ export function Repeater<T extends object>({
 
   return (
     <div className="space-y-3">
-      {items.length > 6 ? (
-        <input
-          className="w-full rounded-md border border-line bg-bg px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
-          placeholder={`search ${itemLabel}s by name…`}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+      {items.length > 6 || (sorts && sorts.length > 0) ? (
+        <div className="flex flex-wrap items-center gap-2">
+          {items.length > 6 ? (
+            <input
+              className="min-w-52 flex-1 rounded-md border border-line bg-bg px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
+              placeholder={`search ${itemLabel}s by name…`}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          ) : null}
+          {sorts && sorts.length > 0 ? (
+            <select
+              className="rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+              value={sortKey}
+              onChange={(e) => setSortKey(e.target.value)}
+            >
+              <option value="manual">sort: manual order</option>
+              {sorts.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          ) : null}
+        </div>
       ) : null}
       {rows.length === 0 ? <p className="text-sm text-ink-faint">No {itemLabel}s match “{query}”.</p> : null}
-      {rows.map(({ item, i }) => {
+      {rows.map(({ item, i }, k) => {
         const img = thumb(item);
         const href = view?.(item);
         const title = titleOf(item).trim();
@@ -83,7 +108,7 @@ export function Repeater<T extends object>({
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm text-ink">{title || `Untitled ${itemLabel}`}</span>
                 <span className="block font-mono text-[0.65rem] text-ink-faint">
-                  {i + 1} of {items.length}
+                  {k + 1} of {rows.length}
                 </span>
               </span>
               {href ? (
@@ -130,10 +155,10 @@ export function Repeater<T extends object>({
               })}
               {renderDetail ? <div className="border-t border-line pt-3">{renderDetail(item, (patch) => update(i, patch))}</div> : null}
               <div className="flex flex-wrap items-center gap-2 border-t border-line pt-3">
-                <button type="button" className={btnCls} disabled={i === 0} onClick={() => move(i, i - 1)} title="Move this item up">
+                <button type="button" className={btnCls} disabled={sorted || i === 0} onClick={() => move(i, i - 1)} title="Move this item up">
                   ↑ up
                 </button>
-                <button type="button" className={btnCls} disabled={i === items.length - 1} onClick={() => move(i, i + 1)} title="Move this item down">
+                <button type="button" className={btnCls} disabled={sorted || i === items.length - 1} onClick={() => move(i, i + 1)} title="Move this item down">
                   ↓ down
                 </button>
                 <button type="button" className={btnCls} onClick={() => onChange([...items.slice(0, i + 1), { ...item }, ...items.slice(i + 1)])} title="Duplicate this item">
@@ -254,6 +279,11 @@ export function JourneySection({ value, onChange }: { value: ExperienceEntry[]; 
       ]}
       newItem={() => ({ year: "", title: "", note: "" })}
       titleOf={(i) => `${i.year} — ${i.title}`}
+      sorts={[
+        { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
+        { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
+        { id: "title", label: "sort: title A-Z", compare: (a, b) => a.title.localeCompare(b.title) },
+      ]}
     />
   );
 }
@@ -401,6 +431,12 @@ export function ProjectsSection({
       })}
       titleOf={(p) => `${p.year} — ${p.title}`}
       view={(p) => (p.id ? `/projects/${p.id}` : undefined)}
+      sorts={[
+        { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
+        { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
+        { id: "title", label: "sort: title A-Z", compare: (a, b) => a.title.localeCompare(b.title) },
+        { id: "featured", label: "sort: featured first", compare: (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) },
+      ]}
       renderDetail={(raw, update) => {
         const item = raw as Project;
         return (
@@ -455,6 +491,11 @@ export function AchievementsSection({
       newItem={() => ({ id: crypto.randomUUID().slice(0, 8), event: "", title: "", year: "", result: "", detail: "" })}
       titleOf={(a) => `${a.year} — ${a.event}`}
       view={() => "/#wins"}
+      sorts={[
+        { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
+        { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
+        { id: "event", label: "sort: event A-Z", compare: (a, b) => a.event.localeCompare(b.event) },
+      ]}
       renderDetail={(raw, update) => {
         const item = raw as Achievement;
         return (
@@ -494,6 +535,9 @@ export function FeaturedInSection({
       newItem={() => ({ name: "", url: "" })}
       titleOf={(o) => o.name}
       view={() => "/#featured"}
+      sorts={[
+        { id: "name", label: "sort: name A-Z", compare: (a, b) => a.name.localeCompare(b.name) },
+      ]}
       renderDetail={(raw, update) => {
         const item = raw as FeaturedIn;
         return (
