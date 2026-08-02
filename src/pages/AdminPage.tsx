@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import { api, ApiClientError } from "../services/api";
 import type { AdminContent, Profile } from "../types";
@@ -91,11 +91,13 @@ export function AdminPage() {
   const [loadError, setLoadError] = useState("");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveError, setSaveError] = useState("");
+  const navigate = useNavigate();
 
   const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
     setContent(null);
+    navigate("/");
   };
 
   const load = useCallback(
