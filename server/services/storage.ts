@@ -163,7 +163,7 @@ const jsonBackend: StorageBackend = {
     return readDynamic().subscribers;
   },
   /** Best-effort local save (repo public/images) — Vercel is read-only, Supabase is the durable path. */
-  async uploadImage(name, contentType, buffer) {
+  async uploadImage(name, _contentType, buffer) {
     const dir = path.join(path.dirname(DATA_FILE), "public", "images");
     const dest = path.join(dir, name);
     try {
