@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Command, Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "../utils/format";
 import { NAV_LINKS } from "../lib/constants";
 import { useCommandPalette } from "../context/CommandContext";
@@ -30,6 +30,11 @@ export function Header() {
   const { profile } = useData();
   const name = profile?.name || "Ronit Baniya";
   const logo = profile?.logo || "/images/logo.svg";
+
+  useEffect(() => {
+    const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (link) link.href = logo;
+  }, [logo]);
 
   return (
     <header
