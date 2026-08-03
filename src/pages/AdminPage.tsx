@@ -289,7 +289,9 @@ export function AdminPage() {
       const comma = dataUrl.indexOf(",");
       const b64 = dataUrl.slice(comma + 1);
       const contentType = /^data:(.*?);/.exec(dataUrl.slice(0, comma))?.[1] ?? "image/jpeg";
-      const name = file.name.replace(/[^a-zA-Z0-9._-]/g, "-") || `upload-${Date.now()}.jpg`;
+      const ext = /\.([a-zA-Z0-9]{1,5})$/.exec(file.name)?.[1] ?? "jpg";
+      const base = file.name.replace(/[^a-zA-Z0-9._-]/g, "-").replace(/\.[a-zA-Z0-9]{1,5}$/, "") || `upload-${Date.now()}`;
+      const name = `${base}-${Date.now()}.${ext}`;
       const { url } = await api.adminUpload(token!, { data: b64, contentType, name });
       return url;
     },
