@@ -52,7 +52,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={state === "submitting"}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-line px-5 py-3 font-mono text-[0.75rem] uppercase tracking-[0.12em] text-ink transition-colors hover:border-accent hover:text-accent-ink disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-sm border border-line px-5 py-3 font-mono text-[0.75rem] uppercase tracking-[0.12em] text-ink transition-colors hover:border-accent hover:text-accent-ink disabled:pointer-events-none disabled:opacity-50"
         >
           {state === "submitting" ? (
             <Loader2 className="size-4 animate-spin" aria-hidden />
