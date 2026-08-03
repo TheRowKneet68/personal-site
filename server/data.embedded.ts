@@ -452,45 +452,6 @@ export const EMBEDDED_DATA = {
         "pyFirmata servo control",
         "Defended in front of a panel"
       ],
-      "caseStudy": {
-        "problem": [
-          "Driving a robotic arm with a joystick is fine. Controlling it by pointing your hand at it is how you actually feel the robot.",
-          "Most gesture arms need gloves or markers — gear that breaks the whole point of a natural interface."
-        ],
-        "solution": [
-          "MediaPipe hand tracking reads your hand with the laptop camera — no gloves, no markers.",
-          "Python maps the gesture to servo positions and pyFirmata moves the arm over serial."
-        ],
-        "architecture": [
-          "OpenCV + MediaPipe detects the hand and computes landmarks; a gesture map converts them to target angles.",
-          "Arduino runs the servo control loop, pyFirmata provides the protocol bridge."
-        ],
-        "stack": [
-          "Python",
-          "MediaPipe",
-          "OpenCV",
-          "Arduino",
-          "Servos",
-          "pyFirmata"
-        ],
-        "challenges": [
-          {
-            "problem": "Latency. A laggy arm feels dead and kills the whole illusion.",
-            "fix": "Downscaled frames and targeted landmark math to keep the control loop tight."
-          },
-          {
-            "problem": "Defending it to a panel that knows how to ask hard questions.",
-            "fix": "Documented every decision in the project proposal — the 'why' mattered more than the demo."
-          }
-        ],
-        "impact": [
-          "Defended in front of the panel as my Bachelor's major project.",
-          "Proved the natural-interface stack I now reach for in vision projects."
-        ],
-        "lessons": [
-          "Natural interfaces are a latency problem before they're a feature problem."
-        ]
-      },
       "links": {
         "github": "https://github.com/TheRowKneet68"
       },
@@ -960,7 +921,44 @@ export const EMBEDDED_DATA = {
         "Media coverage — ICT Frame, 24 Ghanta, WOW Magazine Nepal"
       ],
       "links": {},
-      "order": 25
+      "order": 25,
+      "caseStudy": {
+        "problem": [
+          "Rockets barely exist in Nepali student engineering — no local reference, no kit, and a budget that makes it easy to never try.",
+          "A rocket that launches is nothing without a way to talk to it or bring it back. The communication and recovery systems were the hard parts."
+        ],
+        "solution": [
+          "Designed and built the RUDRA-I experimental rocket with a communication and recovery system, then flew it live in front of visitors and judges.",
+          "Launched it during the 9th PEC Tech Expo as a live demonstration — proving the telemetry, comms and recovery chain in public instead of on a bench."
+        ],
+        "architecture": [
+          "On-board telemetry reports back during flight over the communication system, while the recovery system brings the airframe back down intact.",
+          "The whole launch sequence was rehearsed end-to-end beforehand — a live expo demo has no second take."
+        ],
+        "stack": [
+          "Rocket",
+          "Telemetry",
+          "Communication",
+          "Recovery"
+        ],
+        "challenges": [
+          {
+            "problem": "The launch had to work live, on the first try, in front of judges and media.",
+            "fix": "Every subsystem was bench-tested separately and the full launch sequence rehearsed before the public run."
+          },
+          {
+            "problem": "Recovering the rocket after launch — the part most student rocket attempts skip.",
+            "fix": "A dedicated recovery system so the airframe comes back whole and the mission stays repeatable."
+          }
+        ],
+        "impact": [
+          "The launch was one of the highlights of the 9th PEC Tech Expo, covered by ICT Frame, WOW Magazine Nepal, 24 Ghanta and Digital Nepal.",
+          "Put the expo — and experimental rocketry in student hands — in front of a much wider audience."
+        ],
+        "lessons": [
+          "A live demo is the harshest deadline there is. If it must work in public, it must work when nobody is watching."
+        ]
+      }
     },
     {
       "id": "restaurant-websites",
