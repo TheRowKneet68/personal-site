@@ -7,6 +7,7 @@ import { EMBEDDED_DATA } from "../data.embedded.js";
 import {
   contentToRows,
   dedupeRowsById,
+  deriveStats,
   normalizeFromFile,
   rowsToContent,
   type Content,
@@ -359,14 +360,14 @@ export const storage: Storage = {
   async getContent() {
     const backend = hasSupabase() ? supabaseBackend : jsonBackend;
     if (hasSupabase() && fresh(contentCache, CONTENT_TTL_MS)) return contentCache!.data;
-    const data = await backend.getContent();
-    if (hasSupabase()) contentCache = { at: Date.now(), data };
-    return data;
+    const out = deriveContentStats(await backend.getContent());
+    if (hasSupabase()) contentCache = { at: Date.now(), data: out };
+    return out;
   },
   async getContentFresh() {
-    const data = await (hasSupabase() ? supabaseBackend : jsonBackend).getContent();
-    if (hasSupabase()) contentCache = { at: Date.now(), data };
-    return data;
+    const out = deriveContentStats(await (hasSupabase() ? supabaseBackend : jsonBackend).getContent());
+    if (hasSupabase()) contentCache = { at: Date.now(), data: out };
+    return out;
   },
   async updateContent(c) {
     const backend = hasSupabase() ? supabaseBackend : jsonBackend;
@@ -416,6 +417,14 @@ export const storage: Storage = {
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+/** Recompute count-driven hero stats for any content served to the client. */
+function deriveContentStats(content: Content): Content {
+  return {
+    ...content,
+    profile: { ...content.profile, stats: deriveStats(content.profile, content.projects, content.achievements) },
+  };
 }
 
 /** True when two array items are "the same" for merging: objects compare by

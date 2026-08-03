@@ -151,3 +151,20 @@ export function dedupeRowsById<T extends ContentRow>(rows: T[]): T[] {
   }
   return [...keep.values()];
 }
+
+/** Recompute count-driven hero stats from live content so the numbers can't
+    drift from the data. Labels without a countable source (dan, stubbornness)
+    keep their saved value. */
+export function deriveStats(
+  profile: ProfileRecord,
+  projects: ProjectRecord[],
+  achievements: AchievementRecord[],
+): { label: string; value: string }[] {
+  const byCount = {
+    "projects shipped": `${projects.length}+`,
+    "awards & wins": `${achievements.length}+`,
+  } as const;
+  return profile.stats.map((s) =>
+    s.label in byCount ? { ...s, value: byCount[s.label as keyof typeof byCount] } : s,
+  );
+}
