@@ -80,8 +80,10 @@ export function Achievements() {
                   key={a.id}
                   className="grid grid-cols-12 items-baseline gap-x-4 gap-y-3 border-b border-line py-8 md:py-10"
                 >
-                  <span className="col-span-2 font-mono text-sm text-ink-faint md:col-span-1">{a.date ?? a.year}</span>
-                  <div className="col-span-10 md:col-span-8">
+                  <span className="col-span-12 whitespace-nowrap font-mono text-sm text-ink-faint md:col-span-2">
+                    {a.date ?? a.year}
+                  </span>
+                  <div className="col-span-12 md:col-span-7">
                     <p className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink-faint">{a.event}</p>
                     <h3 className="mt-1 text-lg font-semibold text-ink">{a.title}</h3>
                     <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-dim">{a.detail}</p>
@@ -108,7 +110,7 @@ export function Achievements() {
                       </div>
                     ) : null}
                   </div>
-                  <span className="col-span-10 col-start-3 md:col-span-3 md:col-start-auto md:justify-self-end">
+                  <span className="col-span-12 md:col-span-3 md:justify-self-end">
                     <span
                       className={cn(
                         "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em]",
