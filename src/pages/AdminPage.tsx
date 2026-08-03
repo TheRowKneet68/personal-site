@@ -308,9 +308,9 @@ export function AdminPage() {
             <img
               src={content?.profile.logo || "/images/logo.svg"}
               alt=""
-              width={22}
-              height={22}
-              className="size-8 shrink-0 rounded-full object-cover"
+              width={40}
+              height={40}
+              className="size-10 shrink-0 rounded-full object-cover"
             />
             <span className="truncate font-mono text-sm font-bold uppercase tracking-[0.12em]">
               {content?.profile.name ?? "Admin"}

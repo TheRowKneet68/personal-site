@@ -79,6 +79,40 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
   }, [load]);
 
+  const logoUrl = data.profile?.logo ?? null;
+  useEffect(() => {
+    const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!link) return;
+    if (!logoUrl) {
+      link.href = "/images/favicon.svg";
+      return;
+    }
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const s = 128;
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = s;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("no ctx");
+        ctx.beginPath();
+        ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2);
+        ctx.clip();
+        const ir = img.width / img.height;
+        let dw = s, dh = s, dx = 0, dy = 0;
+        if (ir > 1) { dw = s * ir; dx = (s - dw) / 2; }
+        else { dh = s / ir; dy = (s - dh) / 2; }
+        ctx.drawImage(img, dx, dy, dw, dh);
+        link.href = canvas.toDataURL("image/png");
+      } catch {
+        link.href = logoUrl;
+      }
+    };
+    img.onerror = () => { link.href = logoUrl; };
+    img.src = logoUrl;
+  }, [logoUrl]);
+
   return (
     <DataContext.Provider value={{ ...data, status, reload: load }}>{children}</DataContext.Provider>
   );
