@@ -2,6 +2,7 @@
 import { app } from "../app.js";
 import type { AddressInfo } from "node:net";
 import { hashPassword, verifyPassword } from "../middleware/auth.js";
+import { deepMerge } from "../services/storage.js";
 
 let failures = 0;
 
@@ -93,6 +94,31 @@ try {
     "scrypt hash/verify round-trip",
     (await verifyPassword("smoke-test-password-123", hash)) === true &&
       (await verifyPassword("wrong-password", hash)) === false,
+  );
+
+  // Non-destructive seed merge (pure, no DB) — guards the image-loss fix.
+  const priorContent = {
+    title: "Old title",
+    images: ["admin-added.jpg"],
+    featured_in: [{ name: "ICT Frame", url: "https://a", images: ["supabase-only.png"] }],
+    stats: [{ label: "A", value: "1" }],
+  };
+  const nextContent = {
+    title: "New title",
+    images: ["data-json.jpg"],
+    featured_in: [{ name: "ICT Frame", url: "https://a", images: ["data-json.png"] }],
+    extra: true,
+  };
+  const merged = deepMerge(priorContent, nextContent) as Record<string, unknown>;
+  const images = merged.images as string[];
+  const outlet = (merged.featured_in as { name: string; images: string[] }[])[0]!;
+  check(
+    "seed deepMerge: scalar from next, arrays unioned, prior-only preserved",
+    merged.title === "New title" &&
+      images.includes("data-json.jpg") &&
+      images.includes("admin-added.jpg") &&
+      outlet.images.includes("supabase-only.png") &&
+      (merged.extra as boolean) === true,
   );
 } finally {
   server.close();

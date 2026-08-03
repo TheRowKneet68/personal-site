@@ -383,9 +383,9 @@ export const storage: Storage = {
   uploadImage: (n, c, b) => (hasSupabase() ? supabaseBackend : jsonBackend).uploadImage(n, c, b),
 
   /** Write data.json content into Supabase (service role).
-      Merge (not replace) existing row data: admin-added fields like uploaded
-      image URLs live only in Supabase and must survive re-seeding. data.json
-      fields win on conflict; anything not in data.json is preserved. */
+      Deep-merge (not replace) existing row data so admin-added fields that
+      live only in Supabase — image URLs in particular — survive re-seeding.
+      data.json wins on scalar conflicts; arrays union; prior-only keys stay. */
   async seed() {
     if (!hasSupabase()) return { mode: "json", ok: true };
     const client = getSupabase();
@@ -395,9 +395,7 @@ export const storage: Storage = {
       const existing = new Map((existingRows ?? []).map((r) => [r.id, r.data as Record<string, unknown>]));
       const merged = rows[table].map((row) => {
         const prior = existing.get(row.id);
-        return prior
-          ? { id: row.id, data: { ...prior, ...(row.data as Record<string, unknown>) } }
-          : row;
+        return prior ? { id: row.id, data: deepMerge(prior, row.data) } : row;
       });
       const { error } = await client.from(table).upsert(merged);
       if (error) throw new Error(`seed ${table}: ${error.message}`);
@@ -407,3 +405,42 @@ export const storage: Storage = {
     return { mode: "supabase", ok: true };
   },
 };
+
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+/** True when two array items are "the same" for merging: objects compare by
+    their non-array fields (e.g. featured_in entries share name+url), the rest
+    by value. */
+function sameItem(a: unknown, b: unknown): boolean {
+  if (isRecord(a) && isRecord(b)) {
+    const ka = Object.keys(a).filter((k) => !Array.isArray(a[k]));
+    const kb = Object.keys(b).filter((k) => !Array.isArray(b[k]));
+    return ka.length === kb.length && ka.every((k) => JSON.stringify(a[k]) === JSON.stringify(b[k]));
+  }
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+/** next wins on scalars; arrays are unioned (next first, prior-only items
+    appended); keys only in prior survive. Additive by design: seed never
+    removes admin-added data. */
+export function deepMerge(prior: unknown, next: unknown): unknown {
+  if (Array.isArray(prior) && Array.isArray(next)) {
+    const out = [...next];
+    for (const item of prior) {
+      const idx = out.findIndex((o) => sameItem(o, item));
+      if (idx === -1) out.push(item);
+      else out[idx] = deepMerge(item, out[idx]);
+    }
+    return out;
+  }
+  if (isRecord(prior) && isRecord(next)) {
+    const out: Record<string, unknown> = { ...next };
+    for (const [k, pv] of Object.entries(prior)) {
+      out[k] = k in next ? deepMerge(pv, next[k]) : pv;
+    }
+    return out;
+  }
+  return next;
+}
