@@ -20,7 +20,7 @@ import {
 
 const TOKEN_KEY = "rk-admin-token";
 
-type Tab = "basics" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "featured" | "testimonials" | "inbox" | "subscribers";
+type Tab = "basics" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "featured" | "testimonials" | "inbox" | "subscribers" | "security";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "basics", label: "Basics" },
@@ -34,6 +34,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "testimonials", label: "Testimonials" },
   { id: "inbox", label: "Inbox" },
   { id: "subscribers", label: "Subscribers" },
+  { id: "security", label: "Security" },
 ];
 
 const inputCls =
@@ -84,6 +85,98 @@ function LoginView({ onLogin }: { onLogin: (token: string) => void }) {
         </button>
       </form>
     </div>
+  );
+}
+
+function ChangePasswordForm({ token, onToken }: { token: string; onToken: (t: string) => void }) {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    setError("");
+    setDone(false);
+    if (next.length < 12) {
+      setError("New password must be at least 12 characters");
+      return;
+    }
+    if (next !== confirm) {
+      setError("New passwords don't match");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { token: fresh } = await api.adminChangePassword(token, current, next);
+      onToken(fresh);
+      setCurrent("");
+      setNext("");
+      setConfirm("");
+      setDone(true);
+    } catch (err) {
+      setError(err instanceof ApiClientError ? err.message : "Failed to change password");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form
+      className="max-w-sm space-y-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void submit();
+      }}
+    >
+      {done ? (
+        <p className="text-sm text-accent">Password changed — every other session has been signed out.</p>
+      ) : null}
+      {error ? <p className="text-sm text-warn">{error}</p> : null}
+      <div>
+        <label htmlFor="pw-current" className="mb-1 block text-xs text-ink-dim">
+          Current password
+        </label>
+        <input
+          id="pw-current"
+          type="password"
+          autoComplete="current-password"
+          className={inputCls}
+          value={current}
+          onChange={(e) => setCurrent(e.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="pw-new" className="mb-1 block text-xs text-ink-dim">
+          New password (min 12 characters)
+        </label>
+        <input
+          id="pw-new"
+          type="password"
+          autoComplete="new-password"
+          className={inputCls}
+          value={next}
+          onChange={(e) => setNext(e.target.value)}
+        />
+      </div>
+      <div>
+        <label htmlFor="pw-confirm" className="mb-1 block text-xs text-ink-dim">
+          Confirm new password
+        </label>
+        <input
+          id="pw-confirm"
+          type="password"
+          autoComplete="new-password"
+          className={inputCls}
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
+      </div>
+      <button type="submit" disabled={busy || !current || !next || !confirm} className={cn(btnCls, "w-full")}>
+        {busy ? "Changing…" : "Change password"}
+      </button>
+    </form>
   );
 }
 
@@ -414,6 +507,20 @@ export function AdminPage() {
                     ))}
                   </ul>
                 )}
+              </AdminCard>
+            )}
+            {tab === "security" && (
+              <AdminCard
+                title="Security"
+                kicker="Rotate the admin password. Changing it signs out every other session."
+              >
+                <ChangePasswordForm
+                  token={token}
+                  onToken={(t) => {
+                    localStorage.setItem(TOKEN_KEY, t);
+                    setToken(t);
+                  }}
+                />
               </AdminCard>
             )}
           </>

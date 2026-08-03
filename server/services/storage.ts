@@ -382,13 +382,24 @@ export const storage: Storage = {
   deleteSubscriber: (email) => (hasSupabase() ? supabaseBackend : jsonBackend).deleteSubscriber(email),
   uploadImage: (n, c, b) => (hasSupabase() ? supabaseBackend : jsonBackend).uploadImage(n, c, b),
 
-  /** Write data.json content into Supabase (service role). */
+  /** Write data.json content into Supabase (service role).
+      Merge (not replace) existing row data: admin-added fields like uploaded
+      image URLs live only in Supabase and must survive re-seeding. data.json
+      fields win on conflict; anything not in data.json is preserved. */
   async seed() {
     if (!hasSupabase()) return { mode: "json", ok: true };
     const client = getSupabase();
     const rows = contentToRows(normalizeFromFile(readDataFile()));
     for (const table of CONTENT_TABLES) {
-      const { error } = await client.from(table).upsert(rows[table]);
+      const { data: existingRows } = await client.from(table).select("id, data");
+      const existing = new Map((existingRows ?? []).map((r) => [r.id, r.data as Record<string, unknown>]));
+      const merged = rows[table].map((row) => {
+        const prior = existing.get(row.id);
+        return prior
+          ? { id: row.id, data: { ...prior, ...(row.data as Record<string, unknown>) } }
+          : row;
+      });
+      const { error } = await client.from(table).upsert(merged);
       if (error) throw new Error(`seed ${table}: ${error.message}`);
     }
     contentCache = null;

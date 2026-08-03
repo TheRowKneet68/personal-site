@@ -70,6 +70,18 @@ create table if not exists newsletter (
   created_at timestamptz not null default now()
 );
 
+-- ---------- Admin credential store ------------------------------------
+-- Password hash + token version persist here so the admin password can be
+-- rotated from the admin panel without redeploying. No anon policies are
+-- defined below, so even a leaked anon key cannot touch this table — the
+-- service role (server) is the only actor.
+create table if not exists admin_auth (
+  id            text primary key default 'admin',
+  password_hash text not null default '',
+  token_version integer not null default 0,
+  updated_at    timestamptz not null default now()
+);
+
 -- ---------- Indexes ----------------------------------------------------
 create index if not exists contact_messages_created_at_idx on contact_messages (created_at desc);
 create index if not exists visitors_visited_at_idx on visitors (visited_at desc);
@@ -108,6 +120,7 @@ alter table experience enable row level security;
 alter table contact_messages enable row level security;
 alter table visitors enable row level security;
 alter table newsletter enable row level security;
+alter table admin_auth enable row level security;
 
 drop policy if exists "public read content" on profile;
 create policy "public read content" on profile for select to anon using (true);

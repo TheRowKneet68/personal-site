@@ -12,7 +12,7 @@ import {
   postVisitor,
 } from "../controllers/message.controller.js";
 import { getHealth, getStats } from "../controllers/stats.controller.js";
-import { getContent, deleteMessage, deleteSubscriber, listMessages, listSubscribers, login, updateContent, uploadImage } from "../controllers/admin.controller.js";
+import { getContent, changePassword, deleteMessage, deleteSubscriber, listMessages, listSubscribers, login, updateContent, uploadImage } from "../controllers/admin.controller.js";
 import { requireAdmin } from "../middleware/auth.js";
 
 export const api = Router();
@@ -30,6 +30,13 @@ api.post(
   rateLimit({ windowMs: 15 * 60_000, max: 5, name: "admin-login" }),
   login,
 );
+api.post(
+  "/admin/change-password",
+  rateLimit({ windowMs: 15 * 60_000, max: 5, name: "admin-change-password" }),
+  requireAdmin,
+  changePassword,
+);
+
 api.get("/admin/content", requireAdmin, getContent);
 api.put("/admin/content", requireAdmin, updateContent);
 api.get("/admin/messages", requireAdmin, listMessages);

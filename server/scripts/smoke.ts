@@ -1,6 +1,7 @@
 /* Run: npm run smoke -w server (or: npx tsx server/scripts/smoke.ts) */
 import { app } from "../app.js";
 import type { AddressInfo } from "node:net";
+import { hashPassword, verifyPassword } from "../middleware/auth.js";
 
 let failures = 0;
 
@@ -85,6 +86,14 @@ try {
 
   const visitor = await call("/api/visitors", { method: "POST" });
   check("POST /api/visitors -> 200", visitor.status === 200);
+
+  // Password hashing (pure crypto, no DB) — guards the admin change-password feature.
+  const hash = await hashPassword("smoke-test-password-123");
+  check(
+    "scrypt hash/verify round-trip",
+    (await verifyPassword("smoke-test-password-123", hash)) === true &&
+      (await verifyPassword("wrong-password", hash)) === false,
+  );
 } finally {
   server.close();
 }

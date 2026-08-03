@@ -1,6 +1,12 @@
 import type { Request, Response } from "express";
-import { env } from "../config/env.js";
-import { issueToken, passwordMatches } from "../middleware/auth.js";
+import { env, hasSupabase } from "../config/env.js";
+import {
+  getStoredAuth,
+  hashPassword,
+  issueToken,
+  setAdminPassword,
+  verifyAdminPassword,
+} from "../middleware/auth.js";
 import { HttpError } from "../middleware/errorHandler.js";
 import { normalizeFromFile, type Content } from "../services/content.js";
 import { storage } from "../services/storage.js";
@@ -30,17 +36,50 @@ function safeName(raw: string | undefined, ext: string): string {
 }
 
 /** POST /api/admin/login — exchange password for a short-lived bearer token. */
-export function login(req: Request, res: Response): void {
-  if (!env.adminPassword) {
+export async function login(req: Request, res: Response): Promise<void> {
+  const stored = await getStoredAuth();
+  if (!(stored?.passwordHash || env.adminPassword)) {
     res.status(503).json({ error: "Admin panel not configured (ADMIN_PASSWORD missing)" });
     return;
   }
   const { password } = (req.body ?? {}) as { password?: unknown };
-  if (typeof password !== "string" || !passwordMatches(password)) {
+  if (typeof password !== "string" || !(await verifyAdminPassword(password))) {
     res.status(401).json({ error: "Wrong password" });
     return;
   }
-  res.json({ token: issueToken() });
+  res.json({
+    token: issueToken(stored?.tokenVersion ?? 0, stored?.passwordHash || env.adminPassword),
+  });
+}
+
+/** POST /api/admin/change-password — rotate the admin password. The current
+    password must be re-entered, the new one is stored as a scrypt hash in
+    Supabase, and the token version is bumped so every other session is
+    signed out. A fresh token is returned so the caller stays signed in. */
+export async function changePassword(req: Request, res: Response): Promise<void> {
+  if (!hasSupabase()) {
+    throw new HttpError(503, "Change password requires the Supabase backend");
+  }
+  const { currentPassword, newPassword } = (req.body ?? {}) as {
+    currentPassword?: unknown;
+    newPassword?: unknown;
+  };
+  if (typeof currentPassword !== "string" || typeof newPassword !== "string") {
+    throw new HttpError(400, "currentPassword and newPassword are required");
+  }
+  if (newPassword.length < 12) {
+    throw new HttpError(400, "New password must be at least 12 characters");
+  }
+  if (!(await verifyAdminPassword(currentPassword))) {
+    throw new HttpError(401, "Wrong current password");
+  }
+
+  const stored = await getStoredAuth();
+  const nextVersion = (stored?.tokenVersion ?? 0) + 1;
+  const hash = await hashPassword(newPassword);
+  await setAdminPassword(hash, nextVersion);
+
+  res.json({ ok: true, token: issueToken(nextVersion, hash) });
 }
 
 /** GET /api/admin/content — the full editable content (auth required). */

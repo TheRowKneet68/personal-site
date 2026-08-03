@@ -69,6 +69,13 @@ export const api = {
       body: JSON.stringify({ password }),
     }),
 
+  adminChangePassword: (token: string, currentPassword: string, newPassword: string) =>
+    request<{ ok: boolean; token: string }>("/api/admin/change-password", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    }),
+
   getAdminContent: (token: string) =>
     request<AdminContent>("/api/admin/content", { headers: { Authorization: `Bearer ${token}` } }),
 

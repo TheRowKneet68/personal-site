@@ -221,25 +221,41 @@ export const EMBEDDED_DATA = {
       {
         "name": "ICT Frame",
         "url": "https://ictframe.com/rudra-1-rocket-launch/",
-        "images": ["https://ictframe.com/wp-content/uploads/RUDRA-1-Rocket-Launch.jpg"]
+        "images": [
+          "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Screenshot-2026-08-02-171537.png",
+          "https://ictframe.com/wp-content/uploads/RUDRA-1-Rocket-Launch.jpg"
+        ]
       },
       {
         "name": "WOW Magazine Nepal",
-        "url": "https://www.facebook.com/wowmagazinenepal/posts/students-of-pokhara-engineering-college-successfully-launched-an-experimental-ro/1500618618739581/"
+        "url": "https://www.facebook.com/wowmagazinenepal/posts/students-of-pokhara-engineering-college-successfully-launched-an-experimental-ro/1500618618739581/",
+        "images": [
+          "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Screenshot-2026-08-02-171622.png"
+        ]
       },
       {
         "name": "24 Ghanta Nepal",
-        "url": "https://www.instagram.com/reel/DUSxwYtk5ET/?hl=en"
+        "url": "https://www.instagram.com/reel/DUSxwYtk5ET/?hl=en",
+        "images": [
+          "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Screenshot-2026-08-02-at-17-12-00-Instagram.png"
+        ]
       },
       {
         "name": "Digital Nepal",
-        "url": "https://www.instagram.com/reel/DUV38WUj5NT/"
+        "url": "https://www.instagram.com/reel/DUV38WUj5NT/",
+        "images": [
+          "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Screenshot-2026-08-02-at-17-13-43-Instagram.png"
+        ]
       },
       {
         "name": "Routine of Education",
-        "url": "https://www.facebook.com/share/p/1FEQQ6gvGB/"
+        "url": "https://www.facebook.com/share/p/1FEQQ6gvGB/",
+        "images": [
+          "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Screenshot-2026-08-02-171446.png"
+        ]
       }
-    ]
+    ],
+    "portrait": "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/ronit-Image.jpeg"
   },
   "projects": [
     {
@@ -277,7 +293,14 @@ export const EMBEDDED_DATA = {
           "Wearables measure vitals and motion, a companion app is the human interface for alerts and control.",
           "An AI layer classifies events — intrusion vs cat vs false trip — so you don't get woken by noise."
         ],
-        "stack": ["ESP32", "Firebase", "MQTT", "PlatformIO", "Wearables", "AI"],
+        "stack": [
+          "ESP32",
+          "Firebase",
+          "MQTT",
+          "PlatformIO",
+          "Wearables",
+          "AI"
+        ],
         "challenges": [
           {
             "problem": "The demo had to work live, in front of judges, over WiFi that didn't belong to me.",
@@ -334,7 +357,12 @@ export const EMBEDDED_DATA = {
           "Next.js front-end, Supabase for auth and data, an AI layer for the symptom checker.",
           "Health records structured so a doctor can read them in seconds, not paragraphs."
         ],
-        "stack": ["Next.js", "Supabase", "AI", "IoT"],
+        "stack": [
+          "Next.js",
+          "Supabase",
+          "AI",
+          "IoT"
+        ],
         "challenges": [
           {
             "problem": "Making the symptom checker useful without being reckless.",
@@ -416,7 +444,13 @@ export const EMBEDDED_DATA = {
           "nRF52840 handles BLE pairing and ignition control; relays switch the ignition line.",
           "Neo-M8N feeds GPS position, SIM800L provides cellular fallback so the bike can be located even without phone coverage."
         ],
-        "stack": ["nRF52840", "Neo-M8N", "SIM800L", "BLE", "Relays"],
+        "stack": [
+          "nRF52840",
+          "Neo-M8N",
+          "SIM800L",
+          "BLE",
+          "Relays"
+        ],
         "challenges": [
           {
             "problem": "Power. An ignition system can't drain a bike battery that sits for weeks.",
@@ -473,7 +507,14 @@ export const EMBEDDED_DATA = {
           "OpenCV + MediaPipe detects the hand and computes landmarks; a gesture map converts them to target angles.",
           "Arduino runs the servo control loop, pyFirmata provides the protocol bridge."
         ],
-        "stack": ["Python", "MediaPipe", "OpenCV", "Arduino", "Servos", "pyFirmata"],
+        "stack": [
+          "Python",
+          "MediaPipe",
+          "OpenCV",
+          "Arduino",
+          "Servos",
+          "pyFirmata"
+        ],
         "challenges": [
           {
             "problem": "Latency. A laggy arm feels dead and kills the whole illusion.",
@@ -555,7 +596,10 @@ export const EMBEDDED_DATA = {
         "Launched to market — May 27, 2025",
         "Works without internet"
       ],
-      "links": {}
+      "links": {},
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Poster-SMCD.jpg"
+      ]
     },
     {
       "id": "ghostware",
@@ -772,7 +816,10 @@ export const EMBEDDED_DATA = {
       "year": "2023",
       "status": "built",
       "featured": false,
-      "tech": ["ESP32", "Sensors"],
+      "tech": [
+        "ESP32",
+        "Sensors"
+      ],
       "description": "A smart dustbin firmware — sensors and automation so the bin handles itself. Small project, big lesson in keeping things simple.",
       "highlights": [],
       "links": {}
@@ -785,7 +832,11 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "built",
       "featured": false,
-      "tech": ["ESP32", "Mobile", "Relays"],
+      "tech": [
+        "ESP32",
+        "Mobile",
+        "Relays"
+      ],
       "description": "Curtain automation you drive from your phone. Press a button, curtains slide. The boring problems are the ones worth automating.",
       "highlights": [],
       "links": {}
@@ -798,7 +849,10 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "built",
       "featured": false,
-      "tech": ["Power Electronics", "LM2596"],
+      "tech": [
+        "Power Electronics",
+        "LM2596"
+      ],
       "description": "A custom buck converter I designed — dropping battery voltage down cleanly for the boards that need it. Power electronics is where projects live or die.",
       "highlights": [],
       "links": {}
@@ -811,7 +865,10 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "built",
       "featured": false,
-      "tech": ["Relays", "PCB Design"],
+      "tech": [
+        "Relays",
+        "PCB Design"
+      ],
       "description": "A relay module I designed myself rather than buying off the shelf — the kind of component that shows up in half my other projects.",
       "highlights": [],
       "links": {}
@@ -824,7 +881,11 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "built",
       "featured": false,
-      "tech": ["Python", "Flask", "Web"],
+      "tech": [
+        "Python",
+        "Flask",
+        "Web"
+      ],
       "description": "A Flask app that visualizes earthquakes — plotting the ones that already happened and simulating the ones that might. Web + Python in one project.",
       "highlights": [],
       "links": {}
@@ -837,7 +898,10 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "tool",
       "featured": false,
-      "tech": ["Python", "Automation"],
+      "tech": [
+        "Python",
+        "Automation"
+      ],
       "description": "A Python reporting bot that handles mass reporting on TikTok. Built to automate something that was taking hours by hand.",
       "highlights": [],
       "links": {}
@@ -850,7 +914,12 @@ export const EMBEDDED_DATA = {
       "year": "2023",
       "status": "experimental",
       "featured": false,
-      "tech": ["ESP32", "LDR", "Ultrasonic", "Relays"],
+      "tech": [
+        "ESP32",
+        "LDR",
+        "Ultrasonic",
+        "Relays"
+      ],
       "description": "My self-hosted home-automation lab — light sensors, ultrasonic triggers, relay boards and ESP32 wroom modules. The sandbox where home automation got figured out.",
       "highlights": [],
       "links": {}
@@ -863,7 +932,11 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "experimental",
       "featured": false,
-      "tech": ["WiFi", "ESP32", "CSI"],
+      "tech": [
+        "WiFi",
+        "ESP32",
+        "CSI"
+      ],
       "description": "WiFi tracking experiments — RuView for device detection and channel-state-information capture to understand what WiFi can see. A deep rabbit hole.",
       "highlights": [],
       "links": {}
@@ -876,7 +949,11 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "tool",
       "featured": false,
-      "tech": ["ESP32", "ESP8266", "nRF52840"],
+      "tech": [
+        "ESP32",
+        "ESP8266",
+        "nRF52840"
+      ],
       "description": "A pile of small but essential ESP utilities — finding MAC addresses, checking pin layouts on nRF boards, and a Lager Tag victim build. The unglamorous tools every build depends on.",
       "highlights": [],
       "links": {}
@@ -889,7 +966,10 @@ export const EMBEDDED_DATA = {
       "year": "2023",
       "status": "built",
       "featured": false,
-      "tech": ["App", "IoT"],
+      "tech": [
+        "App",
+        "IoT"
+      ],
       "description": "A room-light control app — early attempt at putting my hardware behind a phone interface.",
       "highlights": [],
       "links": {}
@@ -902,9 +982,16 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "shipped",
       "featured": false,
-      "tech": ["Python", "PyInstaller", "Desktop"],
+      "tech": [
+        "Python",
+        "PyInstaller",
+        "Desktop"
+      ],
       "description": "A desktop app that checks Diploma CTEVT results — packaged into a real .exe with PyInstaller so batch-mates could run it without touching Python.",
-      "highlights": ["Packaged .exe", "Built for batch-mates"],
+      "highlights": [
+        "Packaged .exe",
+        "Built for batch-mates"
+      ],
       "links": {}
     },
     {
@@ -915,9 +1002,16 @@ export const EMBEDDED_DATA = {
       "year": "2025",
       "status": "freelance",
       "featured": false,
-      "tech": ["Next.js", "Prisma", "Supabase"],
+      "tech": [
+        "Next.js",
+        "Prisma",
+        "Supabase"
+      ],
       "description": "A string of restaurant websites I designed, built and deployed — Butter Mellow Cafe, Ember & Ivy, Foxy's Corner, Nako Cafe Lakeside, Newari Bhatti and a few others. This is also where I learned cold outreach: message a restaurant, build them a site, iterate on the pitch until one says yes.",
-      "highlights": ["Multiple live restaurant sites", "Cold-outreach workflow"],
+      "highlights": [
+        "Multiple live restaurant sites",
+        "Cold-outreach workflow"
+      ],
       "links": {}
     },
     {
@@ -928,7 +1022,11 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "built",
       "featured": false,
-      "tech": ["Vite", "TypeScript", "Tailwind"],
+      "tech": [
+        "Vite",
+        "TypeScript",
+        "Tailwind"
+      ],
       "description": "A web-store landing page built with Vite + TypeScript + Tailwind and deployed behind Netlify redirects. Modern front-end stack, real product intent.",
       "highlights": [],
       "links": {}
@@ -941,7 +1039,11 @@ export const EMBEDDED_DATA = {
       "year": "2023",
       "status": "academic",
       "featured": false,
-      "tech": ["PHP", "MySQL", "CSS"],
+      "tech": [
+        "PHP",
+        "MySQL",
+        "CSS"
+      ],
       "description": "College group project — a PHP login/signup system running on XAMPP. My first taste of auth, sessions and why the back-end hurts.",
       "highlights": [],
       "links": {}
@@ -954,7 +1056,11 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "tool",
       "featured": false,
-      "tech": ["n8n", "Docker", "Automation"],
+      "tech": [
+        "n8n",
+        "Docker",
+        "Automation"
+      ],
       "description": "n8n self-hosted in Docker — my own workflow automation server. I like owning the tools I depend on.",
       "highlights": [],
       "links": {}
@@ -967,7 +1073,11 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "built",
       "featured": false,
-      "tech": ["Relays", "Timing", "Electronics"],
+      "tech": [
+        "Relays",
+        "Timing",
+        "Electronics"
+      ],
       "description": "A real-world household problem solved — a timer that runs a home motor on a strict cycle so it never burns itself out. Built because home needed it.",
       "highlights": [],
       "links": {}
@@ -980,7 +1090,12 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "experimental",
       "featured": false,
-      "tech": ["Python", "AI", "OpenCV", "MediaPipe"],
+      "tech": [
+        "Python",
+        "AI",
+        "OpenCV",
+        "MediaPipe"
+      ],
       "description": "An experimental stack — REAL_AGENT and AI AGENT scripts plus hand-detection demos. The AI/vision layer of what becomes bigger things.",
       "highlights": [],
       "links": {}
@@ -993,7 +1108,9 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "academic",
       "featured": false,
-      "tech": ["Java"],
+      "tech": [
+        "Java"
+      ],
       "description": "My semester Java practical work — the theory-heavy half of engineering. I learn better with a soldering iron, but Java got drilled in anyway.",
       "highlights": [],
       "links": {}
@@ -1006,7 +1123,11 @@ export const EMBEDDED_DATA = {
       "year": "2026",
       "status": "academic",
       "featured": false,
-      "tech": ["ESP-IDF", "C", "CMake"],
+      "tech": [
+        "ESP-IDF",
+        "C",
+        "CMake"
+      ],
       "description": "The very first ESP-IDF experiments — Day 01, Test, hello_world — with CMake, sdkconfig and a pytest hello-world test. Every big project starts with a blinking LED.",
       "highlights": [],
       "links": {}
@@ -1019,7 +1140,11 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "academic",
       "featured": false,
-      "tech": ["HTML", "Scraping", "CSS"],
+      "tech": [
+        "HTML",
+        "Scraping",
+        "CSS"
+      ],
       "description": "A folder of cloned and scraped sites — royevent.com, Gandaki Tent & Decoration, sagarmathapokhara.edu.np, SlayerCloudSite and saved pages from box.com, dropbox, icloud and google. How I reverse-engineered websites before I could build my own.",
       "highlights": [],
       "links": {}
@@ -1032,7 +1157,11 @@ export const EMBEDDED_DATA = {
       "year": "2025",
       "status": "academic",
       "featured": false,
-      "tech": ["Next.js", "React", "TypeScript"],
+      "tech": [
+        "Next.js",
+        "React",
+        "TypeScript"
+      ],
       "description": "A bare Next.js app — layout, page, not-found and globals. Early experiments with the App Router that later grew into real sites.",
       "highlights": [],
       "links": {}
@@ -1045,7 +1174,10 @@ export const EMBEDDED_DATA = {
       "year": "2025",
       "status": "academic",
       "featured": false,
-      "tech": ["Graphics", "C"],
+      "tech": [
+        "Graphics",
+        "C"
+      ],
       "description": "Semester computer graphics work — the math and code behind rendering things to a screen.",
       "highlights": [],
       "links": {}
@@ -1058,7 +1190,10 @@ export const EMBEDDED_DATA = {
       "year": "2025",
       "status": "academic",
       "featured": false,
-      "tech": ["Assembly", "VHDL"],
+      "tech": [
+        "Assembly",
+        "VHDL"
+      ],
       "description": "Assembly-level programming and VHDL coursework — getting down to where the processor actually lives. Painful, educational, useful once.",
       "highlights": [],
       "links": {}
@@ -1071,7 +1206,9 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "academic",
       "featured": false,
-      "tech": ["Electronics"],
+      "tech": [
+        "Electronics"
+      ],
       "description": "One of my home-lab mini projects — the kind of thing I built on the workbench between real projects.",
       "highlights": [],
       "links": {}
@@ -1084,7 +1221,10 @@ export const EMBEDDED_DATA = {
       "year": "2024",
       "status": "academic",
       "featured": false,
-      "tech": ["Theory", "Presentations"],
+      "tech": [
+        "Theory",
+        "Presentations"
+      ],
       "description": "The full BE college archive — semester folders from BE.PEC and PEC with notes, presentations and exam prep. The paperwork side of engineering.",
       "highlights": [],
       "links": {}
@@ -1105,7 +1245,10 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2024",
       "result": "1st Place",
-      "detail": "Took Suraksha360 to the 11th GCES IT Expo and won."
+      "detail": "Took Suraksha360 to the 11th GCES IT Expo and won.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/11th-GCES-Expo-1st-Position.jpeg"
+      ]
     },
     {
       "id": "surakshaghar-shipped",
@@ -1121,7 +1264,10 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2025",
       "result": "Winner",
-      "detail": "7 Feb 2025 — Won the UDAAN 2025 Project Expo with Suraksha360."
+      "detail": "7 Feb 2025 — Won the UDAAN 2025 Project Expo with Suraksha360.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-1st-Position.jpeg"
+      ]
     },
     {
       "id": "udaan-2025-participant",
@@ -1129,7 +1275,10 @@ export const EMBEDDED_DATA = {
       "title": "Participant",
       "year": "2025",
       "result": "Certificate of Appreciation",
-      "detail": "7 Feb 2025 — Certificate of Appreciation for participation."
+      "detail": "7 Feb 2025 — Certificate of Appreciation for participation.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-Certificate-of-Appriciation.jpeg"
+      ]
     },
     {
       "id": "octate-2025",
@@ -1137,7 +1286,10 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2025",
       "result": "People's Choice Award",
-      "detail": "12–13 Feb 2025 — Won the People's Choice / Public Choice Award at the OCTATE 2025 National Level Technical Festival."
+      "detail": "12–13 Feb 2025 — Won the People's Choice / Public Choice Award at the OCTATE 2025 National Level Technical Festival.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Octate-2025-Expo-Second-Runner-Up-People-s-Choice-Award.jpeg"
+      ]
     },
     {
       "id": "innosphere-1",
@@ -1145,7 +1297,11 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2025",
       "result": "First Runner-Up",
-      "detail": "8 Jun 2025 — First Runner-Up at the Innosphere 1.0 Hardware Project Exhibition."
+      "detail": "8 Jun 2025 — First Runner-Up at the Innosphere 1.0 Hardware Project Exhibition.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Innosphere-1.0-2025-Expo-First-Runner-Up.jpeg",
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Innosphere-1.0-2025-Expo-Certificate-of-Participatiom.jpeg"
+      ]
     },
     {
       "id": "hackathon-nova-partner",
@@ -1153,7 +1309,10 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha Ghar — Community Partner",
       "year": "2025",
       "result": "Community Partner",
-      "detail": "Certificate of Appreciation as Community Partner (Suraksha Ghar)."
+      "detail": "Certificate of Appreciation as Community Partner (Suraksha Ghar).",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Suraksha-Ghar-Community-Partner-Certificate-Of-Appreciation.jpeg"
+      ]
     },
     {
       "id": "hackathon-nova-volunteer",
@@ -1161,7 +1320,11 @@ export const EMBEDDED_DATA = {
       "title": "Volunteer",
       "year": "2025",
       "result": "Volunteer",
-      "detail": "Certificate of Appreciation as Volunteer."
+      "detail": "Certificate of Appreciation as Volunteer.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg",
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg"
+      ]
     },
     {
       "id": "capec-leadership",
@@ -1169,7 +1332,10 @@ export const EMBEDDED_DATA = {
       "title": "Leadership & Dedication",
       "year": "2025",
       "result": "Appreciation",
-      "detail": "Certificate of Appreciation for leadership and dedication as a member (2024–2025 tenure)."
+      "detail": "Certificate of Appreciation for leadership and dedication as a member (2024–2025 tenure).",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/CAPEC-2024-to-2025-Certificate-of-Appriciation.jpeg"
+      ]
     },
     {
       "id": "swiftignite",
@@ -1193,7 +1359,10 @@ export const EMBEDDED_DATA = {
       "title": "Joint Secretary, 2026",
       "year": "2026",
       "result": "Appointed",
-      "detail": "26 Dec 2025 — Official appointment as Joint Secretary of CAPEC for 2026."
+      "detail": "26 Dec 2025 — Official appointment as Joint Secretary of CAPEC for 2026.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Appointed-as-Joint-Secretary-of-CAPEC.jpeg"
+      ]
     },
     {
       "id": "pec-2026-civil",
@@ -1201,7 +1370,10 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2026",
       "result": "First Runner-Up",
-      "detail": "28–29 Jan 2026 — First Runner-Up in the Civil Project Competition."
+      "detail": "28–29 Jan 2026 — First Runner-Up in the Civil Project Competition.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Civil-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
+      ]
     },
     {
       "id": "pec-2026-it",
@@ -1209,7 +1381,10 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2026",
       "result": "Consolation",
-      "detail": "28–29 Jan 2026 — Consolation prize in the Computer & IT Project Competition."
+      "detail": "28–29 Jan 2026 — Consolation prize in the Computer & IT Project Competition.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Computer---IT-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
+      ]
     },
     {
       "id": "pec-2026-participants",
@@ -1217,7 +1392,15 @@ export const EMBEDDED_DATA = {
       "title": "Participant — multiple projects",
       "year": "2026",
       "result": "Participant",
-      "detail": "28–29 Jan 2026 — Participation certificates: Construction of Roundabout with Pedestrian Bridge at Prithvichowk, HerLegal, Surakshya 360, Suraksha360, Rudra 1, RUDRA-I, and Laser Tag."
+      "detail": "28–29 Jan 2026 — Participation certificates: Construction of Roundabout with Pedestrian Bridge at Prithvichowk, HerLegal, Surakshya 360, Suraksha360, Rudra 1, RUDRA-I, and Laser Tag.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1-RUDRA-1-9th-PEC-Tech-Expo-Certificate-of-Participation.jpeg",
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Construction-of-Roundabout-with-Pedestrian-Bridge-at-Prithvichowk-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/HerLegal-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/LaserTag-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/RUDRA-1-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Suraksha360-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg"
+      ]
     },
     {
       "id": "fishtail-fair-2026",
@@ -1225,7 +1408,10 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2026",
       "result": "Presented",
-      "detail": "4 Apr 2026 — Presented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions."
+      "detail": "4 Apr 2026 — Presented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Fishtail-Academy-FASS-SEE-Camp-Certificate-Of-Appericiation.jpeg"
+      ]
     },
     {
       "id": "codefest-2026",
@@ -1233,7 +1419,10 @@ export const EMBEDDED_DATA = {
       "title": "Team Suraksha360",
       "year": "2026",
       "result": "Participated",
-      "detail": "Jul 2026 — Team Suraksha360 participated in the Codefest 2026 Gandaki province hackathon."
+      "detail": "Jul 2026 — Team Suraksha360 participated in the Codefest 2026 Gandaki province hackathon.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Team-Suraksha360-Codefest-2026-Gandaki-ProvinceCertificate-of-Participatiom.jpeg"
+      ]
     },
     {
       "id": "gces-it-expo-2026",
@@ -1244,4 +1433,5 @@ export const EMBEDDED_DATA = {
       "detail": "25–26 Jun 2026 — Suraksha360 earned First Place at the GCES IT Expo, recognizing months of engineering, iteration, and real-world product development."
     }
   ]
-};
+}
+;
