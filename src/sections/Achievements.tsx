@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { useData } from "../context/DataContext";
 import type { Achievement } from "../types";
 import { Container } from "../components/Container";
@@ -22,10 +23,20 @@ function placementRank(a: Achievement): number {
 
 const AUTO_HIGHLIGHT = /\b1st\b|winner|first runner|second runner|people's choice|consolation/i;
 
+type SortId = "rank" | "newest" | "oldest" | "title";
+
+const SORTS: Record<SortId, { label: string; cmp: (a: Achievement, b: Achievement) => number }> = {
+  rank: { label: "rank", cmp: (a, b) => placementRank(a) - placementRank(b) || a.year.localeCompare(b.year) },
+  newest: { label: "newest", cmp: (a, b) => b.year.localeCompare(a.year) },
+  oldest: { label: "oldest", cmp: (a, b) => a.year.localeCompare(b.year) },
+  title: { label: "title A-Z", cmp: (a, b) => a.title.localeCompare(b.title) },
+};
+
 export function Achievements() {
   const { achievements } = useData();
+  const [sort, setSort] = useState<SortId>("rank");
+  const sorted = useMemo(() => [...(achievements ?? [])].sort(SORTS[sort].cmp), [achievements, sort]);
   if (!achievements) return null;
-  const sorted = [...achievements].sort((a, b) => placementRank(a) - placementRank(b) || a.year.localeCompare(b.year));
 
   return (
     <section id="wins" className="scroll-mt-24 border-t border-line py-24 md:py-32">
@@ -37,6 +48,26 @@ export function Achievements() {
         />
 
         <Reveal>
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">
+              // {sorted.length} {sorted.length === 1 ? "entry" : "entries"} — sorted by {SORTS[sort].label}
+            </span>
+            <label className="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-ink-faint">
+              sort
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortId)}
+                className="cursor-pointer rounded-full border border-line bg-surface px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-ink-dim focus:border-accent focus:outline-none"
+              >
+                {(Object.keys(SORTS) as SortId[]).map((id) => (
+                  <option key={id} value={id}>
+                    {SORTS[id].label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
           <ol className="border-t border-line">
             {sorted.map((a) => {
               const highlighted = a.highlight ?? AUTO_HIGHLIGHT.test(a.result);
