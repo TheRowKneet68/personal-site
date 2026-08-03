@@ -115,6 +115,12 @@ function writeDynamic(data: DynamicData): void {
   }
 }
 
+/** Stamp array position as the manual `order` so row-based lists (projects,
+    achievements, experience) survive Supabase's row ordering. */
+function stampOrder<T extends { order?: number }>(items: T[]): T[] {
+  return items.map((item, i) => ({ ...item, order: i }));
+}
+
 const jsonBackend: StorageBackend = {
   mode: () => "json",
   async getContent() {
@@ -122,10 +128,17 @@ const jsonBackend: StorageBackend = {
   },
   /** Persist edits into data.json — the source of truth for the JSON backend. */
   async updateContent(content) {
+    const c = {
+      ...content,
+      profile: { ...content.profile, journey: stampOrder(content.profile.journey) },
+      projects: stampOrder(content.projects),
+      achievements: stampOrder(content.achievements),
+      experience: stampOrder(content.experience),
+    };
     const data = {
-      profile: content.profile,
-      projects: content.projects,
-      achievements: content.achievements,
+      profile: c.profile,
+      projects: c.projects,
+      achievements: c.achievements,
     };
     try {
       mkdirSync(path.dirname(DATA_FILE), { recursive: true });
@@ -231,7 +244,14 @@ const supabaseBackend: StorageBackend = {
   /** Upsert edited rows and delete any row dropped from the content. */
   async updateContent(content) {
     const client = getSupabase();
-    const rows = contentToRows(content);
+    const c = {
+      ...content,
+      profile: { ...content.profile, journey: stampOrder(content.profile.journey) },
+      projects: stampOrder(content.projects),
+      achievements: stampOrder(content.achievements),
+      experience: stampOrder(content.experience),
+    };
+    const rows = contentToRows(c);
     const dedupedRows = { ...rows } as typeof rows;
     for (const table of CONTENT_TABLES) {
       dedupedRows[table] = dedupeRowsById(rows[table]);
@@ -401,7 +421,12 @@ export const storage: Storage = {
   async seed() {
     if (!hasSupabase()) return { mode: "json", ok: true };
     const client = getSupabase();
-    const rows = contentToRows(normalizeFromFile(readDataFile()));
+    const content = normalizeFromFile(readDataFile());
+    content.projects = stampOrder(content.projects);
+    content.achievements = stampOrder(content.achievements);
+    content.profile.journey = stampOrder(content.profile.journey);
+    content.experience = stampOrder(content.experience);
+    const rows = contentToRows(content);
     for (const table of CONTENT_TABLES) {
       const { data: existingRows } = await client.from(table).select("id, data");
       const existing = new Map((existingRows ?? []).map((r) => [r.id, r.data as Record<string, unknown>]));
@@ -426,16 +451,25 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
 
-/** Recompute count-driven hero stats and badges for any content served to the client. */
+/** Recompute count-driven hero stats and badges for any content served to the client,
+    and sort row-based lists by their manual order so the admin's up/down moves drive
+    the frontend order regardless of Supabase's row ordering. */
 function deriveContentStats(content: Content): Content {
   return {
     ...content,
+    projects: [...content.projects].sort(byOrder),
+    achievements: [...content.achievements].sort(byOrder),
+    experience: [...content.experience].sort(byOrder),
     profile: {
       ...content.profile,
       stats: deriveStats(content.profile, content.projects, content.achievements),
       badges: deriveBadges(content.profile, content.achievements),
     },
   };
+}
+
+function byOrder(a: { order?: number }, b: { order?: number }): number {
+  return (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER);
 }
 
 /** True when two array items are "the same" for merging: objects compare by

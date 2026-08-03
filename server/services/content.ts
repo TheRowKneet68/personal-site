@@ -42,6 +42,8 @@ export interface ProjectRecord {
   year: string;
   status: string;
   featured?: boolean;
+  /** Manual display order — stamped from array position on save/seed. */
+  order?: number;
   weight?: number;
   images?: string[];
   tech: string[];
@@ -62,12 +64,14 @@ export interface AchievementRecord {
   rank?: string;
   highlight?: boolean;
   images?: string[];
+  order?: number;
 }
 
 export interface ExperienceEntry {
   year: string;
   title: string;
   note: string;
+  order?: number;
 }
 
 export interface Skills {

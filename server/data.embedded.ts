@@ -140,57 +140,68 @@ export const EMBEDDED_DATA = {
       {
         "year": "2020",
         "title": "Started Diploma in Computer Engineering",
-        "note": "Picked up an Arduino for the first time and discovered embedded systems. That single board changed the direction of my career."
+        "note": "Picked up an Arduino for the first time and discovered embedded systems. That single board changed the direction of my career.",
+        "order": 0
       },
       {
         "year": "2021",
         "title": "Learning by Building",
-        "note": "Built home automation systems, RC cars, relay circuits, IR-controlled devices, and countless small prototypes. Every failure taught me something new about hardware and software."
+        "note": "Built home automation systems, RC cars, relay circuits, IR-controlled devices, and countless small prototypes. Every failure taught me something new about hardware and software.",
+        "order": 1
       },
       {
         "year": "2022",
         "title": "GRAVAS",
-        "note": "Developed my first major engineering project and showcased it at the Rojgar Mela, confirming my passion for building real-world technology."
+        "note": "Developed my first major engineering project and showcased it at the Rojgar Mela, confirming my passion for building real-world technology.",
+        "order": 2
       },
       {
         "year": "2023",
         "title": "Graduated with Diploma in Computer Engineering",
-        "note": "Completed the Diploma in Computer Engineering — three years of building, breaking, and rebuilding that became the foundation of everything since."
+        "note": "Completed the Diploma in Computer Engineering — three years of building, breaking, and rebuilding that became the foundation of everything since.",
+        "order": 3
       },
       {
         "year": "2023",
         "title": "Beyond the Classroom",
-        "note": "Focused on Embedded Systems, IoT, PCB design, firmware development, and hardware-software integration, transforming ideas into working prototypes."
+        "note": "Focused on Embedded Systems, IoT, PCB design, firmware development, and hardware-software integration, transforming ideas into working prototypes.",
+        "order": 4
       },
       {
         "year": "2024",
         "title": "Suraksha Ghar",
-        "note": "Designed and built a complete IoT home automation ecosystem featuring custom firmware, embedded hardware, web dashboard, and mobile application — my first product built for real-world deployment."
+        "note": "Designed and built a complete IoT home automation ecosystem featuring custom firmware, embedded hardware, web dashboard, and mobile application — my first product built for real-world deployment.",
+        "order": 5
       },
       {
         "year": "September 2024",
         "title": "Began Bachelor of Computer Engineering",
-        "note": "Enrolled at Pokhara Engineering College to pursue a Bachelor of Computer Engineering while continuing to build and ship hardware projects."
+        "note": "Enrolled at Pokhara Engineering College to pursue a Bachelor of Computer Engineering while continuing to build and ship hardware projects.",
+        "order": 6
       },
       {
         "year": "2025",
         "title": "A Breakthrough Year",
-        "note": "February 7, 2025\n🏆 Winner — UDAAN 2025 Project Expo\n📜 Certificate of Appreciation — UDAAN 2025 Participant\nPresented Suraksha360 at IOE Paschimanchal Campus and secured the overall Winner title.\n\nFebruary 12–13, 2025\n🏆 People's Choice Award — OCTATE 2025\nReceived the Public Choice Award at the National Level Technical Festival, recognizing both technical innovation and audience impact.\n\nJune 8, 2025\n🥈 First Runner-Up — Innosphere 1.0 Hardware Project Exhibition\nRecognized among the top hardware innovations organized by the Tech Club of Pokhara University.\n\n🤝 Community Partner — Hackathon Nova\nReceived a Certificate of Appreciation for supporting Hackathon Nova through Suraksha Ghar and contributing to innovation and collaboration.\n\n🙌 Volunteer — Hackathon Nova\nRecognized for volunteering and helping organize one of the college's largest hackathons.\n\n🛠 Core Organizer — Hackathon Nova\nServed as a Core Organizer for Hackathon Nova, contributing to event planning, logistical coordination, volunteer management, and on-site operational execution.\n\n🎖 CAPEC Leadership Recognition\nAwarded a Certificate of Appreciation for dedication, leadership, and contribution as an active member of CAPEC (Computer Association of Pokhara Engineering College).\n\nDecember 26, 2025\n📌 Appointed Joint Secretary — CAPEC\nOfficially appointed Joint Secretary for the 2026 tenure, recognizing leadership, commitment, and service to the engineering community."
+        "note": "February 7, 2025\n🏆 Winner — UDAAN 2025 Project Expo\n📜 Certificate of Appreciation — UDAAN 2025 Participant\nPresented Suraksha360 at IOE Paschimanchal Campus and secured the overall Winner title.\n\nFebruary 12–13, 2025\n🏆 People's Choice Award — OCTATE 2025\nReceived the Public Choice Award at the National Level Technical Festival, recognizing both technical innovation and audience impact.\n\nJune 8, 2025\n🥈 First Runner-Up — Innosphere 1.0 Hardware Project Exhibition\nRecognized among the top hardware innovations organized by the Tech Club of Pokhara University.\n\n🤝 Community Partner — Hackathon Nova\nReceived a Certificate of Appreciation for supporting Hackathon Nova through Suraksha Ghar and contributing to innovation and collaboration.\n\n🙌 Volunteer — Hackathon Nova\nRecognized for volunteering and helping organize one of the college's largest hackathons.\n\n🛠 Core Organizer — Hackathon Nova\nServed as a Core Organizer for Hackathon Nova, contributing to event planning, logistical coordination, volunteer management, and on-site operational execution.\n\n🎖 CAPEC Leadership Recognition\nAwarded a Certificate of Appreciation for dedication, leadership, and contribution as an active member of CAPEC (Computer Association of Pokhara Engineering College).\n\nDecember 26, 2025\n📌 Appointed Joint Secretary — CAPEC\nOfficially appointed Joint Secretary for the 2026 tenure, recognizing leadership, commitment, and service to the engineering community.",
+        "order": 7
       },
       {
         "year": "2026",
         "title": "Engineering at Scale",
-        "note": "January 28–29, 2026 — 9th PEC Tech Expo\n🥈 First Runner-Up — Civil Project Competition\n🏅 Consolation Prize — Computer & IT Project Competition\nShowcased projects across disciplines: Suraksha360, HerLegal, RUDRA-I Rocket, Construction of Roundabout with Pedestrian Bridge at Prithvichowk, and Laser Tag.\n\n🚀 Launched the RUDRA-I experimental rocket during the expo, demonstrating its communication and recovery system in front of visitors and judges. The launch was covered by multiple local media outlets, making it one of the event's highlights.\n\nFeatured in the Media\n📰 ICT Frame — RUDRA-1 Rocket Launch: Innovation at the 9th PEC Tech Expo\n📰 WOW Magazine Nepal — Facebook Coverage\n📹 24 Ghanta Nepal — Instagram Reel\n📹 Digital Nepal — Instagram Reel\n📘 Routine of Education — Facebook Feature\n\nApril 4, 2026 — Fishtail University Fair\nPresented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions.\n\nJune 25–26, 2026\n🏆 1st Position — GCES IT Expo\nSuraksha360 earned First Place, recognizing months of engineering, iteration, and real-world product development."
+        "note": "January 28–29, 2026 — 9th PEC Tech Expo\n🥈 First Runner-Up — Civil Project Competition\n🏅 Consolation Prize — Computer & IT Project Competition\nShowcased projects across disciplines: Suraksha360, HerLegal, RUDRA-I Rocket, Construction of Roundabout with Pedestrian Bridge at Prithvichowk, and Laser Tag.\n\n🚀 Launched the RUDRA-I experimental rocket during the expo, demonstrating its communication and recovery system in front of visitors and judges. The launch was covered by multiple local media outlets, making it one of the event's highlights.\n\nFeatured in the Media\n📰 ICT Frame — RUDRA-1 Rocket Launch: Innovation at the 9th PEC Tech Expo\n📰 WOW Magazine Nepal — Facebook Coverage\n📹 24 Ghanta Nepal — Instagram Reel\n📹 Digital Nepal — Instagram Reel\n📘 Routine of Education — Facebook Feature\n\nApril 4, 2026 — Fishtail University Fair\nPresented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions.\n\nJune 25–26, 2026\n🏆 1st Position — GCES IT Expo\nSuraksha360 earned First Place, recognizing months of engineering, iteration, and real-world product development.",
+        "order": 8
       },
       {
         "year": "2028 (Expected)",
         "title": "Bachelor of Engineering in Computer Engineering",
-        "note": "Expected graduation with a Bachelor of Engineering in Computer Engineering — building toward a career where code meets wires."
+        "note": "Expected graduation with a Bachelor of Engineering in Computer Engineering — building toward a career where code meets wires.",
+        "order": 9
       },
       {
         "year": "Present",
         "title": "Building What's Next",
-        "note": "Currently developing projects including Swasthya Sathi, SwiftIgnite v2, commercial web platforms, AI-powered embedded systems, and next-generation IoT solutions while continuing to compete, innovate, and build products that solve real-world problems."
+        "note": "Currently developing projects including Swasthya Sathi, SwiftIgnite v2, commercial web platforms, AI-powered embedded systems, and next-generation IoT solutions while continuing to compete, innovate, and build products that solve real-world problems.",
+        "order": 10
       }
     ],
     "fun_facts": [
@@ -327,68 +338,8 @@ export const EMBEDDED_DATA = {
       },
       "links": {
         "github": "https://github.com/TheRowKneet68"
-      }
-    },
-    {
-      "id": "swasthya-sathi",
-      "title": "Swasthya Sathi",
-      "tagline": "Healthcare platform with AI symptom checker",
-      "category": "AI & Health",
-      "year": "2025",
-      "status": "in development",
-      "featured": true,
-      "tech": [
-        "Next.js",
-        "Supabase",
-        "AI",
-        "IoT"
-      ],
-      "description": "A healthcare platform I'm building — AI symptom checker, digital health records, doctor finder, emergency assistance and IoT integration. Health data in one place, connected to hardware where it counts.",
-      "highlights": [
-        "AI symptom checker",
-        "Digital health records",
-        "Emergency assistance module"
-      ],
-      "caseStudy": {
-        "problem": [
-          "Health data in Nepal is scattered across paper prescriptions, WhatsApp messages and memory. Your records follow you around inside your head.",
-          "A symptom checker that just hands you a diagnosis is dangerous. It had to be a triage tool, not a doctor."
-        ],
-        "solution": [
-          "One platform for symptoms, records, doctors and emergency assistance — with an AI checker that's honest about what it can't know.",
-          "IoT integration so vitals from hardware flow into the same record instead of living in a separate app."
-        ],
-        "architecture": [
-          "Next.js front-end, Supabase for auth and data, an AI layer for the symptom checker.",
-          "Health records structured so a doctor can read them in seconds, not paragraphs."
-        ],
-        "stack": [
-          "Next.js",
-          "Supabase",
-          "AI",
-          "IoT"
-        ],
-        "challenges": [
-          {
-            "problem": "Making the symptom checker useful without being reckless.",
-            "fix": "Every answer is a triage suggestion with a clear disclaimer — the tool points you at the right kind of care, it never diagnoses."
-          },
-          {
-            "problem": "Building it while juggling hackathons and a final-year project.",
-            "fix": "Ship the core records + checker first; the emergency module and IoT hookups land in stages."
-          }
-        ],
-        "impact": [
-          "Digital health records in one place, connected to hardware where it counts.",
-          "A symptom checker that redirects to real care instead of Dr. Google."
-        ],
-        "lessons": [
-          "In healthcare the ceiling isn't technical, it's trust. Software that earns trust is built slower and carefully."
-        ]
       },
-      "links": {
-        "github": "https://github.com/TheRowKneet68"
-      }
+      "order": 0
     },
     {
       "id": "suraksha-ghar",
@@ -413,7 +364,8 @@ export const EMBEDDED_DATA = {
       ],
       "links": {
         "github": "https://github.com/TheRowKneet68"
-      }
+      },
+      "order": 1
     },
     {
       "id": "swiftignite",
@@ -476,7 +428,8 @@ export const EMBEDDED_DATA = {
       },
       "links": {
         "github": "https://github.com/TheRowKneet68"
-      }
+      },
+      "order": 2
     },
     {
       "id": "gravas",
@@ -540,48 +493,70 @@ export const EMBEDDED_DATA = {
       },
       "links": {
         "github": "https://github.com/TheRowKneet68"
-      }
+      },
+      "order": 3
     },
     {
-      "id": "air-mouse",
-      "title": "Air Mouse",
-      "tagline": "Mouse controlled by pointing",
-      "category": "Computer Vision",
-      "year": "2022",
-      "status": "award-winning",
+      "id": "swasthya-sathi",
+      "title": "Swasthya Sathi",
+      "tagline": "Healthcare platform with AI symptom checker",
+      "category": "AI & Health",
+      "year": "2025",
+      "status": "in development",
       "featured": true,
       "tech": [
-        "Arduino",
-        "Sensors",
-        "Python"
+        "Next.js",
+        "Supabase",
+        "AI",
+        "IoT"
       ],
-      "description": "One of my earliest projects — control the cursor by moving your hand in the air. Basically told me which direction I was going in.",
-      "highlights": [],
+      "description": "A healthcare platform I'm building — AI symptom checker, digital health records, doctor finder, emergency assistance and IoT integration. Health data in one place, connected to hardware where it counts.",
+      "highlights": [
+        "AI symptom checker",
+        "Digital health records",
+        "Emergency assistance module"
+      ],
+      "caseStudy": {
+        "problem": [
+          "Health data in Nepal is scattered across paper prescriptions, WhatsApp messages and memory. Your records follow you around inside your head.",
+          "A symptom checker that just hands you a diagnosis is dangerous. It had to be a triage tool, not a doctor."
+        ],
+        "solution": [
+          "One platform for symptoms, records, doctors and emergency assistance — with an AI checker that's honest about what it can't know.",
+          "IoT integration so vitals from hardware flow into the same record instead of living in a separate app."
+        ],
+        "architecture": [
+          "Next.js front-end, Supabase for auth and data, an AI layer for the symptom checker.",
+          "Health records structured so a doctor can read them in seconds, not paragraphs."
+        ],
+        "stack": [
+          "Next.js",
+          "Supabase",
+          "AI",
+          "IoT"
+        ],
+        "challenges": [
+          {
+            "problem": "Making the symptom checker useful without being reckless.",
+            "fix": "Every answer is a triage suggestion with a clear disclaimer — the tool points you at the right kind of care, it never diagnoses."
+          },
+          {
+            "problem": "Building it while juggling hackathons and a final-year project.",
+            "fix": "Ship the core records + checker first; the emergency module and IoT hookups land in stages."
+          }
+        ],
+        "impact": [
+          "Digital health records in one place, connected to hardware where it counts.",
+          "A symptom checker that redirects to real care instead of Dr. Google."
+        ],
+        "lessons": [
+          "In healthcare the ceiling isn't technical, it's trust. Software that earns trust is built slower and carefully."
+        ]
+      },
       "links": {
         "github": "https://github.com/TheRowKneet68"
-      }
-    },
-    {
-      "id": "aegis",
-      "title": "AEGIS",
-      "tagline": "Disaster response ecosystem (concept)",
-      "category": "Concept",
-      "year": "2026",
-      "status": "concept",
-      "featured": false,
-      "tech": [
-        "Robots",
-        "Drones",
-        "Sensors",
-        "AI",
-        "Smart City"
-      ],
-      "description": "A large-scale disaster-response concept — smart city, robots, drones, sensors, AI and a central command center all talking to each other. The next thing I want to exist.",
-      "highlights": [
-        "Smart city integration",
-        "Command & control center"
-      ],
-      "links": {}
+      },
+      "order": 4
     },
     {
       "id": "motor-control",
@@ -604,94 +579,31 @@ export const EMBEDDED_DATA = {
       "links": {},
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Poster-SMCD.jpg"
-      ]
-    },
-    {
-      "id": "smart-motor-control",
-      "title": "Smart Motor Control System",
-      "tagline": "Motor control circuit, designed in Proteus",
-      "category": "Hardware",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Proteus",
-        "Motor Control",
-        "Power Electronics"
       ],
-      "description": "A motor control system designed from the schematic up in Proteus — the circuit-level work behind controlling motors properly. The kind of design where every trace earns its place.",
-      "highlights": [],
-      "links": {}
+      "order": 5
     },
     {
-      "id": "ghostware",
-      "title": "Ghostware360: Debug or Die",
-      "tagline": "Horror puzzle game, in progress",
-      "category": "Game",
+      "id": "aegis",
+      "title": "AEGIS",
+      "tagline": "Disaster response ecosystem (concept)",
+      "category": "Concept",
       "year": "2026",
-      "status": "in progress",
+      "status": "concept",
       "featured": false,
       "tech": [
-        "Game Dev",
-        "Horror",
-        "Puzzle"
-      ],
-      "description": "A horror-puzzle game where debugging is the gameplay. You're a developer trapped in a haunted codebase. Still being built — because who doesn't want to turn debugging into a horror story.",
-      "highlights": [
-        "Horror + coding theme"
-      ],
-      "links": {}
-    },
-    {
-      "id": "smart-parking",
-      "title": "Smart Parking System",
-      "tagline": "Parking that tells you where to go",
-      "category": "IoT & Security",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "ESP32",
+        "Robots",
+        "Drones",
         "Sensors",
-        "IoT"
+        "AI",
+        "Smart City"
       ],
-      "description": "IoT parking system — sensors detect free slots and point drivers to them instead of circling forever.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "stealth-rc",
-      "title": "RC Car Builds",
-      "tagline": "Rc_Car1, Rc_Car2 & the NRF stealth version",
-      "category": "Robotics",
-      "year": "2023",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Arduino",
-        "NRF",
-        "Motors"
+      "description": "A large-scale disaster-response concept — smart city, robots, drones, sensors, AI and a central command center all talking to each other. The next thing I want to exist.",
+      "highlights": [
+        "Smart city integration",
+        "Command & control center"
       ],
-      "description": "A whole garage of RC cars — Rc_Car1 and Rc_Car2 plus a stealth variant that swapped IR for NRF radio modules, so it actually works outside the living room.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "gps-buck",
-      "title": "GPS Tracker & Buck Converter",
-      "tagline": "Track a thing, power it properly",
-      "category": "Hardware",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "GPS",
-        "Buck Converter",
-        "Power Electronics"
-      ],
-      "description": "Two-in-one hardware exercise — a working GPS tracker plus a custom buck converter to power it from a battery properly.",
-      "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 6
     },
     {
       "id": "lyrics-display",
@@ -712,7 +624,8 @@ export const EMBEDDED_DATA = {
         "SMART_INTERNET_LYRICS_DISPLAY_SYSTEM",
         "10+ song variants"
       ],
-      "links": {}
+      "links": {},
+      "order": 7
     },
     {
       "id": "fishtail",
@@ -729,40 +642,28 @@ export const EMBEDDED_DATA = {
       ],
       "description": "My experimental workspace — a mix of dev-core software and raw hardware experiments. The drawer where projects start before they get names.",
       "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 8
     },
     {
-      "id": "mama",
-      "title": "M.A.M.A",
-      "tagline": "Multi-Agency Management Assistant",
-      "category": "Software",
-      "year": "2024",
-      "status": "prototype",
+      "id": "ghostware",
+      "title": "Ghostware360: Debug or Die",
+      "tagline": "Horror puzzle game, in progress",
+      "category": "Game",
+      "year": "2026",
+      "status": "in progress",
       "featured": false,
       "tech": [
-        "Web",
-        "Prototype"
+        "Game Dev",
+        "Horror",
+        "Puzzle"
       ],
-      "description": "Concept + prototype for a multi-agency management assistant — one dashboard for agencies that never talk to each other.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "herlegal",
-      "title": "HerLegal",
-      "tagline": "Legal resource site",
-      "category": "Web",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "HTML",
-        "Supabase",
-        "CSS"
+      "description": "A horror-puzzle game where debugging is the gameplay. You're a developer trapped in a haunted codebase. Still being built — because who doesn't want to turn debugging into a horror story.",
+      "highlights": [
+        "Horror + coding theme"
       ],
-      "description": "A legal information site — static front-end with Supabase for content. Early web work while I was learning how the other half of software lives.",
-      "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 9
     },
     {
       "id": "qr-tool",
@@ -777,42 +678,8 @@ export const EMBEDDED_DATA = {
       ],
       "description": "A Python tool that turns a CSV into hundreds of QR codes in one run. Built because I needed it, the way all good tools get built.",
       "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "rudra",
-      "title": "RUDRA-1",
-      "tagline": "Camera-based robotics project",
-      "category": "Robotics",
-      "year": "2025",
-      "status": "completed",
-      "featured": false,
-      "tech": [
-        "Computer Vision",
-        "Robotics"
-      ],
-      "description": "A robotics project built around cameras and vision, complete with full project proposal documentation. Won the 9th PEC Tech Expo.",
-      "highlights": [
-        "Winner — 9th PEC Tech Expo"
-      ],
-      "links": {}
-    },
-    {
-      "id": "airis",
-      "title": "A.I.R.I.S.",
-      "tagline": "Personal voice assistant",
-      "category": "AI & Health",
-      "year": "2026",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Python",
-        "Speech-to-Text",
-        "TTS"
-      ],
-      "description": "My own voice assistant — speech-to-text, text-to-speech, command handling, all wired together locally. Half product, half training my Python.",
-      "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 10
     },
     {
       "id": "rubber-ducky",
@@ -828,123 +695,8 @@ export const EMBEDDED_DATA = {
       ],
       "description": "USB keystroke-injection experiments with a Rubber Ducky. Security research — knowing how these work is how you defend against them.",
       "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "smart-dustbin",
-      "title": "SmartDustBin",
-      "tagline": "A dustbin with a brain",
-      "category": "IoT & Security",
-      "year": "2023",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "ESP32",
-        "Sensors"
-      ],
-      "description": "A smart dustbin firmware — sensors and automation so the bin handles itself. Small project, big lesson in keeping things simple.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "slide-smart",
-      "title": "SlideSmart",
-      "tagline": "Mobile-controlled curtain automation",
-      "category": "IoT & Security",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "ESP32",
-        "Mobile",
-        "Relays"
-      ],
-      "description": "Curtain automation you drive from your phone. Press a button, curtains slide. The boring problems are the ones worth automating.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "custom-buck",
-      "title": "Custom Buck Converter",
-      "tagline": "Down-voltage, my way",
-      "category": "Hardware",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Power Electronics",
-        "LM2596"
-      ],
-      "description": "A custom buck converter I designed — dropping battery voltage down cleanly for the boards that need it. Power electronics is where projects live or die.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "custom-relay",
-      "title": "Custom Relay Module",
-      "tagline": "Relay board, designed from scratch",
-      "category": "Hardware",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Relays",
-        "PCB Design"
-      ],
-      "description": "A relay module I designed myself rather than buying off the shelf — the kind of component that shows up in half my other projects.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "earthquake-sim",
-      "title": "Earthquake Simulator",
-      "tagline": "Python/Flask app that shakes",
-      "category": "Software",
-      "year": "2026",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Python",
-        "Flask",
-        "Web"
-      ],
-      "description": "A Flask app that visualizes earthquakes — plotting the ones that already happened and simulating the ones that might. Web + Python in one project.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "mass-report",
-      "title": "Mass Report (TikTok Bot)",
-      "tagline": "Automation for a reason",
-      "category": "Tools",
-      "year": "2026",
-      "status": "tool",
-      "featured": false,
-      "tech": [
-        "Python",
-        "Automation"
-      ],
-      "description": "A Python reporting bot that handles mass reporting on TikTok. Built to automate something that was taking hours by hand.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "home-auto-lab",
-      "title": "Home Automation Lab",
-      "tagline": "ESP32 experiments: LDR, ultrasonic, relays",
-      "category": "IoT & Security",
-      "year": "2023",
-      "status": "experimental",
-      "featured": false,
-      "tech": [
-        "ESP32",
-        "LDR",
-        "Ultrasonic",
-        "Relays"
-      ],
-      "description": "My self-hosted home-automation lab — light sensors, ultrasonic triggers, relay boards and ESP32 wroom modules. The sandbox where home automation got figured out.",
-      "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 11
     },
     {
       "id": "wifi-tracking",
@@ -961,7 +713,8 @@ export const EMBEDDED_DATA = {
       ],
       "description": "WiFi tracking experiments — RuView for device detection and channel-state-information capture to understand what WiFi can see. A deep rabbit hole.",
       "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 12
     },
     {
       "id": "esp-toolkit",
@@ -978,43 +731,236 @@ export const EMBEDDED_DATA = {
       ],
       "description": "A pile of small but essential ESP utilities — finding MAC addresses, checking pin layouts on nRF boards, and a Lager Tag victim build. The unglamorous tools every build depends on.",
       "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 13
     },
     {
-      "id": "room-light",
-      "title": "RoomLightApp",
-      "tagline": "Room lighting from your pocket",
+      "id": "earthquake-sim",
+      "title": "Earthquake Simulator",
+      "tagline": "Python/Flask app that shakes",
       "category": "Software",
-      "year": "2023",
+      "year": "2026",
       "status": "built",
       "featured": false,
       "tech": [
-        "App",
-        "IoT"
+        "Python",
+        "Flask",
+        "Web"
       ],
-      "description": "A room-light control app — early attempt at putting my hardware behind a phone interface.",
+      "description": "A Flask app that visualizes earthquakes — plotting the ones that already happened and simulating the ones that might. Web + Python in one project.",
       "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 14
     },
     {
-      "id": "ctevt-checker",
-      "title": "Diploma CTEVT Checker",
-      "tagline": "Result checker desktop app",
+      "id": "mass-report",
+      "title": "Mass Report (TikTok Bot)",
+      "tagline": "Automation for a reason",
       "category": "Tools",
-      "year": "2024",
-      "status": "shipped",
+      "year": "2026",
+      "status": "tool",
       "featured": false,
       "tech": [
         "Python",
-        "PyInstaller",
-        "Desktop"
+        "Automation"
       ],
-      "description": "A desktop app that checks Diploma CTEVT results — packaged into a real .exe with PyInstaller so batch-mates could run it without touching Python.",
+      "description": "A Python reporting bot that handles mass reporting on TikTok. Built to automate something that was taking hours by hand.",
+      "highlights": [],
+      "links": {},
+      "order": 15
+    },
+    {
+      "id": "ai-agents",
+      "title": "AI Agents & Hand Detection",
+      "tagline": "REAL_AGENT, AI AGENT & vision demos",
+      "category": "AI & Health",
+      "year": "2026",
+      "status": "experimental",
+      "featured": false,
+      "tech": [
+        "Python",
+        "AI",
+        "OpenCV",
+        "MediaPipe"
+      ],
+      "description": "An experimental stack — REAL_AGENT and AI AGENT scripts plus hand-detection demos. The AI/vision layer of what becomes bigger things.",
+      "highlights": [],
+      "links": {},
+      "order": 16
+    },
+    {
+      "id": "airis",
+      "title": "A.I.R.I.S.",
+      "tagline": "Personal voice assistant",
+      "category": "AI & Health",
+      "year": "2026",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Python",
+        "Speech-to-Text",
+        "TTS"
+      ],
+      "description": "My own voice assistant — speech-to-text, text-to-speech, command handling, all wired together locally. Half product, half training my Python.",
+      "highlights": [],
+      "links": {},
+      "order": 17
+    },
+    {
+      "id": "java-practical",
+      "title": "JAVA Practical",
+      "tagline": "Semester Java practice",
+      "category": "Academic",
+      "year": "2026",
+      "status": "academic",
+      "featured": false,
+      "tech": [
+        "Java"
+      ],
+      "description": "My semester Java practical work — the theory-heavy half of engineering. I learn better with a soldering iron, but Java got drilled in anyway.",
+      "highlights": [],
+      "links": {},
+      "order": 18
+    },
+    {
+      "id": "espidf-hello",
+      "title": "ESP-IDF Hello World",
+      "tagline": "Day 01 / Test / hello_world experiments",
+      "category": "Academic",
+      "year": "2026",
+      "status": "academic",
+      "featured": false,
+      "tech": [
+        "ESP-IDF",
+        "C",
+        "CMake"
+      ],
+      "description": "The very first ESP-IDF experiments — Day 01, Test, hello_world — with CMake, sdkconfig and a pytest hello-world test. Every big project starts with a blinking LED.",
+      "highlights": [],
+      "links": {},
+      "order": 19
+    },
+    {
+      "id": "pahilo-mart",
+      "title": "PahiloMart WebPage",
+      "tagline": "Vite + TypeScript storefront",
+      "category": "Web",
+      "year": "2026",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Vite",
+        "TypeScript",
+        "Tailwind"
+      ],
+      "description": "A web-store landing page built with Vite + TypeScript + Tailwind and deployed behind Netlify redirects. Modern front-end stack, real product intent.",
+      "highlights": [],
+      "links": {},
+      "order": 20
+    },
+    {
+      "id": "n8n-selfhost",
+      "title": "Self-Hosted n8n",
+      "tagline": "Workflow automation, my own server",
+      "category": "Software",
+      "year": "2026",
+      "status": "tool",
+      "featured": false,
+      "tech": [
+        "n8n",
+        "Docker",
+        "Automation"
+      ],
+      "description": "n8n self-hosted in Docker — my own workflow automation server. I like owning the tools I depend on.",
+      "highlights": [],
+      "links": {},
+      "order": 21
+    },
+    {
+      "id": "laser-tag",
+      "title": "Laser Tag",
+      "tagline": "IR tagger system, showcased at the expo",
+      "category": "Electronics",
+      "year": "2026",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "IR",
+        "Arduino",
+        "Sensors",
+        "Electronics"
+      ],
+      "description": "A laser-tag system built from IR emitters and receivers — hit detection, vests and taggers working together. Showcased alongside the RUDRA-I Rocket at the 9th PEC Tech Expo.",
       "highlights": [
-        "Packaged .exe",
-        "Built for batch-mates"
+        "IR hit detection",
+        "Showcased at 9th PEC Tech Expo"
       ],
-      "links": {}
+      "links": {},
+      "order": 22
+    },
+    {
+      "id": "roundabout-bridge",
+      "title": "Roundabout with Pedestrian Bridge (Prithvichowk)",
+      "tagline": "Civil model — first runner-up",
+      "category": "Civil",
+      "year": "2026",
+      "status": "award-winning",
+      "featured": false,
+      "tech": [
+        "Civil",
+        "Modelling",
+        "3D Design"
+      ],
+      "description": "A civil-engineering model of the roundabout with pedestrian bridge at Prithvichowk — First Runner-Up in the Civil Project Competition at the 9th PEC Tech Expo. Engineering past the circuit board.",
+      "highlights": [
+        "1st Runner-Up — Civil Project Competition (9th PEC Tech Expo)"
+      ],
+      "links": {},
+      "order": 23
+    },
+    {
+      "id": "swiftignite-v2",
+      "title": "SwiftIgnite v2",
+      "tagline": "Live GPS tracking + SIM800L telemetry",
+      "category": "Automotive IoT",
+      "year": "2026",
+      "status": "in development",
+      "featured": false,
+      "tech": [
+        "nRF52840",
+        "Neo-M8N GPS",
+        "SIM800L",
+        "SMS"
+      ],
+      "description": "Version 2 of my keyless ignition — adding live GPS tracking with the Neo-M8N, SIM800L cellular telemetry and an SMS database so the bike can be located even without phone coverage.",
+      "highlights": [
+        "Live GPS tracking",
+        "SMS alerts + DB logging"
+      ],
+      "links": {},
+      "order": 24
+    },
+    {
+      "id": "rudra",
+      "title": "RUDRA-I Rocket",
+      "tagline": "Experimental rocket with telemetry & recovery",
+      "category": "Robotics",
+      "year": "2025",
+      "status": "completed",
+      "featured": false,
+      "tech": [
+        "Rockets",
+        "Telemetry",
+        "Recovery",
+        "Communication"
+      ],
+      "description": "An experimental rocket I built and launched live at the 9th PEC Tech Expo — demonstrating its communication and recovery system in front of visitors and judges. The launch was covered by multiple local media outlets.",
+      "highlights": [
+        "Live launch at 9th PEC Tech Expo",
+        "Media coverage — ICT Frame, 24 Ghanta, WOW Magazine Nepal"
+      ],
+      "links": {},
+      "order": 25
     },
     {
       "id": "restaurant-websites",
@@ -1034,142 +980,8 @@ export const EMBEDDED_DATA = {
         "Multiple live restaurant sites",
         "Cold-outreach workflow"
       ],
-      "links": {}
-    },
-    {
-      "id": "pahilo-mart",
-      "title": "PahiloMart WebPage",
-      "tagline": "Vite + TypeScript storefront",
-      "category": "Web",
-      "year": "2026",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Vite",
-        "TypeScript",
-        "Tailwind"
-      ],
-      "description": "A web-store landing page built with Vite + TypeScript + Tailwind and deployed behind Netlify redirects. Modern front-end stack, real product intent.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "group-minor-project",
-      "title": "Group Minor Project (PHP)",
-      "tagline": "Login/signup system",
-      "category": "Web",
-      "year": "2023",
-      "status": "academic",
-      "featured": false,
-      "tech": [
-        "PHP",
-        "MySQL",
-        "CSS"
-      ],
-      "description": "College group project — a PHP login/signup system running on XAMPP. My first taste of auth, sessions and why the back-end hurts.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "n8n-selfhost",
-      "title": "Self-Hosted n8n",
-      "tagline": "Workflow automation, my own server",
-      "category": "Software",
-      "year": "2026",
-      "status": "tool",
-      "featured": false,
-      "tech": [
-        "n8n",
-        "Docker",
-        "Automation"
-      ],
-      "description": "n8n self-hosted in Docker — my own workflow automation server. I like owning the tools I depend on.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "home-motor-timer",
-      "title": "Home Motor Timer",
-      "tagline": "Motor on for 6 hrs, off for 1 min, repeat",
-      "category": "IoT & Security",
-      "year": "2024",
-      "status": "built",
-      "featured": false,
-      "tech": [
-        "Relays",
-        "Timing",
-        "Electronics"
-      ],
-      "description": "A real-world household problem solved — a timer that runs a home motor on a strict cycle so it never burns itself out. Built because home needed it.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "ai-agents",
-      "title": "AI Agents & Hand Detection",
-      "tagline": "REAL_AGENT, AI AGENT & vision demos",
-      "category": "AI & Health",
-      "year": "2026",
-      "status": "experimental",
-      "featured": false,
-      "tech": [
-        "Python",
-        "AI",
-        "OpenCV",
-        "MediaPipe"
-      ],
-      "description": "An experimental stack — REAL_AGENT and AI AGENT scripts plus hand-detection demos. The AI/vision layer of what becomes bigger things.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "java-practical",
-      "title": "JAVA Practical",
-      "tagline": "Semester Java practice",
-      "category": "Academic",
-      "year": "2026",
-      "status": "academic",
-      "featured": false,
-      "tech": [
-        "Java"
-      ],
-      "description": "My semester Java practical work — the theory-heavy half of engineering. I learn better with a soldering iron, but Java got drilled in anyway.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "espidf-hello",
-      "title": "ESP-IDF Hello World",
-      "tagline": "Day 01 / Test / hello_world experiments",
-      "category": "Academic",
-      "year": "2026",
-      "status": "academic",
-      "featured": false,
-      "tech": [
-        "ESP-IDF",
-        "C",
-        "CMake"
-      ],
-      "description": "The very first ESP-IDF experiments — Day 01, Test, hello_world — with CMake, sdkconfig and a pytest hello-world test. Every big project starts with a blinking LED.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "web-clones",
-      "title": "Cloned & Scraped Websites",
-      "tagline": "royevent.com, GandakiTent, SlayerCloudSite & more",
-      "category": "Academic",
-      "year": "2024",
-      "status": "academic",
-      "featured": false,
-      "tech": [
-        "HTML",
-        "Scraping",
-        "CSS"
-      ],
-      "description": "A folder of cloned and scraped sites — royevent.com, Gandaki Tent & Decoration, sagarmathapokhara.edu.np, SlayerCloudSite and saved pages from box.com, dropbox, icloud and google. How I reverse-engineered websites before I could build my own.",
-      "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 26
     },
     {
       "id": "d-app",
@@ -1186,7 +998,240 @@ export const EMBEDDED_DATA = {
       ],
       "description": "A bare Next.js app — layout, page, not-found and globals. Early experiments with the App Router that later grew into real sites.",
       "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 27
+    },
+    {
+      "id": "assembly-coding",
+      "title": "Assembly Level Coding",
+      "tagline": "Talking to the metal",
+      "category": "Academic",
+      "year": "2025",
+      "status": "academic",
+      "featured": false,
+      "tech": [
+        "Assembly",
+        "VHDL"
+      ],
+      "description": "Assembly-level programming and VHDL coursework — getting down to where the processor actually lives. Painful, educational, useful once.",
+      "highlights": [],
+      "links": {},
+      "order": 28
+    },
+    {
+      "id": "computer-graphics",
+      "title": "Computer Graphics",
+      "tagline": "Semester graphics course work",
+      "category": "Academic",
+      "year": "2025",
+      "status": "academic",
+      "featured": false,
+      "tech": [
+        "Graphics",
+        "C"
+      ],
+      "description": "Semester computer graphics work — the math and code behind rendering things to a screen.",
+      "highlights": [],
+      "links": {},
+      "order": 29
+    },
+    {
+      "id": "smart-motor-control",
+      "title": "Smart Motor Control System",
+      "tagline": "Motor control circuit, designed in Proteus",
+      "category": "Hardware",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Proteus",
+        "Motor Control",
+        "Power Electronics"
+      ],
+      "description": "A motor control system designed from the schematic up in Proteus — the circuit-level work behind controlling motors properly. The kind of design where every trace earns its place.",
+      "highlights": [],
+      "links": {},
+      "order": 30
+    },
+    {
+      "id": "smart-parking",
+      "title": "Smart Parking System",
+      "tagline": "Parking that tells you where to go",
+      "category": "IoT & Security",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "ESP32",
+        "Sensors",
+        "IoT"
+      ],
+      "description": "IoT parking system — sensors detect free slots and point drivers to them instead of circling forever.",
+      "highlights": [],
+      "links": {},
+      "order": 31
+    },
+    {
+      "id": "gps-buck",
+      "title": "GPS Tracker & Buck Converter",
+      "tagline": "Track a thing, power it properly",
+      "category": "Hardware",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "GPS",
+        "Buck Converter",
+        "Power Electronics"
+      ],
+      "description": "Two-in-one hardware exercise — a working GPS tracker plus a custom buck converter to power it from a battery properly.",
+      "highlights": [],
+      "links": {},
+      "order": 32
+    },
+    {
+      "id": "slide-smart",
+      "title": "SlideSmart",
+      "tagline": "Mobile-controlled curtain automation",
+      "category": "IoT & Security",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "ESP32",
+        "Mobile",
+        "Relays"
+      ],
+      "description": "Curtain automation you drive from your phone. Press a button, curtains slide. The boring problems are the ones worth automating.",
+      "highlights": [],
+      "links": {},
+      "order": 33
+    },
+    {
+      "id": "custom-buck",
+      "title": "Custom Buck Converter",
+      "tagline": "Down-voltage, my way",
+      "category": "Hardware",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Power Electronics",
+        "LM2596"
+      ],
+      "description": "A custom buck converter I designed — dropping battery voltage down cleanly for the boards that need it. Power electronics is where projects live or die.",
+      "highlights": [],
+      "links": {},
+      "order": 34
+    },
+    {
+      "id": "custom-relay",
+      "title": "Custom Relay Module",
+      "tagline": "Relay board, designed from scratch",
+      "category": "Hardware",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Relays",
+        "PCB Design"
+      ],
+      "description": "A relay module I designed myself rather than buying off the shelf — the kind of component that shows up in half my other projects.",
+      "highlights": [],
+      "links": {},
+      "order": 35
+    },
+    {
+      "id": "home-motor-timer",
+      "title": "Home Motor Timer",
+      "tagline": "Motor on for 6 hrs, off for 1 min, repeat",
+      "category": "IoT & Security",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Relays",
+        "Timing",
+        "Electronics"
+      ],
+      "description": "A real-world household problem solved — a timer that runs a home motor on a strict cycle so it never burns itself out. Built because home needed it.",
+      "highlights": [],
+      "links": {},
+      "order": 36
+    },
+    {
+      "id": "mama",
+      "title": "M.A.M.A",
+      "tagline": "Multi-Agency Management Assistant",
+      "category": "Software",
+      "year": "2024",
+      "status": "prototype",
+      "featured": false,
+      "tech": [
+        "Web",
+        "Prototype"
+      ],
+      "description": "Concept + prototype for a multi-agency management assistant — one dashboard for agencies that never talk to each other.",
+      "highlights": [],
+      "links": {},
+      "order": 37
+    },
+    {
+      "id": "herlegal",
+      "title": "HerLegal",
+      "tagline": "Legal resource site",
+      "category": "Web",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "HTML",
+        "Supabase",
+        "CSS"
+      ],
+      "description": "A legal information site — static front-end with Supabase for content. Early web work while I was learning how the other half of software lives.",
+      "highlights": [],
+      "links": {},
+      "order": 38
+    },
+    {
+      "id": "ctevt-checker",
+      "title": "Diploma CTEVT Checker",
+      "tagline": "Result checker desktop app",
+      "category": "Tools",
+      "year": "2024",
+      "status": "shipped",
+      "featured": false,
+      "tech": [
+        "Python",
+        "PyInstaller",
+        "Desktop"
+      ],
+      "description": "A desktop app that checks Diploma CTEVT results — packaged into a real .exe with PyInstaller so batch-mates could run it without touching Python.",
+      "highlights": [
+        "Packaged .exe",
+        "Built for batch-mates"
+      ],
+      "links": {},
+      "order": 39
+    },
+    {
+      "id": "web-clones",
+      "title": "Cloned & Scraped Websites",
+      "tagline": "royevent.com, GandakiTent, SlayerCloudSite & more",
+      "category": "Academic",
+      "year": "2024",
+      "status": "academic",
+      "featured": false,
+      "tech": [
+        "HTML",
+        "Scraping",
+        "CSS"
+      ],
+      "description": "A folder of cloned and scraped sites — royevent.com, Gandaki Tent & Decoration, sagarmathapokhara.edu.np, SlayerCloudSite and saved pages from box.com, dropbox, icloud and google. How I reverse-engineered websites before I could build my own.",
+      "highlights": [],
+      "links": {},
+      "order": 40
     },
     {
       "id": "personal-website",
@@ -1204,39 +1249,8 @@ export const EMBEDDED_DATA = {
       ],
       "description": "The first version of my personal website — Next.js + Tailwind deployed on Netlify, kept clean with ESLint. Eventually rebuilt on the Vite + React stack you're looking at now, but this is where this site started.",
       "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "computer-graphics",
-      "title": "Computer Graphics",
-      "tagline": "Semester graphics course work",
-      "category": "Academic",
-      "year": "2025",
-      "status": "academic",
-      "featured": false,
-      "tech": [
-        "Graphics",
-        "C"
-      ],
-      "description": "Semester computer graphics work — the math and code behind rendering things to a screen.",
-      "highlights": [],
-      "links": {}
-    },
-    {
-      "id": "assembly-coding",
-      "title": "Assembly Level Coding",
-      "tagline": "Talking to the metal",
-      "category": "Academic",
-      "year": "2025",
-      "status": "academic",
-      "featured": false,
-      "tech": [
-        "Assembly",
-        "VHDL"
-      ],
-      "description": "Assembly-level programming and VHDL coursework — getting down to where the processor actually lives. Painful, educational, useful once.",
-      "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 41
     },
     {
       "id": "project05-pa",
@@ -1251,7 +1265,8 @@ export const EMBEDDED_DATA = {
       ],
       "description": "One of my home-lab mini projects — the kind of thing I built on the workbench between real projects.",
       "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 42
     },
     {
       "id": "college-semesters",
@@ -1267,7 +1282,117 @@ export const EMBEDDED_DATA = {
       ],
       "description": "The full BE college archive — semester folders from BE.PEC and PEC with notes, presentations and exam prep. The paperwork side of engineering.",
       "highlights": [],
-      "links": {}
+      "links": {},
+      "order": 43
+    },
+    {
+      "id": "home-auto-lab",
+      "title": "Home Automation Lab",
+      "tagline": "ESP32 experiments: LDR, ultrasonic, relays",
+      "category": "IoT & Security",
+      "year": "2023",
+      "status": "experimental",
+      "featured": false,
+      "tech": [
+        "ESP32",
+        "LDR",
+        "Ultrasonic",
+        "Relays"
+      ],
+      "description": "My self-hosted home-automation lab — light sensors, ultrasonic triggers, relay boards and ESP32 wroom modules. The sandbox where home automation got figured out.",
+      "highlights": [],
+      "links": {},
+      "order": 44
+    },
+    {
+      "id": "smart-dustbin",
+      "title": "SmartDustBin",
+      "tagline": "A dustbin with a brain",
+      "category": "IoT & Security",
+      "year": "2023",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "ESP32",
+        "Sensors"
+      ],
+      "description": "A smart dustbin firmware — sensors and automation so the bin handles itself. Small project, big lesson in keeping things simple.",
+      "highlights": [],
+      "links": {},
+      "order": 45
+    },
+    {
+      "id": "stealth-rc",
+      "title": "RC Car Builds",
+      "tagline": "Rc_Car1, Rc_Car2 & the NRF stealth version",
+      "category": "Robotics",
+      "year": "2023",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Arduino",
+        "NRF",
+        "Motors"
+      ],
+      "description": "A whole garage of RC cars — Rc_Car1 and Rc_Car2 plus a stealth variant that swapped IR for NRF radio modules, so it actually works outside the living room.",
+      "highlights": [],
+      "links": {},
+      "order": 46
+    },
+    {
+      "id": "room-light",
+      "title": "RoomLightApp",
+      "tagline": "Room lighting from your pocket",
+      "category": "Software",
+      "year": "2023",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "App",
+        "IoT"
+      ],
+      "description": "A room-light control app — early attempt at putting my hardware behind a phone interface.",
+      "highlights": [],
+      "links": {},
+      "order": 47
+    },
+    {
+      "id": "group-minor-project",
+      "title": "Group Minor Project (PHP)",
+      "tagline": "Login/signup system",
+      "category": "Web",
+      "year": "2023",
+      "status": "academic",
+      "featured": false,
+      "tech": [
+        "PHP",
+        "MySQL",
+        "CSS"
+      ],
+      "description": "College group project — a PHP login/signup system running on XAMPP. My first taste of auth, sessions and why the back-end hurts.",
+      "highlights": [],
+      "links": {},
+      "order": 48
+    },
+    {
+      "id": "air-mouse",
+      "title": "Air Mouse",
+      "tagline": "Mouse controlled by pointing",
+      "category": "Computer Vision",
+      "year": "2022",
+      "status": "award-winning",
+      "featured": false,
+      "tech": [
+        "Arduino",
+        "Sensors",
+        "Python"
+      ],
+      "description": "One of my earliest projects — control the cursor by moving your hand in the air. Basically told me which direction I was going in.",
+      "highlights": [],
+      "links": {
+        "github": "https://github.com/TheRowKneet68"
+      },
+      "order": 49
     }
   ],
   "achievements": [
@@ -1277,7 +1402,8 @@ export const EMBEDDED_DATA = {
       "event": "SurakshaGhar",
       "title": "Home automation ecosystem",
       "detail": "Home automation ecosystem — 4-channel relay switch, RFID door lock, PIR detection, web control and a companion app. Custom PCB designed in EasyEDA, from breadboard to production switch.",
-      "result": "Shipped"
+      "result": "Shipped",
+      "order": 0
     },
     {
       "id": "swiftignite",
@@ -1286,7 +1412,8 @@ export const EMBEDDED_DATA = {
       "event": "SwiftIgnite",
       "title": "Keyless motorcycle ignition",
       "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database.",
-      "result": "v2 planned"
+      "result": "v2 planned",
+      "order": 1
     },
     {
       "id": "udaan-2025",
@@ -1299,7 +1426,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-1st-Position.jpeg"
       ],
       "result": "1st Position",
-      "highlight": true
+      "highlight": true,
+      "order": 2
     },
     {
       "id": "udaan-2025-participant",
@@ -1311,7 +1439,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-Certificate-of-Appriciation.jpeg"
       ],
-      "result": "Certificate of Appreciation"
+      "result": "Certificate of Appreciation",
+      "order": 3
     },
     {
       "id": "octate-2025",
@@ -1324,7 +1453,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Octate-2025-Expo-Second-Runner-Up-People-s-Choice-Award.jpeg"
       ],
       "result": "People's Choice Award",
-      "highlight": true
+      "highlight": true,
+      "order": 4
     },
     {
       "id": "call-motor-control",
@@ -1336,7 +1466,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Poster-SMCD.png"
       ],
-      "result": "Market-launched"
+      "result": "Market-launched",
+      "order": 5
     },
     {
       "id": "innosphere-1",
@@ -1350,7 +1481,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Innosphere-1.0-2025-Expo-Certificate-of-Participatiom.jpeg"
       ],
       "result": "First Runner-Up",
-      "highlight": true
+      "highlight": true,
+      "order": 6
     },
     {
       "id": "capec-leadership",
@@ -1362,7 +1494,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/CAPEC-2024-to-2025-Certificate-of-Appriciation.jpeg"
       ],
-      "result": "Appreciation"
+      "result": "Appreciation",
+      "order": 7
     },
     {
       "id": "capec-joint-secretary",
@@ -1374,7 +1507,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Appointed-as-Joint-Secretary-of-CAPEC.jpeg"
       ],
-      "result": "Appointed"
+      "result": "Appointed",
+      "order": 8
     },
     {
       "id": "pec-2026-it",
@@ -1387,7 +1521,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Computer---IT-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
       ],
       "result": "Consolation",
-      "highlight": true
+      "highlight": true,
+      "order": 9
     },
     {
       "id": "pec-2026-participants",
@@ -1404,7 +1539,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/RUDRA-1-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Suraksha360-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg"
       ],
-      "result": "Participant"
+      "result": "Participant",
+      "order": 10
     },
     {
       "id": "pec-2026-civil",
@@ -1417,7 +1553,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Civil-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
       ],
       "result": "First Runner-Up",
-      "highlight": true
+      "highlight": true,
+      "order": 11
     },
     {
       "id": "hackathon-nova-partner",
@@ -1429,7 +1566,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Suraksha-Ghar-Community-Partner-Certificate-Of-Appreciation.jpeg"
       ],
-      "result": "Community Partner"
+      "result": "Community Partner",
+      "order": 12
     },
     {
       "id": "hackathon-nova-volunteer",
@@ -1441,7 +1579,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg"
       ],
-      "result": "Volunteer"
+      "result": "Volunteer",
+      "order": 13
     },
     {
       "id": "fishtail-fair-2026",
@@ -1453,7 +1592,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Fishtail-Academy-FASS-SEE-Camp-Certificate-Of-Appericiation.jpeg"
       ],
-      "result": "Presented"
+      "result": "Presented",
+      "order": 14
     },
     {
       "id": "gces-it-expo-2024",
@@ -1466,7 +1606,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/11th-GCES-Expo-1st-Position.jpeg"
       ],
       "result": "1st Place",
-      "highlight": true
+      "highlight": true,
+      "order": 15
     },
     {
       "id": "codefest-2026",
@@ -1478,7 +1619,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Team-Suraksha360-Codefest-2026-Gandaki-ProvinceCertificate-of-Participatiom.jpeg"
       ],
-      "result": "Participated"
+      "result": "Participated",
+      "order": 16
     }
   ]
 }

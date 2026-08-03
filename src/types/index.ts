@@ -12,6 +12,7 @@ export interface ExperienceEntry {
   year: string;
   title: string;
   note: string;
+  order?: number;
 }
 
 export interface Testimonial {
@@ -71,6 +72,7 @@ export interface Project {
   year: string;
   status: string;
   featured?: boolean;
+  order?: number;
   weight?: number;
   images?: string[];
   tech: string[];
@@ -91,6 +93,7 @@ export interface Achievement {
   rank?: string;
   highlight?: boolean;
   images?: string[];
+  order?: number;
 }
 
 export interface Skills {

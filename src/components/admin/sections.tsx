@@ -355,6 +355,14 @@ export function PrinciplesSection({ value, onChange }: { value: Principle[]; onC
 export function SkillsSection({ value, onChange }: { value: Record<string, string[]>; onChange: (v: Record<string, string[]>) => void }) {
   const entries = Object.entries(value);
   const set = (list: [string, string[]][]) => onChange(Object.fromEntries(list.filter(([k]) => k.trim() !== "")));
+  const move = (from: number, to: number) => {
+    const next = [...entries];
+    const [entry] = next.splice(from, 1);
+    next.splice(to, 0, entry as [string, string[]]);
+    set(next);
+  };
+  const btnCls =
+    "rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent disabled:opacity-30";
   return (
     <div className="space-y-4">
       {entries.map(([category, skills], i) => (
@@ -366,6 +374,12 @@ export function SkillsSection({ value, onChange }: { value: Record<string, strin
               placeholder="category"
               onChange={(e) => set(entries.map(([c, s], j) => (j === i ? [e.target.value, s] : [c, s])))}
             />
+            <button type="button" className={btnCls} disabled={i === 0} onClick={() => move(i, i - 1)} title="Move category up">
+              ↑
+            </button>
+            <button type="button" className={btnCls} disabled={i === entries.length - 1} onClick={() => move(i, i + 1)} title="Move category down">
+              ↓
+            </button>
             <button
               type="button"
               className="rounded border border-line px-2 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent"
@@ -467,7 +481,7 @@ export function ProjectsSection({
         { key: "year", label: "Year", type: "text", placeholder: "e.g. 2026" },
         { key: "status", label: "Status", type: "text", placeholder: "e.g. shipped, ongoing" },
         { key: "featured", label: "Featured", type: "toggle" },
-        { key: "weight", label: "Weight", type: "number", hint: "Lower = earlier in the default site order. Featured projects pin above everything, then weight, then newest year." },
+        { key: "weight", label: "Weight", type: "number", hint: "Legacy tiebreak — use the ↑ / ↓ buttons to reorder; manual order wins on the site." },
         { key: "tech", label: "Tech", type: "list", placeholder: "tech" },
         { key: "description", label: "Description", type: "textarea" },
         { key: "highlights", label: "Highlights", type: "list", placeholder: "highlight" },

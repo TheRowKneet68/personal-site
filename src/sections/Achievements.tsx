@@ -27,9 +27,16 @@ function achDate(a: Achievement): string {
   return a.date || a.year;
 }
 
-type SortId = "timeline" | "newest" | "rank" | "title";
+type SortId = "manual" | "timeline" | "newest" | "rank" | "title";
 
 const SORTS: Record<SortId, { label: string; cmp: (a: Achievement, b: Achievement) => number }> = {
+  manual: {
+    label: "manual",
+    cmp: (a, b) =>
+      (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER) ||
+      placementRank(a) - placementRank(b) ||
+      achDate(a).localeCompare(achDate(b)),
+  },
   timeline: { label: "timeline", cmp: (a, b) => achDate(a).localeCompare(achDate(b)) },
   newest: { label: "newest", cmp: (a, b) => achDate(b).localeCompare(achDate(a)) },
   rank: { label: "rank", cmp: (a, b) => placementRank(a) - placementRank(b) || achDate(a).localeCompare(achDate(b)) },
@@ -38,7 +45,7 @@ const SORTS: Record<SortId, { label: string; cmp: (a: Achievement, b: Achievemen
 
 export function Achievements() {
   const { achievements } = useData();
-  const [sort, setSort] = useState<SortId>("rank");
+  const [sort, setSort] = useState<SortId>("manual");
   const sorted = useMemo(() => [...(achievements ?? [])].sort(SORTS[sort].cmp), [achievements, sort]);
   if (!achievements) return null;
 

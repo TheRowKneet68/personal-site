@@ -15,6 +15,7 @@ const SORTS: Record<SortId, { label: string; cmp: (a: Project, b: Project) => nu
     label: "featured first",
     cmp: (a, b) =>
       Number(Boolean(b.featured)) - Number(Boolean(a.featured)) ||
+      (a.order ?? 9999) - (b.order ?? 9999) ||
       (a.weight ?? 9999) - (b.weight ?? 9999) ||
       b.year.localeCompare(a.year),
   },
@@ -33,7 +34,10 @@ export function Projects() {
       (projects ?? [])
         .filter((p) => p.caseStudy)
         .sort(
-          (a, b) => (a.weight ?? 9999) - (b.weight ?? 9999) || b.year.localeCompare(a.year),
+          (a, b) =>
+            (a.order ?? 9999) - (b.order ?? 9999) ||
+            (a.weight ?? 9999) - (b.weight ?? 9999) ||
+            b.year.localeCompare(a.year),
         ),
     [projects],
   );

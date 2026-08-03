@@ -11,11 +11,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/swasthya-sathi</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://therowkneet.vercel.app/projects/suraksha-ghar</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -31,12 +26,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/air-mouse</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/aegis</loc>
+    <loc>https://therowkneet.vercel.app/projects/swasthya-sathi</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -46,27 +36,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/smart-motor-control</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/ghostware</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/smart-parking</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/stealth-rc</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/gps-buck</loc>
+    <loc>https://therowkneet.vercel.app/projects/aegis</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -81,12 +51,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/mama</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/herlegal</loc>
+    <loc>https://therowkneet.vercel.app/projects/ghostware</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -96,7 +61,32 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/rudra</loc>
+    <loc>https://therowkneet.vercel.app/projects/rubber-ducky</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/wifi-tracking</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/esp-toolkit</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/earthquake-sim</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/mass-report</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/ai-agents</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -106,12 +96,77 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/rubber-ducky</loc>
+    <loc>https://therowkneet.vercel.app/projects/java-practical</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/smart-dustbin</loc>
+    <loc>https://therowkneet.vercel.app/projects/espidf-hello</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/pahilo-mart</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/n8n-selfhost</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/laser-tag</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/roundabout-bridge</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/swiftignite-v2</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/rudra</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/restaurant-websites</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/d-app</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/assembly-coding</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/computer-graphics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/smart-motor-control</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/smart-parking</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/gps-buck</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -131,32 +186,17 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/earthquake-sim</loc>
+    <loc>https://therowkneet.vercel.app/projects/home-motor-timer</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/mass-report</loc>
+    <loc>https://therowkneet.vercel.app/projects/mama</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/home-auto-lab</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/wifi-tracking</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/esp-toolkit</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/room-light</loc>
+    <loc>https://therowkneet.vercel.app/projects/herlegal</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -166,67 +206,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/restaurant-websites</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/pahilo-mart</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/group-minor-project</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/n8n-selfhost</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/home-motor-timer</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/ai-agents</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/java-practical</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/espidf-hello</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://therowkneet.vercel.app/projects/web-clones</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://therowkneet.vercel.app/projects/d-app</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://therowkneet.vercel.app/projects/personal-website</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/computer-graphics</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/assembly-coding</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -237,6 +222,36 @@
   </url>
   <url>
     <loc>https://therowkneet.vercel.app/projects/college-semesters</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/home-auto-lab</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/smart-dustbin</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/stealth-rc</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/room-light</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/group-minor-project</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/air-mouse</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
