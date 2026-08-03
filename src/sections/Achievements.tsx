@@ -38,7 +38,7 @@ const SORTS: Record<SortId, { label: string; cmp: (a: Achievement, b: Achievemen
 
 export function Achievements() {
   const { achievements } = useData();
-  const [sort, setSort] = useState<SortId>("timeline");
+  const [sort, setSort] = useState<SortId>("rank");
   const sorted = useMemo(() => [...(achievements ?? [])].sort(SORTS[sort].cmp), [achievements, sort]);
   if (!achievements) return null;
 
