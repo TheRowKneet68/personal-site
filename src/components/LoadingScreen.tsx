@@ -59,7 +59,12 @@ export function LoadingScreen({ show }: { show: boolean }) {
                 transition={{ duration: 1.7, repeat: Infinity, ease: "easeInOut" }}
                 className="flex size-20 items-center justify-center rounded-full bg-accent/10 shadow-[0_0_70px_10px_var(--rk-accent-soft)]"
               >
-                <span className="font-mono text-xl font-bold text-accent-ink">RK</span>
+                <svg viewBox="0 0 24 24" className="size-8 text-accent-ink md:size-10" fill="none" stroke="currentColor" strokeWidth="1.4">
+                  <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+                  <ellipse cx="12" cy="12" rx="9.5" ry="3.6" />
+                  <ellipse cx="12" cy="12" rx="9.5" ry="3.6" transform="rotate(60 12 12)" />
+                  <ellipse cx="12" cy="12" rx="9.5" ry="3.6" transform="rotate(120 12 12)" />
+                </svg>
               </motion.div>
             </div>
 
