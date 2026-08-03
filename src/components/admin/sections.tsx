@@ -27,6 +27,7 @@ export function Repeater<T extends object>({
   itemLabel = "item",
   view,
   sorts,
+  summaryToggles,
 }: {
   items: T[];
   onChange: (v: T[]) => void;
@@ -37,6 +38,9 @@ export function Repeater<T extends object>({
   itemLabel?: string;
   view?: (item: T) => string | undefined;
   sorts?: { id: string; label: string; compare: (a: T, b: T) => number }[];
+  /** Extra pill toggles shown on the collapsed row next to the boolean fields.
+      Used for fields that aren't plain booleans (e.g. caseStudy). */
+  summaryToggles?: { label: string; checked: (item: T) => boolean; patch: (item: T, on: boolean) => Partial<T> }[];
 }) {
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState("manual");
@@ -98,7 +102,16 @@ export function Repeater<T extends object>({
         const img = thumb(item);
         const href = view?.(item);
         const title = titleOf(item).trim();
-        const toggles = fields.filter((f) => f.type === "toggle");
+        const toggles = [
+          ...fields
+            .filter((f) => f.type === "toggle")
+            .map((f) => ({
+              label: f.label,
+              checked: (it: T) => Boolean((it as Record<string, unknown>)[f.key]),
+              patch: (_it: T, on: boolean) => ({ [f.key]: on } as Partial<T>),
+            })),
+          ...(summaryToggles ?? []),
+        ];
         return (
           <details key={i} className={cn("rounded-lg border border-line bg-surface", dragIdx === i && "opacity-50")}>
             <summary
@@ -137,25 +150,25 @@ export function Repeater<T extends object>({
                   {k + 1} of {rows.length}
                 </span>
               </span>
-              {toggles.map((f) => {
-                const on = Boolean((item as Record<string, unknown>)[f.key]);
+              {toggles.map((t) => {
+                const on = t.checked(item);
                 return (
                   <label
-                    key={f.key}
+                    key={t.label}
                     className={cn(
                       "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em]",
                       on ? "border-accent bg-accent/10 text-accent-ink" : "border-line text-ink-faint",
                     )}
-                    title={`${f.label} — toggle without opening`}
+                    title={`${t.label} — toggle without opening`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <input
                       type="checkbox"
                       className="size-3 accent-accent"
                       checked={on}
-                      onChange={(e) => update(i, { [f.key]: e.target.checked } as Partial<T>)}
+                      onChange={(e) => update(i, t.patch(item, e.target.checked))}
                     />
-                    {f.label}
+                    {t.label}
                   </label>
                 );
               })}
@@ -545,6 +558,13 @@ export function ProjectsSection({
       })}
       titleOf={(p) => `${p.year} — ${p.title}`}
       view={(p) => (p.id ? `/projects/${p.id}` : undefined)}
+      summaryToggles={[
+        {
+          label: "Case Study",
+          checked: (p) => Boolean(p.caseStudy),
+          patch: (_p, on) => (on ? ({ caseStudy: {} } as Partial<Project>) : ({ caseStudy: undefined } as Partial<Project>)),
+        },
+      ]}
       sorts={[
         { id: "weight", label: "sort: weight (lowest first)", compare: (a, b) => (a.weight ?? 9999) - (b.weight ?? 9999) },
         { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },

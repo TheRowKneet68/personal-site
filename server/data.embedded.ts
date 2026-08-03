@@ -432,6 +432,65 @@ export const EMBEDDED_DATA = {
       "order": 2
     },
     {
+      "id": "rudra",
+      "title": "RUDRA-I Rocket",
+      "tagline": "Experimental rocket with telemetry & recovery",
+      "category": "Robotics",
+      "year": "2025",
+      "status": "completed",
+      "featured": false,
+      "tech": [
+        "Rockets",
+        "Telemetry",
+        "Recovery",
+        "Communication"
+      ],
+      "description": "An experimental rocket I built and launched live at the 9th PEC Tech Expo — demonstrating its communication and recovery system in front of visitors and judges. The launch was covered by multiple local media outlets.",
+      "highlights": [
+        "Live launch at 9th PEC Tech Expo",
+        "Media coverage — ICT Frame, 24 Ghanta, WOW Magazine Nepal"
+      ],
+      "links": {},
+      "order": 3,
+      "caseStudy": {
+        "problem": [
+          "Rockets barely exist in Nepali student engineering — no local reference, no kit, and a budget that makes it easy to never try.",
+          "A rocket that launches is nothing without a way to talk to it or bring it back. The communication and recovery systems were the hard parts."
+        ],
+        "solution": [
+          "Designed and built the RUDRA-I experimental rocket with a communication and recovery system, then flew it live in front of visitors and judges.",
+          "Launched it during the 9th PEC Tech Expo as a live demonstration — proving the telemetry, comms and recovery chain in public instead of on a bench."
+        ],
+        "architecture": [
+          "On-board telemetry reports back during flight over the communication system, while the recovery system brings the airframe back down intact.",
+          "The whole launch sequence was rehearsed end-to-end beforehand — a live expo demo has no second take."
+        ],
+        "stack": [
+          "Rocket",
+          "Telemetry",
+          "Communication",
+          "Recovery"
+        ],
+        "challenges": [
+          {
+            "problem": "The launch had to work live, on the first try, in front of judges and media.",
+            "fix": "Every subsystem was bench-tested separately and the full launch sequence rehearsed before the public run."
+          },
+          {
+            "problem": "Recovering the rocket after launch — the part most student rocket attempts skip.",
+            "fix": "A dedicated recovery system so the airframe comes back whole and the mission stays repeatable."
+          }
+        ],
+        "impact": [
+          "The launch was one of the highlights of the 9th PEC Tech Expo, covered by ICT Frame, WOW Magazine Nepal, 24 Ghanta and Digital Nepal.",
+          "Put the expo — and experimental rocketry in student hands — in front of a much wider audience."
+        ],
+        "lessons": [
+          "A live demo is the harshest deadline there is. If it must work in public, it must work when nobody is watching."
+        ]
+      }
+    },
+    {
       "id": "gravas",
       "title": "GRAVAS",
       "tagline": "Gesture-controlled robotic arm",
@@ -455,7 +514,7 @@ export const EMBEDDED_DATA = {
       "links": {
         "github": "https://github.com/TheRowKneet68"
       },
-      "order": 3
+      "order": 4
     },
     {
       "id": "swasthya-sathi",
@@ -517,7 +576,7 @@ export const EMBEDDED_DATA = {
       "links": {
         "github": "https://github.com/TheRowKneet68"
       },
-      "order": 4
+      "order": 5
     },
     {
       "id": "motor-control",
@@ -541,7 +600,7 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Poster-SMCD.jpg"
       ],
-      "order": 5
+      "order": 6
     },
     {
       "id": "aegis",
@@ -564,7 +623,7 @@ export const EMBEDDED_DATA = {
         "Command & control center"
       ],
       "links": {},
-      "order": 6
+      "order": 7
     },
     {
       "id": "lyrics-display",
@@ -586,7 +645,7 @@ export const EMBEDDED_DATA = {
         "10+ song variants"
       ],
       "links": {},
-      "order": 7
+      "order": 8
     },
     {
       "id": "fishtail",
@@ -604,7 +663,7 @@ export const EMBEDDED_DATA = {
       "description": "My experimental workspace — a mix of dev-core software and raw hardware experiments. The drawer where projects start before they get names.",
       "highlights": [],
       "links": {},
-      "order": 8
+      "order": 9
     },
     {
       "id": "ghostware",
@@ -624,7 +683,7 @@ export const EMBEDDED_DATA = {
         "Horror + coding theme"
       ],
       "links": {},
-      "order": 9
+      "order": 10
     },
     {
       "id": "qr-tool",
@@ -640,7 +699,7 @@ export const EMBEDDED_DATA = {
       "description": "A Python tool that turns a CSV into hundreds of QR codes in one run. Built because I needed it, the way all good tools get built.",
       "highlights": [],
       "links": {},
-      "order": 10
+      "order": 11
     },
     {
       "id": "rubber-ducky",
@@ -657,7 +716,7 @@ export const EMBEDDED_DATA = {
       "description": "USB keystroke-injection experiments with a Rubber Ducky. Security research — knowing how these work is how you defend against them.",
       "highlights": [],
       "links": {},
-      "order": 11
+      "order": 12
     },
     {
       "id": "wifi-tracking",
@@ -675,7 +734,7 @@ export const EMBEDDED_DATA = {
       "description": "WiFi tracking experiments — RuView for device detection and channel-state-information capture to understand what WiFi can see. A deep rabbit hole.",
       "highlights": [],
       "links": {},
-      "order": 12
+      "order": 13
     },
     {
       "id": "esp-toolkit",
@@ -693,7 +752,7 @@ export const EMBEDDED_DATA = {
       "description": "A pile of small but essential ESP utilities — finding MAC addresses, checking pin layouts on nRF boards, and a Lager Tag victim build. The unglamorous tools every build depends on.",
       "highlights": [],
       "links": {},
-      "order": 13
+      "order": 14
     },
     {
       "id": "earthquake-sim",
@@ -711,7 +770,7 @@ export const EMBEDDED_DATA = {
       "description": "A Flask app that visualizes earthquakes — plotting the ones that already happened and simulating the ones that might. Web + Python in one project.",
       "highlights": [],
       "links": {},
-      "order": 14
+      "order": 15
     },
     {
       "id": "mass-report",
@@ -728,7 +787,7 @@ export const EMBEDDED_DATA = {
       "description": "A Python reporting bot that handles mass reporting on TikTok. Built to automate something that was taking hours by hand.",
       "highlights": [],
       "links": {},
-      "order": 15
+      "order": 16
     },
     {
       "id": "ai-agents",
@@ -747,7 +806,7 @@ export const EMBEDDED_DATA = {
       "description": "An experimental stack — REAL_AGENT and AI AGENT scripts plus hand-detection demos. The AI/vision layer of what becomes bigger things.",
       "highlights": [],
       "links": {},
-      "order": 16
+      "order": 17
     },
     {
       "id": "airis",
@@ -765,7 +824,7 @@ export const EMBEDDED_DATA = {
       "description": "My own voice assistant — speech-to-text, text-to-speech, command handling, all wired together locally. Half product, half training my Python.",
       "highlights": [],
       "links": {},
-      "order": 17
+      "order": 18
     },
     {
       "id": "java-practical",
@@ -781,7 +840,7 @@ export const EMBEDDED_DATA = {
       "description": "My semester Java practical work — the theory-heavy half of engineering. I learn better with a soldering iron, but Java got drilled in anyway.",
       "highlights": [],
       "links": {},
-      "order": 18
+      "order": 19
     },
     {
       "id": "espidf-hello",
@@ -799,7 +858,7 @@ export const EMBEDDED_DATA = {
       "description": "The very first ESP-IDF experiments — Day 01, Test, hello_world — with CMake, sdkconfig and a pytest hello-world test. Every big project starts with a blinking LED.",
       "highlights": [],
       "links": {},
-      "order": 19
+      "order": 20
     },
     {
       "id": "pahilo-mart",
@@ -817,7 +876,7 @@ export const EMBEDDED_DATA = {
       "description": "A web-store landing page built with Vite + TypeScript + Tailwind and deployed behind Netlify redirects. Modern front-end stack, real product intent.",
       "highlights": [],
       "links": {},
-      "order": 20
+      "order": 21
     },
     {
       "id": "n8n-selfhost",
@@ -835,7 +894,7 @@ export const EMBEDDED_DATA = {
       "description": "n8n self-hosted in Docker — my own workflow automation server. I like owning the tools I depend on.",
       "highlights": [],
       "links": {},
-      "order": 21
+      "order": 22
     },
     {
       "id": "laser-tag",
@@ -857,7 +916,7 @@ export const EMBEDDED_DATA = {
         "Showcased at 9th PEC Tech Expo"
       ],
       "links": {},
-      "order": 22
+      "order": 23
     },
     {
       "id": "roundabout-bridge",
@@ -877,7 +936,7 @@ export const EMBEDDED_DATA = {
         "1st Runner-Up — Civil Project Competition (9th PEC Tech Expo)"
       ],
       "links": {},
-      "order": 23
+      "order": 24
     },
     {
       "id": "swiftignite-v2",
@@ -899,66 +958,7 @@ export const EMBEDDED_DATA = {
         "SMS alerts + DB logging"
       ],
       "links": {},
-      "order": 24
-    },
-    {
-      "id": "rudra",
-      "title": "RUDRA-I Rocket",
-      "tagline": "Experimental rocket with telemetry & recovery",
-      "category": "Robotics",
-      "year": "2025",
-      "status": "completed",
-      "featured": false,
-      "tech": [
-        "Rockets",
-        "Telemetry",
-        "Recovery",
-        "Communication"
-      ],
-      "description": "An experimental rocket I built and launched live at the 9th PEC Tech Expo — demonstrating its communication and recovery system in front of visitors and judges. The launch was covered by multiple local media outlets.",
-      "highlights": [
-        "Live launch at 9th PEC Tech Expo",
-        "Media coverage — ICT Frame, 24 Ghanta, WOW Magazine Nepal"
-      ],
-      "links": {},
-      "order": 25,
-      "caseStudy": {
-        "problem": [
-          "Rockets barely exist in Nepali student engineering — no local reference, no kit, and a budget that makes it easy to never try.",
-          "A rocket that launches is nothing without a way to talk to it or bring it back. The communication and recovery systems were the hard parts."
-        ],
-        "solution": [
-          "Designed and built the RUDRA-I experimental rocket with a communication and recovery system, then flew it live in front of visitors and judges.",
-          "Launched it during the 9th PEC Tech Expo as a live demonstration — proving the telemetry, comms and recovery chain in public instead of on a bench."
-        ],
-        "architecture": [
-          "On-board telemetry reports back during flight over the communication system, while the recovery system brings the airframe back down intact.",
-          "The whole launch sequence was rehearsed end-to-end beforehand — a live expo demo has no second take."
-        ],
-        "stack": [
-          "Rocket",
-          "Telemetry",
-          "Communication",
-          "Recovery"
-        ],
-        "challenges": [
-          {
-            "problem": "The launch had to work live, on the first try, in front of judges and media.",
-            "fix": "Every subsystem was bench-tested separately and the full launch sequence rehearsed before the public run."
-          },
-          {
-            "problem": "Recovering the rocket after launch — the part most student rocket attempts skip.",
-            "fix": "A dedicated recovery system so the airframe comes back whole and the mission stays repeatable."
-          }
-        ],
-        "impact": [
-          "The launch was one of the highlights of the 9th PEC Tech Expo, covered by ICT Frame, WOW Magazine Nepal, 24 Ghanta and Digital Nepal.",
-          "Put the expo — and experimental rocketry in student hands — in front of a much wider audience."
-        ],
-        "lessons": [
-          "A live demo is the harshest deadline there is. If it must work in public, it must work when nobody is watching."
-        ]
-      }
+      "order": 25
     },
     {
       "id": "restaurant-websites",
