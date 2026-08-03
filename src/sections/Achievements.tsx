@@ -23,18 +23,22 @@ function placementRank(a: Achievement): number {
 
 const AUTO_HIGHLIGHT = /\b1st\b|winner|first runner|second runner|people's choice|consolation/i;
 
-type SortId = "rank" | "newest" | "oldest" | "title";
+function achDate(a: Achievement): string {
+  return a.date || a.year;
+}
+
+type SortId = "timeline" | "newest" | "rank" | "title";
 
 const SORTS: Record<SortId, { label: string; cmp: (a: Achievement, b: Achievement) => number }> = {
-  rank: { label: "rank", cmp: (a, b) => placementRank(a) - placementRank(b) || a.year.localeCompare(b.year) },
-  newest: { label: "newest", cmp: (a, b) => b.year.localeCompare(a.year) },
-  oldest: { label: "oldest", cmp: (a, b) => a.year.localeCompare(b.year) },
+  timeline: { label: "timeline", cmp: (a, b) => achDate(a).localeCompare(achDate(b)) },
+  newest: { label: "newest", cmp: (a, b) => achDate(b).localeCompare(achDate(a)) },
+  rank: { label: "rank", cmp: (a, b) => placementRank(a) - placementRank(b) || achDate(a).localeCompare(achDate(b)) },
   title: { label: "title A-Z", cmp: (a, b) => a.title.localeCompare(b.title) },
 };
 
 export function Achievements() {
   const { achievements } = useData();
-  const [sort, setSort] = useState<SortId>("rank");
+  const [sort, setSort] = useState<SortId>("timeline");
   const sorted = useMemo(() => [...(achievements ?? [])].sort(SORTS[sort].cmp), [achievements, sort]);
   if (!achievements) return null;
 
@@ -76,7 +80,7 @@ export function Achievements() {
                   key={a.id}
                   className="grid grid-cols-12 items-baseline gap-x-4 gap-y-3 border-b border-line py-8 md:py-10"
                 >
-                  <span className="col-span-2 font-mono text-sm text-ink-faint md:col-span-1">{a.year}</span>
+                  <span className="col-span-2 font-mono text-sm text-ink-faint md:col-span-1">{a.date ?? a.year}</span>
                   <div className="col-span-10 md:col-span-8">
                     <p className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink-faint">{a.event}</p>
                     <h3 className="mt-1 text-lg font-semibold text-ink">{a.title}</h3>

@@ -536,6 +536,7 @@ export function AchievementsSection({
         { key: "event", label: "Event", type: "text", placeholder: "e.g. IOE Hackathon" },
         { key: "title", label: "Title", type: "text" },
         { key: "year", label: "Year", type: "text", placeholder: "e.g. 2026" },
+        { key: "date", label: "Date", type: "text", placeholder: "e.g. 2025-02-07", hint: "Exact date, YYYY-MM-DD. Used to order the timeline. Leave blank to fall back to the year." },
         { key: "result", label: "Result", type: "text", placeholder: "e.g. 1st place, finalist" },
         {
           key: "rank",

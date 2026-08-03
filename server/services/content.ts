@@ -55,6 +55,7 @@ export interface AchievementRecord {
   event: string;
   title: string;
   year: string;
+  date?: string;
   result: string;
   detail: string;
   rank?: string;

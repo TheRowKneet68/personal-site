@@ -1302,7 +1302,8 @@ export const EMBEDDED_DATA = {
       "detail": "7 Feb 2025 — Won the UDAAN 2025 Project Expo with Suraksha360.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-1st-Position.jpeg"
-      ]
+      ],
+      "date": "2025-02-07"
     },
     {
       "id": "udaan-2025-participant",
@@ -1313,7 +1314,8 @@ export const EMBEDDED_DATA = {
       "detail": "7 Feb 2025 — Certificate of Appreciation for participation.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-Certificate-of-Appriciation.jpeg"
-      ]
+      ],
+      "date": "2025-02-07"
     },
     {
       "id": "octate-2025",
@@ -1324,7 +1326,8 @@ export const EMBEDDED_DATA = {
       "detail": "12–13 Feb 2025 — Won the People's Choice / Public Choice Award at the OCTATE 2025 National Level Technical Festival.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Octate-2025-Expo-Second-Runner-Up-People-s-Choice-Award.jpeg"
-      ]
+      ],
+      "date": "2025-02-12"
     },
     {
       "id": "innosphere-1",
@@ -1336,7 +1339,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Innosphere-1.0-2025-Expo-First-Runner-Up.jpeg",
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Innosphere-1.0-2025-Expo-Certificate-of-Participatiom.jpeg"
-      ]
+      ],
+      "date": "2025-06-08"
     },
     {
       "id": "hackathon-nova-partner",
@@ -1347,7 +1351,8 @@ export const EMBEDDED_DATA = {
       "detail": "Certificate of Appreciation as Community Partner (Suraksha Ghar).",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Suraksha-Ghar-Community-Partner-Certificate-Of-Appreciation.jpeg"
-      ]
+      ],
+      "date": "2026-01-28"
     },
     {
       "id": "hackathon-nova-volunteer",
@@ -1359,7 +1364,8 @@ export const EMBEDDED_DATA = {
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg",
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg"
-      ]
+      ],
+      "date": "2026-01-28"
     },
     {
       "id": "capec-leadership",
@@ -1370,7 +1376,8 @@ export const EMBEDDED_DATA = {
       "detail": "Certificate of Appreciation for leadership and dedication as a member (2024–2025 tenure).",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/CAPEC-2024-to-2025-Certificate-of-Appriciation.jpeg"
-      ]
+      ],
+      "date": "2025-12-26"
     },
     {
       "id": "swiftignite",
@@ -1378,7 +1385,8 @@ export const EMBEDDED_DATA = {
       "title": "Keyless motorcycle ignition",
       "year": "2025",
       "result": "v2 planned",
-      "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database."
+      "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database.",
+      "date": "2025-01"
     },
     {
       "id": "call-motor-control",
@@ -1386,7 +1394,8 @@ export const EMBEDDED_DATA = {
       "title": "Market-launched",
       "year": "2025",
       "result": "Market-launched",
-      "detail": "Launched to market 27 May 2025 — control industrial and agricultural motors with a phone call. No internet needed, no app, no subscription."
+      "detail": "Launched to market 27 May 2025 — control industrial and agricultural motors with a phone call. No internet needed, no app, no subscription.",
+      "date": "2025-05-27"
     },
     {
       "id": "capec-joint-secretary",
@@ -1397,7 +1406,8 @@ export const EMBEDDED_DATA = {
       "detail": "26 Dec 2025 — Official appointment as Joint Secretary of CAPEC for 2026.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Appointed-as-Joint-Secretary-of-CAPEC.jpeg"
-      ]
+      ],
+      "date": "2025-12-26"
     },
     {
       "id": "pec-2026-civil",
@@ -1408,7 +1418,8 @@ export const EMBEDDED_DATA = {
       "detail": "28–29 Jan 2026 — First Runner-Up in the Civil Project Competition.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Civil-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
-      ]
+      ],
+      "date": "2026-01-28"
     },
     {
       "id": "pec-2026-it",
@@ -1419,7 +1430,8 @@ export const EMBEDDED_DATA = {
       "detail": "28–29 Jan 2026 — Consolation prize in the Computer & IT Project Competition.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Computer---IT-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
-      ]
+      ],
+      "date": "2026-01-28"
     },
     {
       "id": "pec-2026-participants",
@@ -1435,7 +1447,8 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/LaserTag-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/RUDRA-1-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Suraksha360-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg"
-      ]
+      ],
+      "date": "2026-01-28"
     },
     {
       "id": "fishtail-fair-2026",
@@ -1446,7 +1459,8 @@ export const EMBEDDED_DATA = {
       "detail": "4 Apr 2026 — Presented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Fishtail-Academy-FASS-SEE-Camp-Certificate-Of-Appericiation.jpeg"
-      ]
+      ],
+      "date": "2026-04-04"
     },
     {
       "id": "codefest-2026",
@@ -1457,7 +1471,8 @@ export const EMBEDDED_DATA = {
       "detail": "Jul 2026 — Team Suraksha360 participated in the Codefest 2026 Gandaki province hackathon.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Team-Suraksha360-Codefest-2026-Gandaki-ProvinceCertificate-of-Participatiom.jpeg"
-      ]
+      ],
+      "date": "2026-07"
     },
     {
       "id": "gces-it-expo-2026",
@@ -1465,7 +1480,8 @@ export const EMBEDDED_DATA = {
       "title": "Suraksha360",
       "year": "2026",
       "result": "1st Position",
-      "detail": "25–26 Jun 2026 — Suraksha360 earned First Place at the GCES IT Expo, recognizing months of engineering, iteration, and real-world product development."
+      "detail": "25–26 Jun 2026 — Suraksha360 earned First Place at the GCES IT Expo, recognizing months of engineering, iteration, and real-world product development.",
+      "date": "2026-06-25"
     }
   ]
 }
