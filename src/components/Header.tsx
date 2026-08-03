@@ -33,8 +33,36 @@ export function Header() {
 
   useEffect(() => {
     const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-    if (link) link.href = logo;
-  }, [logo]);
+    if (!link) return;
+    if (!profile?.logo) {
+      link.href = "/images/favicon.svg";
+      return;
+    }
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const s = 64;
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = s;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("no ctx");
+        ctx.beginPath();
+        ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2);
+        ctx.clip();
+        const ir = img.width / img.height;
+        let dw = s, dh = s, dx = 0, dy = 0;
+        if (ir > 1) { dw = s * ir; dx = (s - dw) / 2; }
+        else { dh = s / ir; dy = (s - dh) / 2; }
+        ctx.drawImage(img, dx, dy, dw, dh);
+        link.href = canvas.toDataURL("image/png");
+      } catch {
+        link.href = profile.logo ?? "/images/favicon.svg";
+      }
+    };
+    img.onerror = () => { link.href = profile.logo ?? "/images/favicon.svg"; };
+    img.src = profile.logo;
+  }, [profile?.logo]);
 
   return (
     <header
