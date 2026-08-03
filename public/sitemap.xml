@@ -21,6 +21,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://therowkneet.vercel.app/projects/rudra</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://therowkneet.vercel.app/projects/gravas</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -127,11 +132,6 @@
   </url>
   <url>
     <loc>https://therowkneet.vercel.app/projects/swiftignite-v2</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://therowkneet.vercel.app/projects/rudra</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
