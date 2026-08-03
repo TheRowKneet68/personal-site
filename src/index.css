@@ -48,13 +48,13 @@
   --rk-border: #e2ded2;
   --rk-border-strong: #c9c3b4;
   --rk-ink: #1a1b17;
-  --rk-ink-dim: #4c4d43;
-  --rk-ink-faint: #63645a;
-  --rk-accent: #c9f24b;
-  --rk-accent-ink: #3f4d00;
-  --rk-accent-soft: rgba(63, 77, 0, 0.08);
-  --rk-warn: #b26500;
-  --rk-warn-soft: rgba(178, 101, 0, 0.1);
+  --rk-ink-dim: #3b3c31;
+  --rk-ink-faint: #4f5045;
+  --rk-accent: #557000;
+  --rk-accent-ink: #2f3a00;
+  --rk-accent-soft: rgba(85, 112, 0, 0.08);
+  --rk-warn: #8a4f00;
+  --rk-warn-soft: rgba(138, 79, 0, 0.1);
   --rk-shadow: rgba(26, 27, 23, 0.12);
 }
 
