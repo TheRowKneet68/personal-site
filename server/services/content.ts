@@ -164,7 +164,13 @@ export function deriveStats(
     "projects shipped": `${projects.length}+`,
     "awards & wins": `${achievements.length}+`,
   } as const;
-  return profile.stats.map((s) =>
-    s.label in byCount ? { ...s, value: byCount[s.label as keyof typeof byCount] } : s,
-  );
+  const danBadge = profile.badges.find((b) => /^\d+(st|nd|rd|th) dan/i.test(b));
+  return profile.stats.map((s) => {
+    if (s.label in byCount) return { ...s, value: byCount[s.label as keyof typeof byCount] };
+    if (s.label === "martial arts dan" && danBadge) {
+      const dan = danBadge.match(/^\d+(st|nd|rd|th) dan/i)?.[0];
+      if (dan) return { ...s, value: dan };
+    }
+    return s;
+  });
 }
