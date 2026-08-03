@@ -3,129 +3,140 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-// Renders public/images/favicon.svg -> public/favicon.ico (embedded PNGs at 48/32/16px).
-// favicon.svg is the simplified favicon version of logo.svg — update both when the logo changes.
-// ponytail: subset SVG parser (rect / path M-L / circle, solid fills). Add a real renderer if favicon.svg ever grows gradients or filters.
+// Generates public/favicon.ico + public/images/apple-touch-icon.png from the
+// current brand logo, so the favicon always matches the logo.
+// The logo is fetched from FAVICON_LOGO_URL (or the fallback URL below) at build
+// time and cached to public/images/logo.png. Update the URL here when the logo
+// file changes; the env var overrides it. If the fetch fails, the cached copy is used.
+// ponytail: hand-rolled PNG decoder (zlib inflate + filters), 8/16-bit, color types
+// 0/2/3/4/6. Plenty for a favicon; swap in a real image lib if logos grow exotic.
 
-const SS = 8;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const src = fs.readFileSync(path.join(ROOT, "public", "images", "favicon.svg"), "utf8");
+const LOGO_URL =
+  process.env.FAVICON_LOGO_URL ||
+  "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Ronit-Logo-With-Background-Color.png";
+const LOCAL_LOGO = path.join(ROOT, "public", "images", "logo.png");
 
-function parseAttrs(tag) {
-  const attrs = {};
-  for (const m of tag.matchAll(/([\w-]+)="([^"]*)"/g)) attrs[m[1]] = m[2];
-  return attrs;
+let png;
+try {
+  const res = await fetch(LOGO_URL, { signal: AbortSignal.timeout(15000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  png = Buffer.from(await res.arrayBuffer());
+  fs.writeFileSync(LOCAL_LOGO, png);
+  console.log("favicon: fetched logo from URL");
+} catch (err) {
+  png = fs.readFileSync(LOCAL_LOGO);
+  console.log(`favicon: fetch failed (${err.message}), using ${path.relative(ROOT, LOCAL_LOGO)}`);
 }
 
-const hexToRgb = (hex) =>
-  hex.startsWith("#")
-    ? [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-    : [0, 0, 0];
-
-function parseD(d) {
-  const segs = [];
-  let cur = null;
-  for (const cmd of d.trim().match(/[ML][\d\s,.-]*/g)) {
-    const nums = (cmd.slice(1).match(/-?\d*\.?\d+/g) || []).map(Number);
-    if (cmd[0] === "M") cur = [nums[0], nums[1]];
-    else for (let i = 0; i + 1 < nums.length; i += 2) {
-      const next = [nums[i], nums[i + 1]];
-      segs.push([cur, next]);
-      cur = next;
+function decodePNG(buf) {
+  if (buf.readUInt32BE(0) !== 0x89504e47) throw new Error("not a PNG");
+  let pos = 8;
+  let w = 0, h = 0, depth = 8, ctype = 0;
+  let palette = null, trns = null;
+  const idat = [];
+  while (pos < buf.length) {
+    const len = buf.readUInt32BE(pos);
+    const type = buf.toString("ascii", pos + 4, pos + 8);
+    const data = buf.subarray(pos + 8, pos + 8 + len);
+    if (type === "IHDR") {
+      w = data.readUInt32BE(0);
+      h = data.readUInt32BE(4);
+      depth = data[8];
+      ctype = data[9];
+    } else if (type === "PLTE") palette = data;
+    else if (type === "tRNS") trns = data;
+    else if (type === "IDAT") idat.push(data);
+    else if (type === "IEND") break;
+    pos += 12 + len;
+  }
+  if (!w || !h) throw new Error("missing IHDR");
+  const channels = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 }[ctype];
+  const bytesPerPx = channels * (depth === 16 ? 2 : 1);
+  const stride = w * bytesPerPx;
+  const raw = zlib.inflateSync(Buffer.concat(idat));
+  const recon = Buffer.alloc(h * stride);
+  for (let y = 0; y < h; y++) {
+    const filter = raw[y * (stride + 1)];
+    const rowStart = y * stride;
+    for (let x = 0; x < stride; x++) {
+      const b = raw[y * (stride + 1) + 1 + x];
+      const left = x >= bytesPerPx ? recon[rowStart + x - bytesPerPx] : 0;
+      const up = y > 0 ? recon[rowStart - stride + x] : 0;
+      const upLeft = y > 0 && x >= bytesPerPx ? recon[rowStart - stride + x - bytesPerPx] : 0;
+      let v;
+      if (filter === 0) v = b;
+      else if (filter === 1) v = b + left;
+      else if (filter === 2) v = b + up;
+      else if (filter === 3) v = b + ((left + up) >> 1);
+      else if (filter === 4) {
+        const p = left + up - upLeft;
+        const pa = Math.abs(p - left), pb = Math.abs(p - up), pc = Math.abs(p - upLeft);
+        v = b + (pa <= pb && pa <= pc ? left : pb <= pc ? up : upLeft);
+      } else throw new Error(`bad filter ${filter}`);
+      recon[rowStart + x] = v & 0xff;
     }
   }
-  return segs;
-}
-
-let vb = [64, 64];
-const shapes = [];
-
-const group = parseAttrs([...src.matchAll(/<g\b([^>]*)>/g)].map((m) => m[1]).join(" "));
-const vbMatch = src.match(/<svg\b([^>]*)>/);
-if (vbMatch) {
-  const sva = parseAttrs(vbMatch[1]);
-  if (sva.viewBox) vb = sva.viewBox.trim().split(/\s+/).slice(2).map(Number);
-}
-
-for (const el of src.matchAll(/<(rect|path|circle)\b([^>]*?)\/?>/g)) {
-  const [, tag, raw] = el;
-  const a = { ...group, ...parseAttrs(raw) };
-  if (a.fill === "none" && (a.stroke === "none" || !a.stroke)) continue;
-  if (tag === "rect") {
-    shapes.push({ type: "rect", x: +a.x || 0, y: +a.y || 0, w: +a.width, h: +a.height, rx: +a.rx || 0, color: hexToRgb(a.fill), opacity: a.opacity ? +a.opacity : 1 });
-  } else if (tag === "circle") {
-    shapes.push({ type: "circle", cx: +a.cx, cy: +a.cy, r: +a.r, color: hexToRgb(a.fill), opacity: a.opacity ? +a.opacity : 1 });
-  } else if (tag === "path") {
-    const cap = a["stroke-linecap"] || "round";
-    for (const [p0, p1] of parseD(a.d)) {
-      shapes.push({ type: "seg", p0, p1, w: +a["stroke-width"] || 1, cap, color: hexToRgb(a.stroke), opacity: a.opacity ? +a.opacity : 1 });
+  const rgba = Buffer.alloc(w * h * 4);
+  const sample = (si, n) => (depth === 16 ? recon[si + n * 2] : recon[si + n]);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const si = y * stride + x * bytesPerPx;
+      const di = (y * w + x) * 4;
+      if (ctype === 0) {
+        const g = sample(si, 0);
+        rgba[di] = rgba[di + 1] = rgba[di + 2] = g;
+        rgba[di + 3] = trns && sample(si, 0) === trns[0] ? 0 : 255;
+      } else if (ctype === 2) {
+        rgba[di] = sample(si, 0); rgba[di + 1] = sample(si, 1); rgba[di + 2] = sample(si, 2);
+        rgba[di + 3] = 255;
+      } else if (ctype === 3) {
+        const idx = recon[si];
+        rgba[di] = palette[idx * 3]; rgba[di + 1] = palette[idx * 3 + 1]; rgba[di + 2] = palette[idx * 3 + 2];
+        rgba[di + 3] = trns && trns.length > idx ? trns[idx] : 255;
+      } else if (ctype === 4) {
+        const g = sample(si, 0);
+        rgba[di] = rgba[di + 1] = rgba[di + 2] = g;
+        rgba[di + 3] = sample(si, 1);
+      } else {
+        rgba[di] = sample(si, 0); rgba[di + 1] = sample(si, 1); rgba[di + 2] = sample(si, 2); rgba[di + 3] = sample(si, 3);
+      }
     }
   }
+  return { w, h, rgba };
 }
 
-const [W, H] = vb;
-const BW = Math.round(W * SS), BH = Math.round(H * SS);
-const buf = Buffer.alloc(BW * BH * 4);
-
-function set(x, y, color, opacity) {
-  const i = (y * BW + x) * 4;
-  const a = opacity * 255, na = 255 - a;
-  buf[i] = (color[0] * a + buf[i] * na) / 255;
-  buf[i + 1] = (color[1] * a + buf[i + 1] * na) / 255;
-  buf[i + 2] = (color[2] * a + buf[i + 2] * na) / 255;
-  buf[i + 3] = Math.max(buf[i + 3], a);
-}
-
-function insideRoundRect(x, y, r) {
-  if (r.r === 0) return x >= 0 && x <= r.w && y >= 0 && y <= r.h;
-  const dx = Math.max(r.x - x, 0, x - (r.w - r.x));
-  const dy = Math.max(r.y - y, 0, y - (r.h - r.y));
-  return dx * dx + dy * dy <= r.r * r.r;
-}
-
-function pointInSeg(p, s) {
-  const [ax, ay] = s.p0, [bx, by] = s.p1, [px, py] = p;
-  const dx = bx - ax, dy = by - ay;
-  const len2 = dx * dx + dy * dy || 1;
-  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / len2));
-  const qx = ax + t * dx, qy = ay + t * dy;
-  const dist = Math.hypot(px - qx, py - qy);
-  if (s.cap === "round") return dist <= s.w / 2;
-  const hx = dx / Math.hypot(dx, dy), hy = dy / Math.hypot(dx, dy);
-  const tx = px - ax, ty = py - ay;
-  const along = tx * hx + ty * hy;
-  const perp = Math.abs(tx * -hy + ty * hx);
-  return along >= -s.w / 2 && along <= len2 / Math.hypot(dx, dy) + s.w / 2 && perp <= s.w / 2;
-}
-
-for (let y = 0; y < BH; y++) {
-  for (let x = 0; x < BW; x++) {
-    const px = (x + 0.5) / SS, py = (y + 0.5) / SS;
-    for (const s of shapes) {
-      if (s.type === "rect" && insideRoundRect(px, py, s)) set(x, y, s.color, s.opacity);
-      else if (s.type === "circle" && (px - s.cx) ** 2 + (py - s.cy) ** 2 <= s.r * s.r) set(x, y, s.color, s.opacity);
-      else if (s.type === "seg" && pointInSeg([px, py], s)) set(x, y, s.color, s.opacity);
-    }
-  }
-}
-
-function downsample(dst) {
-  const f = BW / dst;
+/** Area-weighted box downsample with premultiplied alpha (no dark fringe). */
+function downsample({ w, h, rgba }, dst) {
   const out = Buffer.alloc(dst * dst * 4);
+  const scale = w / dst;
   for (let y = 0; y < dst; y++) {
+    const y0 = y * scale, y1 = (y + 1) * scale;
     for (let x = 0; x < dst; x++) {
-      let r = 0, g = 0, b = 0, a = 0;
-      for (let sy = 0; sy < f; sy++) for (let sx = 0; sx < f; sx++) {
-        const i = ((y * f + sy) * BW + (x * f + sx)) * 4;
-        r += buf[i] * buf[i + 3]; g += buf[i + 1] * buf[i + 3];
-        b += buf[i + 2] * buf[i + 3]; a += buf[i + 3];
+      const x0 = x * scale, x1 = (x + 1) * scale;
+      let pr = 0, pg = 0, pb = 0, pa = 0;
+      for (let sy = Math.floor(y0); sy < y1; sy++) {
+        const cy = Math.min(sy + 1, y1) - Math.max(sy, y0);
+        for (let sx = Math.floor(x0); sx < x1; sx++) {
+          const cx = Math.min(sx + 1, x1) - Math.max(sx, x0);
+          const i = (sy * w + sx) * 4;
+          const a = rgba[i + 3];
+          const wgt = cx * cy;
+          pr += rgba[i] * a * wgt;
+          pg += rgba[i + 1] * a * wgt;
+          pb += rgba[i + 2] * a * wgt;
+          pa += a * wgt;
+        }
       }
       const o = (y * dst + x) * 4;
-      if (a) { out[o] = r / a; out[o + 1] = g / a; out[o + 2] = b / a; out[o + 3] = a / (f * f); }
+      if (pa) { out[o] = Math.round(pr / pa); out[o + 1] = Math.round(pg / pa); out[o + 2] = Math.round(pb / pa); }
+      out[o + 3] = Math.round(pa / (scale * scale));
     }
   }
   return out;
 }
+
+const img = decodePNG(png);
 
 const TABLE = new Int32Array(256);
 for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; TABLE[n] = c; }
@@ -146,7 +157,10 @@ function encodePNG(rgba, size) {
   return Buffer.concat([sig, chunk("IHDR", ihdr), chunk("IDAT", zlib.deflateSync(raw, { level: 9 })), chunk("IEND", Buffer.alloc(0))]);
 }
 
-const pngs = [48, 32, 16].map((s) => [s, encodePNG(downsample(s), s)]);
+const apple = downsample(img, 180);
+fs.writeFileSync(path.join(ROOT, "public", "images", "apple-touch-icon.png"), encodePNG(apple, 180));
+
+const pngs = [48, 32, 16].map((s) => [s, encodePNG(downsample(img, s), s)]);
 const header = Buffer.alloc(6);
 header.writeUInt16LE(1, 2);
 header.writeUInt16LE(pngs.length, 4);
@@ -162,4 +176,4 @@ for (const [size, data] of pngs) {
 }
 const out = path.join(ROOT, "public", "favicon.ico");
 fs.writeFileSync(out, Buffer.concat([header, ...entries, ...pngs.map(([, d]) => d)]));
-console.log("wrote", path.relative(ROOT, out));
+console.log("favicon: wrote", path.relative(ROOT, out), `(${img.w}x${img.h} logo)`);
