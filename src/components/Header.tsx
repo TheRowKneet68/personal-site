@@ -40,7 +40,7 @@ export function Header() {
     >
       <div className="container-rk flex h-16 items-center justify-between gap-3 sm:gap-6">
         <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="TheRowKneet — home">
-          <img src={logo} alt="" width={26} height={26} className="shrink-0" />
+          <img src={logo} alt="" width={32} height={32} className="size-8 shrink-0 rounded-full object-cover" />
           <span className="truncate font-mono text-[0.72rem] font-bold uppercase tracking-[0.12em] sm:text-[0.85rem] sm:tracking-[0.14em]">
             {name}
             <span className="ml-0.5 inline-block h-4 w-[7px] animate-pulse bg-accent align-middle" aria-hidden />

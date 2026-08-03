@@ -308,7 +308,7 @@ export function AdminPage() {
               alt=""
               width={22}
               height={22}
-              className="shrink-0"
+              className="size-8 shrink-0 rounded-full object-cover"
             />
             <span className="truncate font-mono text-sm font-bold uppercase tracking-[0.12em]">
               {content?.profile.name ?? "Admin"}
