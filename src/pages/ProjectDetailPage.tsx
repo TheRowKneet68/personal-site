@@ -4,6 +4,7 @@ import { useData } from "../context/DataContext";
 import { useSeo } from "../hooks/useSeo";
 import { Container } from "../components/Container";
 import { Button } from "../components/Button";
+import { SITE } from "../lib/constants";
 import { StatusBadge, TechChip } from "../components/Badges";
 import { Reveal } from "../components/Reveal";
 import type { Project } from "../types";
@@ -190,7 +191,7 @@ export function ProjectDetailPage() {
             name: project.title,
             description: project.description,
             dateCreated: project.year,
-            creator: { "@type": "Person", name: "Ronit Baniya Gupta", url: "https://therowkneet.vercel.app/" },
+            creator: { "@type": "Person", name: "Ronit Baniya Gupta", url: SITE.url },
           },
         }
       : { title: "Project not found | Ronit Baniya Gupta", description: "This project doesn't exist." },

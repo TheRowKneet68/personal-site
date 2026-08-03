@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const raw = JSON.parse(readFileSync(path.join(root, "data.json"), "utf8"));
-const base = (process.env.VITE_SITE_URL ?? "https://therowkneet.vercel.app").replace(/\/$/, "");
+const base = (process.env.VITE_SITE_URL ?? "https://www.ronitbaniyagupta.com.np").replace(/\/$/, "");
 
 const urls = [{ loc: "/", priority: "1.0", changefreq: "weekly" }];
 for (const p of raw.projects) urls.push({ loc: `/projects/${p.id}`, priority: "0.8", changefreq: "monthly" });

@@ -3,8 +3,8 @@ import type { GitHubStats, StatsResponse } from "../types";
 export const SITE = {
   name: "Ronit Baniya Gupta",
   handle: "TheRowKneet",
-  url: import.meta.env.VITE_SITE_URL || "https://therowkneet.vercel.app",
-  ogImage: "/images/me.jpg",
+  url: import.meta.env.VITE_SITE_URL || "https://www.ronitbaniyagupta.com.np",
+  ogImage: "/images/og-card.jpg",
   email: "ronitbaniya68@gmail.com",
   phone: "+977 982-911-7277",
   whatsapp: "9779829117277",
