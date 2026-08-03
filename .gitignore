@@ -3,7 +3,6 @@ dist/
 *.local
 .env
 .env.*
-!.env.example
 
 # vercel
 .vercel/
@@ -16,7 +15,6 @@ Thumbs.db
 
 # server runtime state
 server/data.dynamic.json
-server/.env
 
 # typescript build cache
 *.tsbuildinfo

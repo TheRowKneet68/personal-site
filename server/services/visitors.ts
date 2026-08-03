@@ -2,12 +2,35 @@ import type { Request } from "express";
 import { env } from "../config/env.js";
 import type { NewVisitor } from "./storage.js";
 
+const IP_RE =
+  /^(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)$/; // IPv4
+const IPV6_RE = /^[0-9a-fA-F:]{2,45}$/;
+
+function plausibleIp(value: string | undefined): string | null {
+  if (!value) return null;
+  const ip = value.trim();
+  if (ip.length > 45) return null;
+  // Strip an IPv6 scope id (`fe80::1%eth0`) and bracket notation.
+  const bare = ip.replace(/^\[|\]$/g, "").split("%")[0] ?? "";
+  if (IP_RE.test(bare) || IPV6_RE.test(bare)) return bare;
+  return null;
+}
+
 function clientIp(req: Request): string {
+  // X-Forwarded-For is only trusted because the app runs behind Vercel, which
+  // overwrites the header. Anything that doesn't look like an IP is dropped.
   const fwd = req.headers["x-forwarded-for"];
-  if (typeof fwd === "string" && fwd) return fwd.split(",")[0]!.trim();
+  if (typeof fwd === "string") {
+    const first = fwd.split(",")[0];
+    const ip = plausibleIp(first);
+    if (ip) return ip;
+  }
   const real = req.headers["x-real-ip"];
-  if (typeof real === "string" && real) return real.trim();
-  return req.socket?.remoteAddress || "";
+  const realFirst = Array.isArray(real) ? real[0] : real;
+  const realIp = plausibleIp(realFirst);
+  if (realIp) return realIp;
+  const socket = plausibleIp(req.socket?.remoteAddress);
+  return socket || "";
 }
 
 function parseDevice(ua: string): string {

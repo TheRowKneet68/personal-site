@@ -1,11 +1,19 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
-import { env } from "../config/env.js";
+import { env, adminEnabled } from "../config/env.js";
 
 const TTL_MS = 12 * 60 * 60 * 1000;
 
 export function adminConfigured(): boolean {
-  return Boolean(env.adminPassword);
+  return adminEnabled();
+}
+
+/** Constant-time password comparison — the login endpoint must not leak length/timing. */
+export function passwordMatches(input: string): boolean {
+  if (!env.adminPassword || !input) return false;
+  const a = Buffer.from(env.adminPassword);
+  const b = Buffer.from(input);
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 function base64url(buf: Buffer): string {

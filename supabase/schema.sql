@@ -109,15 +109,40 @@ alter table contact_messages enable row level security;
 alter table visitors enable row level security;
 alter table newsletter enable row level security;
 
+drop policy if exists "public read content" on profile;
 create policy "public read content" on profile for select to anon using (true);
+drop policy if exists "public read projects" on projects;
 create policy "public read projects" on projects for select to anon using (true);
+drop policy if exists "public read achievements" on achievements;
 create policy "public read achievements" on achievements for select to anon using (true);
+drop policy if exists "public read skills" on skills;
 create policy "public read skills" on skills for select to anon using (true);
+drop policy if exists "public read experience" on experience;
 create policy "public read experience" on experience for select to anon using (true);
 
-create policy "public submit contact" on contact_messages for insert to anon with check (true);
+-- Anonymous inserts are the only anon writes allowed. The API validates first;
+-- these checks are defense in depth in case the anon key is ever leaked, and they
+-- reject garbage that would otherwise fill the tables.
+drop policy if exists "public submit contact" on contact_messages;
+create policy "public submit contact" on contact_messages for insert to anon
+  with check (
+    char_length(name) between 2 and 80
+    and email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]{2,}$'
+    and char_length(email) <= 120
+    and char_length(subject) <= 200
+    and char_length(message) between 10 and 4000
+  );
+drop policy if exists "public submit visitor" on visitors;
 create policy "public submit visitor" on visitors for insert to anon with check (true);
-create policy "public subscribe" on newsletter for insert to anon with check (true);
+drop policy if exists "public subscribe" on newsletter;
+create policy "public subscribe" on newsletter for insert to anon
+  with check (
+    email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]{2,}$'
+    and char_length(email) <= 120
+  );
+
+-- Storage: the "images" bucket is public-read (the site loads those URLs in <img>).
+-- Writes go through the service-role API only; the anon key cannot write to it.
 
 -- Use the SQL editor in the Supabase dashboard to run this file.
 -- Then: `npm run server:seed` to load data.json into the tables.

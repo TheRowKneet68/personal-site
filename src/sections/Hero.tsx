@@ -81,6 +81,9 @@ export function Hero() {
                 <img
                   src={portrait1}
                   alt={`${profile.name} portrait`}
+                  width={640}
+                  height={640}
+                  fetchPriority="high"
                   className="h-[19rem] w-[19rem] rounded-full object-cover md:h-[24rem] md:w-[24rem]"
                 />
               </div>

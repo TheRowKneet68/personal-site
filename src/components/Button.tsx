@@ -41,7 +41,7 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const classes = cn(
-    "group inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm font-mono text-[0.8rem] uppercase tracking-[0.12em] transition-all duration-200 focus-visible:outline-2",
+    "group inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm font-mono text-[0.8rem] uppercase tracking-[0.12em] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
     size === "sm" ? "px-3.5 py-2" : "px-5 py-3",
     VARIANTS[variant],
     disabled && "pointer-events-none opacity-50",

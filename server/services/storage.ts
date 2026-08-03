@@ -327,7 +327,24 @@ const supabaseBackend: StorageBackend = {
 
 /* ------------------------------------------------------------------ */
 /*  Facade with a short TTL cache so page loads don't hammer the DB.   */
+/*  Caching applies to the Supabase backend only; the JSON backend      */
+/*  reads from disk so local content edits appear immediately.          */
 /* ------------------------------------------------------------------ */
+
+const CONTENT_TTL_MS = 60_000;
+const COUNTS_TTL_MS = 30_000;
+
+interface ContentCache {
+  at: number;
+  data: Content;
+}
+
+let contentCache: ContentCache | null = null;
+let countsCache: { at: number; data: Counts } | null = null;
+
+function fresh(cache: { at: number } | null, ttl: number): boolean {
+  return Boolean(cache && Date.now() - cache.at < ttl);
+}
 
 export interface Storage extends StorageBackend {
   seed(): Promise<{ mode: string; ok: boolean }>;
@@ -338,13 +355,27 @@ export const storage: Storage = {
 
   async getContent() {
     const backend = hasSupabase() ? supabaseBackend : jsonBackend;
-    return backend.getContent();
+    if (hasSupabase() && fresh(contentCache, CONTENT_TTL_MS)) return contentCache!.data;
+    const data = await backend.getContent();
+    if (hasSupabase()) contentCache = { at: Date.now(), data };
+    return data;
   },
-  updateContent: (c) => (hasSupabase() ? supabaseBackend : jsonBackend).updateContent(c),
+  async updateContent(c) {
+    const backend = hasSupabase() ? supabaseBackend : jsonBackend;
+    await backend.updateContent(c);
+    contentCache = null;
+    countsCache = null;
+  },
   addMessage: (m) => (hasSupabase() ? supabaseBackend : jsonBackend).addMessage(m),
   addVisitor: (v) => (hasSupabase() ? supabaseBackend : jsonBackend).addVisitor(v),
   addSubscriber: (email) => (hasSupabase() ? supabaseBackend : jsonBackend).addSubscriber(email),
-  getCounts: () => (hasSupabase() ? supabaseBackend : jsonBackend).getCounts(),
+  async getCounts() {
+    const backend = hasSupabase() ? supabaseBackend : jsonBackend;
+    if (hasSupabase() && fresh(countsCache, COUNTS_TTL_MS)) return countsCache!.data;
+    const data = await backend.getCounts();
+    if (hasSupabase()) countsCache = { at: Date.now(), data };
+    return data;
+  },
   listMessages: () => (hasSupabase() ? supabaseBackend : jsonBackend).listMessages(),
   listSubscribers: () => (hasSupabase() ? supabaseBackend : jsonBackend).listSubscribers(),
   deleteMessage: (id) => (hasSupabase() ? supabaseBackend : jsonBackend).deleteMessage(id),
@@ -360,6 +391,8 @@ export const storage: Storage = {
       const { error } = await client.from(table).upsert(rows[table]);
       if (error) throw new Error(`seed ${table}: ${error.message}`);
     }
+    contentCache = null;
+    countsCache = null;
     return { mode: "supabase", ok: true };
   },
 };
