@@ -166,7 +166,7 @@ export function deriveStats(
     "awards & wins": `${achievements.length}+`,
   } as const;
   const danBadge = profile.badges.find((b) => /^\d+(st|nd|rd|th) dan/i.test(b));
-  return profile.stats.map((s) => {
+  const mapped = profile.stats.map((s) => {
     if (s.label in byCount) return { ...s, value: byCount[s.label as keyof typeof byCount] };
     if (s.label === "martial arts dan" && danBadge) {
       const dan = danBadge.match(/^\d+(st|nd|rd|th) dan/i)?.[0];
@@ -174,11 +174,35 @@ export function deriveStats(
     }
     return s;
   });
+  return dedupeBy(mapped, (s) => s.label);
 }
 
 /** Keep the "N+ Innovation Awards" badge in lockstep with the achievements
     collection (same count the hero "awards & wins" stat reports). */
 export function deriveBadges(profile: ProfileRecord, achievements: AchievementRecord[]): string[] {
   const wins = achievements.length;
-  return profile.badges.map((b) => (/^\d+\+ innovation awards/i.test(b) ? `${wins}+ Innovation Awards` : b));
+  const mapped = profile.badges.map((b) => (/^\d+\+ innovation awards/i.test(b) ? `${wins}+ Innovation Awards` : b));
+  return dedupeBy(mapped, (b) => b);
+}
+
+/** First occurrence wins — a safety net against duplicate labels/values that
+    seed's additive merge can introduce when derived values land in the DB. */
+function dedupeBy<T>(items: T[], key: (item: T) => string): T[] {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    const k = key(item);
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+/** Collapse duplicate stat labels / badge strings so additive seeding can't
+    leave the DB with double entries (derived values + canonical ones). */
+export function normalizeProfile(profile: ProfileRecord): ProfileRecord {
+  return {
+    ...profile,
+    stats: dedupeBy(profile.stats, (s) => s.label),
+    badges: dedupeBy(profile.badges, (b) => b),
+  };
 }

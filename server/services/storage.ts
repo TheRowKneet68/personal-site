@@ -10,9 +10,11 @@ import {
   deriveBadges,
   deriveStats,
   normalizeFromFile,
+  normalizeProfile,
   rowsToContent,
   type Content,
   type ContentRow,
+  type ProfileRecord,
 } from "./content.js";
 
 const __dirname = (() => {
@@ -407,6 +409,10 @@ export const storage: Storage = {
         const prior = existing.get(row.id);
         return prior ? { id: row.id, data: deepMerge(prior, row.data) } : row;
       });
+      if (table === "profile") {
+        const row = merged[0] as { data: ProfileRecord };
+        row.data = normalizeProfile(row.data);
+      }
       const { error } = await client.from(table).upsert(merged);
       if (error) throw new Error(`seed ${table}: ${error.message}`);
     }
