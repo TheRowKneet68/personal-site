@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { GripVertical } from "lucide-react";
 import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, Testimonial } from "../../types";
 import { cn } from "../../utils/format";
 import { Field, ImageField, ImageList, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
@@ -39,6 +40,7 @@ export function Repeater<T extends object>({
 }) {
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState("manual");
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
   const update = (i: number, patch: Partial<T>) => onChange(items.map((it, j) => (j === i ? { ...it, ...patch } : it)));
   const move = (from: number, to: number) => {
     const next = [...items];
@@ -96,9 +98,32 @@ export function Repeater<T extends object>({
         const img = thumb(item);
         const href = view?.(item);
         const title = titleOf(item).trim();
+        const toggles = fields.filter((f) => f.type === "toggle");
         return (
-          <details key={i} className="rounded-lg border border-line bg-surface">
-            <summary className="flex cursor-pointer select-none list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+          <details key={i} className={cn("rounded-lg border border-line bg-surface", dragIdx === i && "opacity-50")}>
+            <summary
+              draggable={!sorted}
+              onDragStart={(e) => {
+                e.dataTransfer.effectAllowed = "move";
+                setDragIdx(i);
+              }}
+              onDragOver={(e) => {
+                if (dragIdx === null || dragIdx === i) return;
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+                move(dragIdx, i);
+                setDragIdx(i);
+              }}
+              onDragEnd={() => setDragIdx(null)}
+              className="flex cursor-pointer select-none list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden"
+              title={sorted ? "Reorder is disabled while a sort is active — choose 'sort: manual order' first" : "Drag to reorder, click to edit"}
+            >
+              <span
+                className={cn("shrink-0 text-ink-faint", !sorted ? "cursor-grab" : "cursor-default")}
+                aria-hidden
+              >
+                <GripVertical className="size-4" />
+              </span>
               {img ? (
                 <img src={img} alt="" className="size-10 shrink-0 rounded border border-line bg-bg object-cover" />
               ) : (
@@ -112,6 +137,28 @@ export function Repeater<T extends object>({
                   {k + 1} of {rows.length}
                 </span>
               </span>
+              {toggles.map((f) => {
+                const on = Boolean((item as Record<string, unknown>)[f.key]);
+                return (
+                  <label
+                    key={f.key}
+                    className={cn(
+                      "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em]",
+                      on ? "border-accent bg-accent/10 text-accent-ink" : "border-line text-ink-faint",
+                    )}
+                    title={`${f.label} — toggle without opening`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <input
+                      type="checkbox"
+                      className="size-3 accent-accent"
+                      checked={on}
+                      onChange={(e) => update(i, { [f.key]: e.target.checked } as Partial<T>)}
+                    />
+                    {f.label}
+                  </label>
+                );
+              })}
               {href ? (
                 <a
                   href={href}
