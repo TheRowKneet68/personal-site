@@ -1267,178 +1267,129 @@ export const EMBEDDED_DATA = {
   ],
   "achievements": [
     {
-      "id": "pec-tech-expo-2022",
-      "event": "PEC Tech Expo 2022",
-      "title": "RUDRA-1 & Suraksha360",
-      "year": "2022",
-      "result": "1st Place",
-      "detail": "Won with RUDRA-1 — camera-based robotics, and Suraksha360 — smart security. First taste of what building weird things gets you."
-    },
-    {
-      "id": "gces-it-expo-2024",
-      "event": "GCES IT Expo 2024",
-      "title": "Suraksha360",
-      "year": "2024",
-      "result": "1st Place",
-      "detail": "Took Suraksha360 to the 11th GCES IT Expo and won.",
-      "images": [
-        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/11th-GCES-Expo-1st-Position.jpeg"
-      ]
-    },
-    {
       "id": "surakshaghar-shipped",
+      "year": "2024",
       "event": "SurakshaGhar",
       "title": "Home automation ecosystem",
-      "year": "2024",
-      "result": "Shipped",
-      "detail": "Home automation ecosystem — 4-channel relay switch, RFID door lock, PIR detection, web control and a companion app. Custom PCB designed in EasyEDA, from breadboard to production switch."
+      "detail": "Home automation ecosystem — 4-channel relay switch, RFID door lock, PIR detection, web control and a companion app. Custom PCB designed in EasyEDA, from breadboard to production switch.",
+      "result": "Shipped"
+    },
+    {
+      "id": "swiftignite",
+      "date": "2025",
+      "year": "2025",
+      "event": "SwiftIgnite",
+      "title": "Keyless motorcycle ignition",
+      "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database.",
+      "result": "v2 planned"
     },
     {
       "id": "udaan-2025",
+      "date": "2025-02-07",
+      "year": "2025",
       "event": "UDAAN 2025 — Project Expo (IOE Paschimanchal Campus, WRC)",
       "title": "Suraksha360",
-      "year": "2025",
-      "result": "Winner",
       "detail": "7 Feb 2025 — Won the UDAAN 2025 Project Expo with Suraksha360.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-1st-Position.jpeg"
       ],
-      "date": "2025-02-07"
+      "result": "1st Position",
+      "highlight": true
     },
     {
       "id": "udaan-2025-participant",
+      "date": "2025-02-07",
+      "year": "2025",
       "event": "UDAAN 2025 Project Expo",
       "title": "Participant",
-      "year": "2025",
-      "result": "Certificate of Appreciation",
       "detail": "7 Feb 2025 — Certificate of Appreciation for participation.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/UDAAN-2025-Expo-Certificate-of-Appriciation.jpeg"
       ],
-      "date": "2025-02-07"
+      "result": "Certificate of Appreciation"
     },
     {
       "id": "octate-2025",
+      "date": "2025-02-12,13",
+      "year": "2025",
       "event": "OCTATE 2025 — National Level Technical Festival",
       "title": "Suraksha360",
-      "year": "2025",
-      "result": "People's Choice Award",
       "detail": "12–13 Feb 2025 — Won the People's Choice / Public Choice Award at the OCTATE 2025 National Level Technical Festival.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Octate-2025-Expo-Second-Runner-Up-People-s-Choice-Award.jpeg"
       ],
-      "date": "2025-02-12"
+      "result": "People's Choice Award",
+      "highlight": true
+    },
+    {
+      "id": "call-motor-control",
+      "date": "2025-05-27",
+      "year": "2025",
+      "event": "Call-Based Smart Motor Control",
+      "title": "Market-launched",
+      "detail": "Launched to market 27 May 2025 — control industrial and agricultural motors with a phone call. No internet needed, no app, no subscription.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Poster-SMCD.png"
+      ],
+      "result": "Market-launched"
     },
     {
       "id": "innosphere-1",
+      "date": "2025-06-08",
+      "year": "2025",
       "event": "Innosphere 1.0 — Hardware Project Exhibition",
       "title": "Suraksha360",
-      "year": "2025",
-      "result": "First Runner-Up",
       "detail": "8 Jun 2025 — First Runner-Up at the Innosphere 1.0 Hardware Project Exhibition.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Innosphere-1.0-2025-Expo-First-Runner-Up.jpeg",
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Innosphere-1.0-2025-Expo-Certificate-of-Participatiom.jpeg"
       ],
-      "date": "2025-06-08"
-    },
-    {
-      "id": "hackathon-nova-partner",
-      "event": "Hackathon Nova",
-      "title": "Suraksha Ghar — Community Partner",
-      "year": "2025",
-      "result": "Community Partner",
-      "detail": "Certificate of Appreciation as Community Partner (Suraksha Ghar).",
-      "images": [
-        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Suraksha-Ghar-Community-Partner-Certificate-Of-Appreciation.jpeg"
-      ],
-      "date": "2026-01-28"
-    },
-    {
-      "id": "hackathon-nova-volunteer",
-      "event": "Hackathon Nova",
-      "title": "Volunteer",
-      "year": "2025",
-      "result": "Volunteer",
-      "detail": "Certificate of Appreciation as Volunteer.",
-      "images": [
-        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg",
-        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg"
-      ],
-      "date": "2026-01-28"
+      "result": "First Runner-Up",
+      "highlight": true
     },
     {
       "id": "capec-leadership",
+      "date": "2025-12-26",
+      "year": "2025",
       "event": "CAPEC",
       "title": "Leadership & Dedication",
-      "year": "2025",
-      "result": "Appreciation",
       "detail": "Certificate of Appreciation for leadership and dedication as a member (2024–2025 tenure).",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/CAPEC-2024-to-2025-Certificate-of-Appriciation.jpeg"
       ],
-      "date": "2025-12-26"
-    },
-    {
-      "id": "swiftignite",
-      "event": "SwiftIgnite",
-      "title": "Keyless motorcycle ignition",
-      "year": "2025",
-      "result": "v2 planned",
-      "detail": "Keyless motorcycle ignition — Bluetooth + relays + battery management in one board. V2 adds live GPS tracking, SIM800L telemetry and an SMS database.",
-      "date": "2025-01"
-    },
-    {
-      "id": "call-motor-control",
-      "event": "Call-Based Smart Motor Control",
-      "title": "Market-launched",
-      "year": "2025",
-      "result": "Market-launched",
-      "detail": "Launched to market 27 May 2025 — control industrial and agricultural motors with a phone call. No internet needed, no app, no subscription.",
-      "date": "2025-05-27"
+      "result": "Appreciation"
     },
     {
       "id": "capec-joint-secretary",
+      "date": "2025-12-26",
+      "year": "2026",
       "event": "CAPEC",
       "title": "Joint Secretary, 2026",
-      "year": "2026",
-      "result": "Appointed",
       "detail": "26 Dec 2025 — Official appointment as Joint Secretary of CAPEC for 2026.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Appointed-as-Joint-Secretary-of-CAPEC.jpeg"
       ],
-      "date": "2025-12-26"
-    },
-    {
-      "id": "pec-2026-civil",
-      "event": "9th PEC Tech Expo 2026 — Civil Project Competition",
-      "title": "Suraksha360",
-      "year": "2026",
-      "result": "First Runner-Up",
-      "detail": "28–29 Jan 2026 — First Runner-Up in the Civil Project Competition.",
-      "images": [
-        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Civil-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
-      ],
-      "date": "2026-01-28"
+      "result": "Appointed"
     },
     {
       "id": "pec-2026-it",
+      "date": "2026-01-28,29",
+      "year": "2026",
       "event": "9th PEC Tech Expo 2026 — Computer & IT Project Competition",
       "title": "Suraksha360",
-      "year": "2026",
-      "result": "Consolation",
       "detail": "28–29 Jan 2026 — Consolation prize in the Computer & IT Project Competition.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Computer---IT-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
       ],
-      "date": "2026-01-28"
+      "result": "Consolation",
+      "highlight": true
     },
     {
       "id": "pec-2026-participants",
+      "date": "2026-01-28,29",
+      "year": "2026",
       "event": "9th PEC Tech Expo 2026",
       "title": "Participant — multiple projects",
-      "year": "2026",
-      "result": "Participant",
       "detail": "28–29 Jan 2026 — Participation certificates: Construction of Roundabout with Pedestrian Bridge at Prithvichowk, HerLegal, Surakshya 360, Suraksha360, Rudra 1, RUDRA-I, and Laser Tag.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1-RUDRA-1-9th-PEC-Tech-Expo-Certificate-of-Participation.jpeg",
@@ -1448,40 +1399,81 @@ export const EMBEDDED_DATA = {
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/RUDRA-1-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg",
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Suraksha360-9th-PEC-Tech-Expo-Certificate-of-Participatiom.jpeg"
       ],
-      "date": "2026-01-28"
+      "result": "Participant"
+    },
+    {
+      "id": "pec-2026-civil",
+      "date": "2026-01-28,29",
+      "year": "2026",
+      "event": "9th PEC Tech Expo 2026 — Civil Project Competition",
+      "title": "Suraksha360",
+      "detail": "28–29 Jan 2026 — First Runner-Up in the Civil Project Competition.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Civil-Project-Competition-9th-PEC-Tech-Expo-Certificate-of-Achivement.jpeg"
+      ],
+      "result": "First Runner-Up",
+      "highlight": true
+    },
+    {
+      "id": "hackathon-nova-partner",
+      "date": "2026-01-28,29",
+      "year": "2026",
+      "event": "Hackathon Nova",
+      "title": "Suraksha Ghar — Community Partner",
+      "detail": "Certificate of Appreciation as Community Partner (Suraksha Ghar).",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Hackathon-Nova-2025-Suraksha-Ghar-Community-Partner-Certificate-Of-Appreciation.jpeg"
+      ],
+      "result": "Community Partner"
+    },
+    {
+      "id": "hackathon-nova-volunteer",
+      "date": "2026-01-28,29",
+      "year": "2026",
+      "event": "Hackathon Nova",
+      "title": "Volunteer",
+      "detail": "Certificate of Appreciation as Volunteer.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg"
+      ],
+      "result": "Volunteer"
     },
     {
       "id": "fishtail-fair-2026",
+      "date": "2026-04-04",
+      "year": "2026",
       "event": "Fishtail University Fair",
       "title": "Suraksha360",
-      "year": "2026",
-      "result": "Presented",
       "detail": "4 Apr 2026 — Presented Suraksha360 to students, faculty, and industry visitors, demonstrating practical IoT, automation, and embedded system solutions.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Fishtail-Academy-FASS-SEE-Camp-Certificate-Of-Appericiation.jpeg"
       ],
-      "date": "2026-04-04"
+      "result": "Presented"
+    },
+    {
+      "id": "gces-it-expo-2024",
+      "date": "2026-06-25,26",
+      "year": "2026",
+      "event": "GCES IT Expo 2026",
+      "title": "Suraksha360",
+      "detail": "25–26 Jun 2026 — Suraksha360 earned First Place at the GCES IT Expo, recognizing months of engineering, iteration, and real-world product development.",
+      "images": [
+        "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/11th-GCES-Expo-1st-Position.jpeg"
+      ],
+      "result": "1st Place",
+      "highlight": true
     },
     {
       "id": "codefest-2026",
+      "date": "2026-07-23,24,25",
+      "year": "2026",
       "event": "Codefest 2026 — Gandaki Province",
       "title": "Team Suraksha360",
-      "year": "2026",
-      "result": "Participated",
       "detail": "Jul 2026 — Team Suraksha360 participated in the Codefest 2026 Gandaki province hackathon.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/Team-Suraksha360-Codefest-2026-Gandaki-ProvinceCertificate-of-Participatiom.jpeg"
       ],
-      "date": "2026-07"
-    },
-    {
-      "id": "gces-it-expo-2026",
-      "event": "GCES IT Expo 2026",
-      "title": "Suraksha360",
-      "year": "2026",
-      "result": "1st Position",
-      "detail": "25–26 Jun 2026 — Suraksha360 earned First Place at the GCES IT Expo, recognizing months of engineering, iteration, and real-world product development.",
-      "date": "2026-06-25"
+      "result": "Participated"
     }
   ]
 }
