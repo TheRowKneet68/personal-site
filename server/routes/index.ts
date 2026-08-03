@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { rateLimit } from "../middleware/rateLimit.js";
+import { bruteForce } from "../middleware/bruteForce.js";
 import {
   getExperience,
   getProfile,
@@ -28,6 +29,7 @@ api.get("/stats", getStats);
 api.post(
   "/admin/login",
   rateLimit({ windowMs: 15 * 60_000, max: 5, name: "admin-login" }),
+  bruteForce(),
   login,
 );
 api.post(

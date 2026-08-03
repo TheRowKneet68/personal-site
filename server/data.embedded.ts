@@ -602,6 +602,23 @@ export const EMBEDDED_DATA = {
       ]
     },
     {
+      "id": "smart-motor-control",
+      "title": "Smart Motor Control System",
+      "tagline": "Motor control circuit, designed in Proteus",
+      "category": "Hardware",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Proteus",
+        "Motor Control",
+        "Power Electronics"
+      ],
+      "description": "A motor control system designed from the schematic up in Proteus — the circuit-level work behind controlling motors properly. The kind of design where every trace earns its place.",
+      "highlights": [],
+      "links": {}
+    },
+    {
       "id": "ghostware",
       "title": "Ghostware360: Debug or Die",
       "tagline": "Horror puzzle game, in progress",
@@ -1163,6 +1180,24 @@ export const EMBEDDED_DATA = {
         "TypeScript"
       ],
       "description": "A bare Next.js app — layout, page, not-found and globals. Early experiments with the App Router that later grew into real sites.",
+      "highlights": [],
+      "links": {}
+    },
+    {
+      "id": "personal-website",
+      "title": "Personal Website (Next.js)",
+      "tagline": "The first version of this site",
+      "category": "Web",
+      "year": "2024",
+      "status": "built",
+      "featured": false,
+      "tech": [
+        "Next.js",
+        "Tailwind",
+        "Netlify",
+        "ESLint"
+      ],
+      "description": "The first version of my personal website — Next.js + Tailwind deployed on Netlify, kept clean with ESLint. Eventually rebuilt on the Vite + React stack you're looking at now, but this is where this site started.",
       "highlights": [],
       "links": {}
     },

@@ -10,6 +10,7 @@ import {
 import { HttpError } from "../middleware/errorHandler.js";
 import { normalizeFromFile, type Content } from "../services/content.js";
 import { storage } from "../services/storage.js";
+import type { BruteForceRequest } from "../middleware/bruteForce.js";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
@@ -44,9 +45,11 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
   const { password } = (req.body ?? {}) as { password?: unknown };
   if (typeof password !== "string" || !(await verifyAdminPassword(password))) {
+    (req as BruteForceRequest).bruteForce.fail();
     res.status(401).json({ error: "Wrong password" });
     return;
   }
+  (req as BruteForceRequest).bruteForce.success();
   res.json({
     token: issueToken(stored?.tokenVersion ?? 0, stored?.passwordHash || env.adminPassword),
   });

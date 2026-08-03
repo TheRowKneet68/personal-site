@@ -5,7 +5,7 @@ import { Field, ImageField, ImageList, MapEditor, PairList, StringList, TextArea
 
 /* ---------------- generic repeater ---------------- */
 
-type FieldType = "text" | "textarea" | "toggle" | "list" | "select";
+type FieldType = "text" | "textarea" | "toggle" | "list" | "select" | "number";
 
 interface FieldDef {
   key: string;
@@ -162,6 +162,19 @@ export function Repeater<T extends object>({
                           </option>
                         ))}
                       </select>
+                    </Field>
+                  );
+                }
+                if (f.type === "number") {
+                  return (
+                    <Field key={f.key} label={f.label} hint={f.hint}>
+                      <input
+                        type="number"
+                        className="w-full rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+                        value={typeof val === "number" ? val : ""}
+                        placeholder="e.g. 1, 2, 3"
+                        onChange={(e) => update(i, { [f.key]: e.target.value === "" ? undefined : Number(e.target.value) } as Partial<T>)}
+                      />
                     </Field>
                   );
                 }
@@ -451,6 +464,7 @@ export function ProjectsSection({
         { key: "year", label: "Year", type: "text", placeholder: "e.g. 2026" },
         { key: "status", label: "Status", type: "text", placeholder: "e.g. shipped, ongoing" },
         { key: "featured", label: "Featured", type: "toggle" },
+        { key: "weight", label: "Weight", type: "number", hint: "Lower = earlier in the default site order. Featured projects pin above everything, then weight, then newest year." },
         { key: "tech", label: "Tech", type: "list", placeholder: "tech" },
         { key: "description", label: "Description", type: "textarea" },
         { key: "highlights", label: "Highlights", type: "list", placeholder: "highlight" },
@@ -468,6 +482,7 @@ export function ProjectsSection({
       titleOf={(p) => `${p.year} — ${p.title}`}
       view={(p) => (p.id ? `/projects/${p.id}` : undefined)}
       sorts={[
+        { id: "weight", label: "sort: weight (lowest first)", compare: (a, b) => (a.weight ?? 9999) - (b.weight ?? 9999) },
         { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
         { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
         { id: "title", label: "sort: title A-Z", compare: (a, b) => a.title.localeCompare(b.title) },

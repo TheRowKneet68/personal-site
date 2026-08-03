@@ -46,6 +46,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://therowkneet.vercel.app/projects/smart-motor-control</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://therowkneet.vercel.app/projects/ghostware</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -207,6 +212,11 @@
   </url>
   <url>
     <loc>https://therowkneet.vercel.app/projects/d-app</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://therowkneet.vercel.app/projects/personal-website</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

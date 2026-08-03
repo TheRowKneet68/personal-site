@@ -41,6 +41,7 @@ export interface ProjectRecord {
   year: string;
   status: string;
   featured?: boolean;
+  weight?: number;
   images?: string[];
   tech: string[];
   description: string;

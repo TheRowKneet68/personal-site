@@ -29,7 +29,7 @@ try {
 
   const projects = await call("/api/projects");
   const projectList = (projects.json as { projects: unknown[] }).projects;
-  check("GET /api/projects -> 45 projects", projects.status === 200 && projectList.length === 45);
+  check("GET /api/projects -> 47 projects", projects.status === 200 && projectList.length === 47);
 
   const skills = await call("/api/skills");
   check(
@@ -95,6 +95,54 @@ try {
     (await verifyPassword("smoke-test-password-123", hash)) === true &&
       (await verifyPassword("wrong-password", hash)) === false,
   );
+
+  // Brute-force lockout on admin login: repeated failures get blocked (429)
+  // instead of being retryable forever. The correct-password path can't be
+  // smoke-tested via HTTP (the live admin password is a Supabase-side hash),
+  // so the middleware's success/clear logic is unit-checked below instead.
+  const login = (password: string) =>
+    call("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+  let blocked = false;
+  for (let i = 0; i < 6; i++) {
+    const attempt = await login("definitely-wrong-password");
+    if (attempt.status === 429) blocked = true;
+  }
+  check("repeated wrong logins -> locked out (429)", blocked);
+
+  const { bruteForce } = await import("../middleware/bruteForce.js");
+  type FakeRes = { statusCode: number; setHeader: (k: string, v: string) => void; status: (c: number) => { json: () => void } };
+  const runOnce = (ip: string) => {
+    let passed = false;
+    const req = { headers: {}, socket: { remoteAddress: ip } } as unknown as import("express").Request;
+    const res = {
+      statusCode: 0,
+      setHeader: () => undefined,
+      status(c: number) {
+        this.statusCode = c;
+        return { json: () => undefined };
+      },
+    } as FakeRes;
+    const next = () => {
+      passed = true;
+    };
+    bruteForce()(req, res as never, next);
+    return { req, passed, code: res.statusCode };
+  };
+  const growing = runOnce("203.0.113.1");
+  (growing.req as unknown as { bruteForce: { fail: () => number } }).bruteForce.fail();
+  const afterOne = runOnce("203.0.113.1");
+  (afterOne.req as unknown as { bruteForce: { fail: () => number } }).bruteForce.fail();
+  const afterTwo = runOnce("203.0.113.1");
+  check("lockout grows: allowed after 1 fail, blocked after 2", growing.passed && afterOne.passed && !afterTwo.passed && afterTwo.code === 429);
+  const clear = runOnce("203.0.113.2");
+  (clear.req as unknown as { bruteForce: { fail: () => number } }).bruteForce.fail();
+  (clear.req as unknown as { bruteForce: { success: () => void } }).bruteForce.success();
+  const afterClear = runOnce("203.0.113.2");
+  check("success clears the failure counter", afterClear.passed && afterClear.code === 0);
 
   // Non-destructive seed merge (pure, no DB) — guards the image-loss fix.
   const priorContent = {
