@@ -348,6 +348,9 @@ function fresh(cache: { at: number } | null, ttl: number): boolean {
 
 export interface Storage extends StorageBackend {
   seed(): Promise<{ mode: string; ok: boolean }>;
+  /** Bypass the TTL cache and always read the backend, so the admin panel
+      shows the true DB state before edits. Refreshes the cache too. */
+  getContentFresh(): Promise<Content>;
 }
 
 export const storage: Storage = {
@@ -357,6 +360,11 @@ export const storage: Storage = {
     const backend = hasSupabase() ? supabaseBackend : jsonBackend;
     if (hasSupabase() && fresh(contentCache, CONTENT_TTL_MS)) return contentCache!.data;
     const data = await backend.getContent();
+    if (hasSupabase()) contentCache = { at: Date.now(), data };
+    return data;
+  },
+  async getContentFresh() {
+    const data = await (hasSupabase() ? supabaseBackend : jsonBackend).getContent();
     if (hasSupabase()) contentCache = { at: Date.now(), data };
     return data;
   },

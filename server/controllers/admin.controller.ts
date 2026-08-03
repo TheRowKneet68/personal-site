@@ -85,9 +85,11 @@ export async function changePassword(req: Request, res: Response): Promise<void>
   res.json({ ok: true, token: issueToken(nextVersion, hash) });
 }
 
-/** GET /api/admin/content — the full editable content (auth required). */
+/** GET /api/admin/content — the full editable content (auth required).
+    Reads fresh from the backend (never the TTL cache) so edits always start
+    from the true DB state. */
 export async function getContent(_req: Request, res: Response): Promise<void> {
-  const c = await storage.getContent();
+  const c = await storage.getContentFresh();
   res.json({
     profile: { ...c.profile, tech: c.skills.categories, focus: c.skills.focus },
     projects: c.projects,
