@@ -265,6 +265,9 @@ export function BasicsSection({
         <Field label="Logo" hint="Shown in the header and footer.">
           <ImageField label="" value={value.logo ?? ""} onChange={(v) => set({ logo: v })} uploadImage={uploadImage} objectFit="contain" />
         </Field>
+        <Field label="Est." hint='Shown as "est. YYYY" under the About portrait.'>
+          <TextInput value={value.est ?? ""} onChange={(v) => set({ est: v })} />
+        </Field>
       </div>
       <ImageField
         label="Portrait"

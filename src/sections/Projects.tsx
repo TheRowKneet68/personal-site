@@ -43,11 +43,12 @@ export function Projects() {
     [projects],
   );
 
+  const gridProjects = useMemo(() => (projects ?? []).filter((p) => !p.caseStudy), [projects]);
+
   const filtered = useMemo(() => {
-    const list = projects ?? [];
-    if (filter === "all") return list;
-    return list.filter((p) => p.category === filter);
-  }, [projects, filter]);
+    if (filter === "all") return gridProjects;
+    return gridProjects.filter((p) => p.category === filter);
+  }, [gridProjects, filter]);
 
   const sorted = useMemo(() => [...filtered].sort(SORTS[sort].cmp), [filtered, sort]);
 
@@ -71,7 +72,7 @@ export function Projects() {
         <Reveal delay={0.1}>
           <div className="mt-20 flex flex-wrap items-end justify-between gap-4 md:mt-28">
             <h3 className="mono-label">
-              everything else — {projects.length} projects
+              everything else — {gridProjects.length} projects
             </h3>
             <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">
               click any card for the full story

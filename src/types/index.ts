@@ -32,6 +32,7 @@ export interface Profile {
   portrait?: string;
   portrait1?: string;
   role: string;
+  est?: string;
   slogan: string;
   location: string;
   phone: string;

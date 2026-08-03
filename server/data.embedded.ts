@@ -5,6 +5,7 @@ export const EMBEDDED_DATA = {
     "name": "Ronit Baniya Gupta",
     "handle": "TheRowKneet",
     "role": "Computer Engineer & Builder of Things",
+    "est": "2005",
     "slogan": "if it doesn't exist, I will build it",
     "location": "Pokhara, Nepal",
     "phone": "+977 982-911-7277",

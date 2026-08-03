@@ -7,6 +7,7 @@ import { EMBEDDED_DATA } from "../data.embedded.js";
 import {
   contentToRows,
   dedupeRowsById,
+  deriveBadges,
   deriveStats,
   normalizeFromFile,
   rowsToContent,
@@ -419,11 +420,15 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
 
-/** Recompute count-driven hero stats for any content served to the client. */
+/** Recompute count-driven hero stats and badges for any content served to the client. */
 function deriveContentStats(content: Content): Content {
   return {
     ...content,
-    profile: { ...content.profile, stats: deriveStats(content.profile, content.projects, content.achievements) },
+    profile: {
+      ...content.profile,
+      stats: deriveStats(content.profile, content.projects, content.achievements),
+      badges: deriveBadges(content.profile, content.achievements),
+    },
   };
 }
 

@@ -11,6 +11,8 @@ export function About() {
     "Computer engineer from Pokhara, Nepal. I work with microcontrollers the way other people work with keyboards, and I'm building a company one stubborn project at a time.",
   ];
 
+  const city = ((profile.location ?? "Pokhara, Nepal").split(",")[0] ?? "").trim().toLowerCase();
+
   return (
     <section id="about" className="scroll-mt-24 border-t border-line py-24 md:py-32">
       <Container>
@@ -29,8 +31,10 @@ export function About() {
                 className="aspect-[4/5] w-full border border-line object-cover"
               />
               <figcaption className="mt-3 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.12em] text-ink-faint">
-                <span>therowkneet@location ~/pokhara</span>
-                <span className="hidden sm:inline">est. 2004</span>
+                <span>
+                  {profile.handle.toLowerCase()}@location ~/{city}
+                </span>
+                <span className="hidden sm:inline">est. {profile.est ?? "2005"}</span>
               </figcaption>
             </figure>
 
@@ -103,7 +107,10 @@ export function About() {
               <ul className="space-y-3">
                 {(profile.fun_facts ?? []).map((f, i) => (
                   <li key={i} className="flex gap-3 text-[0.95rem] leading-relaxed text-ink-dim">
-                    <span className="font-mono text-xs text-accent-ink" aria-hidden>
+                    <span
+                      className="shrink-0 rounded-sm border border-line px-1.5 py-0.5 font-mono text-[0.65rem] text-accent-ink"
+                      aria-hidden
+                    >
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span>{f}</span>

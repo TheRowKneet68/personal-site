@@ -20,7 +20,14 @@ export function ProjectCard({ project }: { project: Project }) {
       ) : null}
       <div className="flex items-center justify-between font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
         <span>{project.year}</span>
-        <span>{project.category}</span>
+        <span className="flex items-center gap-2">
+          {project.featured ? (
+            <span className="text-accent-ink">
+              ★ featured
+            </span>
+          ) : null}
+          <span>{project.category}</span>
+        </span>
       </div>
       <h3 className="mt-4 text-lg font-bold leading-snug text-ink transition-colors group-hover:text-accent-ink">
         {project.title}

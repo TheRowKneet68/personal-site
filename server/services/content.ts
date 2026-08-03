@@ -4,6 +4,7 @@ export interface ProfileRecord {
   name: string;
   handle: string;
   role: string;
+  est?: string;
   slogan: string;
   location: string;
   phone: string;
@@ -173,4 +174,11 @@ export function deriveStats(
     }
     return s;
   });
+}
+
+/** Keep the "N+ Innovation Awards" badge in lockstep with the achievements
+    collection (same count the hero "awards & wins" stat reports). */
+export function deriveBadges(profile: ProfileRecord, achievements: AchievementRecord[]): string[] {
+  const wins = achievements.length;
+  return profile.badges.map((b) => (/^\d+\+ innovation awards/i.test(b) ? `${wins}+ Innovation Awards` : b));
 }
