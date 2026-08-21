@@ -68,6 +68,7 @@ export function Footer() {
             <span>react · express · supabase</span>
             <span className="hidden sm:inline" title="backend storage">{storage}</span>
             <Link to="/admin" className="opacity-60 transition-opacity hover:opacity-100">/admin</Link>
+            <Link to="/terminal" className="opacity-60 transition-opacity hover:opacity-100">/terminal</Link>
           </span>
         </div>
       </div>

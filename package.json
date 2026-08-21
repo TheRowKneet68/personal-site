@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@ascentio-it/capacitor-bluetooth-serial": "^8.0.1",
+    "@capacitor/android": "^8.5.0",
     "@capacitor/core": "^8.5.0",
     "@supabase/supabase-js": "^2.45.0",
     "express": "^5.2.1",
@@ -31,10 +32,10 @@
     "lucide-react": "^0.454.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.5.0",
+    "@capacitor/cli": "^8.4.2",
     "@eslint/js": "^9.15.0",
     "@tailwindcss/vite": "^4.0.0",
     "@types/express": "^5.0.6",
