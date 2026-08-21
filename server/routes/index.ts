@@ -66,7 +66,8 @@ api.put(
 api.get("/iot/state", rateLimit({ windowMs: 60_000, max: 60, name: "iot-state" }), requireDeck, getState);
 api.post(
   "/iot/devices/:id/state",
-  rateLimit({ windowMs: 60_000, max: 30, name: "iot-write" }),
+  // 60/min: a master-switch flip fans out to every sibling in one burst.
+  rateLimit({ windowMs: 60_000, max: 60, name: "iot-write" }),
   requireDeck,
   setDeviceState,
 );

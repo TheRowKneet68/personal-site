@@ -163,11 +163,11 @@ export function useHomeHub(authToken: string) {
           );
           await Promise.allSettled(writes);
           setError("");
-          void refreshState(); // truth wins after a broadcast
         } else {
           await withRetry(() => api.setIotDeviceState(authToken, device.id, value));
           setError("");
-          void refreshState(); // confirm true device state
+          // No immediate re-read — through serverless that doubles the wait.
+          // The ≤2s poll is the source of truth and confirms shortly.
         }
       } catch {
         setState((s) => ({ ...s, [device.id]: previous ?? null }));
@@ -182,7 +182,7 @@ export function useHomeHub(authToken: string) {
         if (!isMaster) void reconcileMaster(device.hub, devices);
       }
     },
-    [authToken, devices, pending, refreshState, reconcileMaster, state],
+    [authToken, devices, pending, reconcileMaster, state],
   );
 
   /** Persist an edited registry (config mode save). */

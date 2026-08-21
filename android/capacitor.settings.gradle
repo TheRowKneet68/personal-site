@@ -4,3 +4,6 @@ project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/
 
 include ':ascentio-it-capacitor-bluetooth-serial'
 project(':ascentio-it-capacitor-bluetooth-serial').projectDir = new File('../node_modules/@ascentio-it/capacitor-bluetooth-serial/android')
+
+include ':capacitor-community-speech-recognition'
+project(':capacitor-community-speech-recognition').projectDir = new File('../node_modules/@capacitor-community/speech-recognition/android')

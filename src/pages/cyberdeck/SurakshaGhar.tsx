@@ -1,7 +1,9 @@
 import { useCallback, useRef, useState } from "react";
+import { SpeechRecognition } from "@capacitor-community/speech-recognition";
 import { Check, Fan, Lightbulb, Mic, Plug, Plus, Power, RefreshCw, Trash2, X, Zap } from "lucide-react";
 import { useHomeHub, isMasterDevice } from "../../hooks/useHomeHub";
 import type { IotDevice } from "../../types";
+import { isNativeApp } from "../../lib/native";
 import { HudPanel, StatusDot, TacticalToggle, deckInputCls } from "./hud";
 
 /* ------------------------------------------------------------------ */
@@ -59,10 +61,20 @@ export function SurakshaGhar({ authToken }: { authToken: string }) {
   };
 
   /** Match a spoken phrase to a device by name inclusion; "off" wins over
-      the default-on so "fan off" and "turn off the fan" both behave. */
+      the default-on so "fan off" and "turn off the fan" both behave.
+      Bike phrases dispatch a deck-voice event that SwiftIgnition acts on
+      when its SPP link is live (crank auto-releases). */
   const handleCommand = useCallback(
     (raw: string) => {
       const text = raw.toLowerCase();
+      if (/bike|ignition|engine|crank/.test(text)) {
+        const cmd = /crank|start/.test(text) ? "R" : /\boff\b|lock/.test(text) ? "S" : /\bon\b|unlock/.test(text) ? "O" : null;
+        if (cmd) {
+          setHeard(`${cmd === "R" ? "⟳" : cmd === "O" ? "▲" : "▼"} BIKE → ${cmd}`);
+          window.dispatchEvent(new CustomEvent("deck-voice", { detail: { cmd } }));
+          return;
+        }
+      }
       const device = hub.devices.find((d) => text.includes(d.name.toLowerCase()));
       if (!device) {
         setHeard(`UNRECOGNIZED · "${raw}"`);
@@ -78,6 +90,41 @@ export function SurakshaGhar({ authToken }: { authToken: string }) {
   const toggleVoice = useCallback(() => {
     if (listening) {
       recRef.current?.stop();
+      void SpeechRecognition.stop();
+      return;
+    }
+    // Native shell: Android SpeechRecognizer via the Capacitor plugin —
+    // webkitSpeechRecognition is unavailable inside the APK WebView.
+    if (isNativeApp()) {
+      setListening(true);
+      setHeard("LISTENING…");
+      void (async () => {
+        try {
+          const perm = await SpeechRecognition.checkPermissions();
+          if (perm.speechRecognition !== "granted") {
+            const req = await SpeechRecognition.requestPermissions();
+            if (req.speechRecognition !== "granted") {
+              setHeard("MIC PERMISSION DENIED");
+              setListening(false);
+              return;
+            }
+          }
+          const { matches } = await SpeechRecognition.start({
+            language: "en-US",
+            maxResults: 1,
+            prompt: "Speak a command",
+            partialResults: false,
+            popup: true,
+          });
+          const said = matches?.[0];
+          if (said) handleCommand(said);
+          else setHeard("HEARD NOTHING");
+        } catch {
+          setHeard("VOICE MODULE ERROR");
+        } finally {
+          setListening(false);
+        }
+      })();
       return;
     }
     const Ctor = getSpeechCtor();

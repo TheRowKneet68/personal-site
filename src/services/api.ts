@@ -26,6 +26,8 @@ export class ApiClientError extends Error {
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(path, {
     ...init,
+    // Hard ceiling so a dead mobile link can never leave a toggle pending forever.
+    signal: AbortSignal.timeout(12_000),
     headers: { "Content-Type": "application/json", ...(init.headers as Record<string, string> | undefined) },
   });
   if (!res.ok) {

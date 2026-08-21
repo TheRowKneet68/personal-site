@@ -101,6 +101,31 @@ export function SwiftIgnition() {
     };
   }, [cranking, stopCrank]);
 
+  // Voice commands from the Suraksha Ghar console (deck-voice events).
+  const unlockVoice = useCallback(
+    async (next: boolean): Promise<void> => {
+      if (ign.status !== "connected") return;
+      await ign.send(next ? "O" : "S").catch(() => undefined);
+      setUnlocked(next);
+    },
+    [ign],
+  );
+
+  useEffect(() => {
+    const onVoice = (e: Event): void => {
+      const cmd = (e as CustomEvent<{ cmd: "O" | "S" | "R" | "E" }>).detail?.cmd;
+      if (!cmd) return;
+      if (cmd === "R") {
+        // Crank pulse: hold for a beat, then the standard release path.
+        startCrank();
+        window.setTimeout(() => stopCrank(), 900);
+      } else if (cmd === "E") stopCrank();
+      else void unlockVoice(cmd === "O");
+    };
+    window.addEventListener("deck-voice", onVoice);
+    return () => window.removeEventListener("deck-voice", onVoice);
+  }, [startCrank, stopCrank, unlockVoice]);
+
   // A dropped link means bike state is unknown — re-arm the interlock.
   useEffect(() => {
     if (ign.status !== "connected") {
