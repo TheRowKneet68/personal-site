@@ -35,6 +35,20 @@ export const env = {
   /** No default — a default password would be public knowledge from this repo. */
   adminPassword: process.env.ADMIN_PASSWORD || "",
 
+  /** Cyber-Deck credential — deliberately SEPARATE from ADMIN_PASSWORD so a
+      leaked deck key can't edit site content and vice versa. */
+  deckPassword: process.env.DECK_PASSWORD || "",
+
+  /** Blynk IoT tokens (Suraksha Ghar home hub). Server-side ONLY: proxied
+      through /api/iot/* so they never reach the browser bundle. Comma-
+      separated to support multiple Blynk apps controlled simultaneously;
+      each becomes an independently addressable hub (hub-1, hub-2, …).
+      Empty = hub endpoints respond 503 and the dashboard shows offline. */
+  blynkTokens: (process.env.BLYNK_TOKEN || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean),
+
   corsOrigins: (process.env.CORS_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean),
   geolocate: process.env.IP_GEOLOCATION === "true",
 } as const;
@@ -46,6 +60,27 @@ export function hasSupabase(): boolean {
 /** Admin login must be explicitly configured with a strong password. */
 export function adminPasswordValid(): boolean {
   return env.adminPassword.length >= 12;
+}
+
+/** Deck login: same 12-char floor, warn-once machinery mirrored from admin. */
+let deckWarned = false;
+
+export function deckEnabled(): boolean {
+  if (env.deckPassword) {
+    if (env.deckPassword.length < 12) {
+      if (!deckWarned) {
+        deckWarned = true;
+        console.warn("[deck] DECK_PASSWORD is shorter than 12 characters — the deck is disabled.");
+      }
+      return false;
+    }
+    return true;
+  }
+  if (!deckWarned) {
+    deckWarned = true;
+    console.warn("[deck] DECK_PASSWORD is not set — the deck is disabled.");
+  }
+  return false;
 }
 
 let adminWarned = false;

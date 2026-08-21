@@ -13,6 +13,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# archives may contain .env snapshots — never commit them
+*.zip
+
 # server runtime state
 server/data.dynamic.json
 

@@ -6,6 +6,7 @@ import {
   issueToken,
   setAdminPassword,
   verifyAdminPassword,
+  type AuthRole,
 } from "../middleware/auth.js";
 import { HttpError } from "../middleware/errorHandler.js";
 import { normalizeFromFile, type Content } from "../services/content.js";
@@ -36,30 +37,43 @@ function safeName(raw: string | undefined, ext: string): string {
   return `${base.slice(0, 80)}.${ext}`;
 }
 
-/** POST /api/admin/login — exchange password for a short-lived bearer token. */
-export async function login(req: Request, res: Response): Promise<void> {
-  const stored = await getStoredAuth();
-  if (!(stored?.passwordHash || env.adminPassword)) {
-    res.status(503).json({ error: "Admin panel not configured (ADMIN_PASSWORD missing)" });
+/** POST /api/admin/login · /api/deck/login — exchange a role's password for a
+    short-lived bearer token scoped to that role. */
+async function doLogin(req: Request, res: Response, role: AuthRole): Promise<void> {
+  const stored = await getStoredAuth(role);
+  const fallback = role === "deck" ? env.deckPassword : env.adminPassword;
+  if (!(stored?.passwordHash || fallback)) {
+    res.status(503).json({ error: `${role} panel not configured (password env missing)` });
     return;
   }
   const { password } = (req.body ?? {}) as { password?: unknown };
-  if (typeof password !== "string" || !(await verifyAdminPassword(password))) {
+  if (typeof password !== "string" || !(await verifyAdminPassword(password, role))) {
     (req as BruteForceRequest).bruteForce.fail();
     res.status(401).json({ error: "Wrong password" });
     return;
   }
   (req as BruteForceRequest).bruteForce.success();
+  // Bearer tokens must never sit in a shared/proxy cache.
+  res.setHeader("Cache-Control", "no-store");
   res.json({
-    token: issueToken(stored?.tokenVersion ?? 0, stored?.passwordHash || env.adminPassword),
+    token: issueToken(stored?.tokenVersion ?? 0, stored?.passwordHash || fallback, role),
   });
 }
 
-/** POST /api/admin/change-password — rotate the admin password. The current
-    password must be re-entered, the new one is stored as a scrypt hash in
-    Supabase, and the token version is bumped so every other session is
-    signed out. A fresh token is returned so the caller stays signed in. */
-export async function changePassword(req: Request, res: Response): Promise<void> {
+export function login(req: Request, res: Response): Promise<void> {
+  return doLogin(req, res, "admin");
+}
+
+export function loginDeck(req: Request, res: Response): Promise<void> {
+  return doLogin(req, res, "deck");
+}
+
+/** POST /api/admin/change-password · /api/deck/change-password — rotate one
+    vault's key. The current password must be re-entered, the new one is stored
+    as a scrypt hash in Supabase, and the token version is bumped so every
+    OTHER session of that role is signed out. A fresh token is returned so the
+    caller stays signed in. */
+async function doChangePassword(req: Request, res: Response, role: AuthRole): Promise<void> {
   if (!hasSupabase()) {
     throw new HttpError(503, "Change password requires the Supabase backend");
   }
@@ -73,16 +87,25 @@ export async function changePassword(req: Request, res: Response): Promise<void>
   if (newPassword.length < 12) {
     throw new HttpError(400, "New password must be at least 12 characters");
   }
-  if (!(await verifyAdminPassword(currentPassword))) {
+  if (!(await verifyAdminPassword(currentPassword, role))) {
     throw new HttpError(401, "Wrong current password");
   }
 
-  const stored = await getStoredAuth();
+  const stored = await getStoredAuth(role);
   const nextVersion = (stored?.tokenVersion ?? 0) + 1;
   const hash = await hashPassword(newPassword);
-  await setAdminPassword(hash, nextVersion);
+  await setAdminPassword(hash, nextVersion, role);
 
-  res.json({ ok: true, token: issueToken(nextVersion, hash) });
+  res.setHeader("Cache-Control", "no-store");
+  res.json({ ok: true, token: issueToken(nextVersion, hash, role) });
+}
+
+export function changePassword(req: Request, res: Response): Promise<void> {
+  return doChangePassword(req, res, "admin");
+}
+
+export function changeDeckPassword(req: Request, res: Response): Promise<void> {
+  return doChangePassword(req, res, "deck");
 }
 
 /** GET /api/admin/content — the full editable content (auth required).

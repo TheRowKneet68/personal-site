@@ -6,8 +6,10 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 export const app = express();
 
 app.disable("x-powered-by");
-// Vercel terminates TLS and injects X-Forwarded-*; trusting it is required there.
-app.set("trust proxy", true);
+// Trust X-Forwarded-* ONLY behind Vercel, whose edge overwrites those headers.
+// Self-hosted/bare they are attacker-controlled and would let clients rotate
+// their "IP" to dodge rate limits and brute-force lockouts.
+app.set("trust proxy", env.isVercel);
 
 app.use("/api/admin/upload", express.json({ limit: "10mb" }));
 app.use(express.json({ limit: "2mb" }));
@@ -48,13 +50,12 @@ app.use((_req, res, next) => {
 // Same-origin requests (the Vercel deployment) never send an Origin we reject.
 app.use((req, res, next) => {
   const origin = req.headers.origin ?? "";
-  const allowed = env.corsOrigins.length === 0 || env.corsOrigins.includes(origin);
-  if (origin && allowed) {
+  if (origin && env.corsOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
   }
   if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
     res.setHeader("Access-Control-Max-Age", "86400");
     res.sendStatus(204);

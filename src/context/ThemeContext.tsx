@@ -31,15 +31,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, [theme]);
 
-  // Follow system preference until the user picks explicitly.
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: light)");
-    const handler = (e: MediaQueryListEvent): void => {
-      if (!localStorage.getItem(STORAGE_KEY)) setTheme(e.matches ? "light" : "dark");
-    };
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+
 
   const toggle = useCallback(() => setTheme((t) => (t === "dark" ? "light" : "dark")), []);
 

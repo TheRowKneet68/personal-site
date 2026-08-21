@@ -73,6 +73,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    mounted.current = true;
     void load();
     return () => {
       mounted.current = false;

@@ -3,6 +3,10 @@ import type {
   ApiError,
   ContactMessage,
   ExperienceResponse,
+  IotDevice,
+  IotDevicesResponse,
+  IotSetResponse,
+  IotStateResponse,
   ProfileResponse,
   ProjectsResponse,
   SkillsResponse,
@@ -69,6 +73,20 @@ export const api = {
       body: JSON.stringify({ password }),
     }),
 
+  /** Cyber-Deck credential — a separate vault from the content admin. */
+  deckLogin: (password: string) =>
+    request<{ token: string }>("/api/deck/login", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    }),
+
+  deckChangePassword: (token: string, currentPassword: string, newPassword: string) =>
+    request<{ ok: boolean; token: string }>("/api/deck/change-password", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    }),
+
   adminChangePassword: (token: string, currentPassword: string, newPassword: string) =>
     request<{ ok: boolean; token: string }>("/api/admin/change-password", {
       method: "POST",
@@ -109,5 +127,27 @@ export const api = {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify(payload),
+    }),
+
+  /* ---- Cyber-Deck IoT (server proxies to Blynk; no token client-side) ---- */
+
+  listIotDevices: (token: string) =>
+    request<IotDevicesResponse>("/api/iot/devices", { headers: { Authorization: `Bearer ${token}` } }),
+
+  saveIotDevices: (token: string, devices: IotDevice[]) =>
+    request<{ ok: boolean; devices: IotDevice[] }>("/api/iot/devices", {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ devices }),
+    }),
+
+  getIotState: (token: string) =>
+    request<IotStateResponse>("/api/iot/state", { headers: { Authorization: `Bearer ${token}` } }),
+
+  setIotDeviceState: (token: string, id: string, value: 0 | 1) =>
+    request<IotSetResponse>(`/api/iot/devices/${encodeURIComponent(id)}/state`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ value }),
     }),
 };

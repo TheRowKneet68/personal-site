@@ -13,8 +13,9 @@ import {
   postVisitor,
 } from "../controllers/message.controller.js";
 import { getHealth, getStats } from "../controllers/stats.controller.js";
-import { getContent, changePassword, deleteMessage, deleteSubscriber, listMessages, listSubscribers, login, updateContent, uploadImage } from "../controllers/admin.controller.js";
-import { requireAdmin } from "../middleware/auth.js";
+import { getContent, changePassword, deleteMessage, deleteSubscriber, listMessages, listSubscribers, login, updateContent, uploadImage, loginDeck, changeDeckPassword } from "../controllers/admin.controller.js";
+import { getState, listDevices, saveDevices, setDeviceState } from "../controllers/iot.controller.js";
+import { requireAdmin, requireDeck } from "../middleware/auth.js";
 
 export const api = Router();
 
@@ -50,6 +51,38 @@ api.post(
   rateLimit({ windowMs: 60_000, max: 20, name: "admin-upload" }),
   requireAdmin,
   uploadImage,
+);
+
+/* ---- Cyber-Deck IoT proxy — DECK-scoped bearer token (separate vault from
+        the content admin). Writes are rate-limited harder than reads
+        (relay chatter guard). ---- */
+api.get("/iot/devices", requireDeck, listDevices);
+api.put(
+  "/iot/devices",
+  rateLimit({ windowMs: 60_000, max: 30, name: "iot-config" }),
+  requireDeck,
+  saveDevices,
+);
+api.get("/iot/state", rateLimit({ windowMs: 60_000, max: 60, name: "iot-state" }), requireDeck, getState);
+api.post(
+  "/iot/devices/:id/state",
+  rateLimit({ windowMs: 60_000, max: 30, name: "iot-write" }),
+  requireDeck,
+  setDeviceState,
+);
+
+/* ---- Deck credential endpoints — independent password from the admin panel. */
+api.post(
+  "/deck/login",
+  rateLimit({ windowMs: 15 * 60_000, max: 5, name: "deck-login" }),
+  bruteForce(),
+  loginDeck,
+);
+api.post(
+  "/deck/change-password",
+  rateLimit({ windowMs: 15 * 60_000, max: 5, name: "deck-change-password" }),
+  requireDeck,
+  changeDeckPassword,
 );
 
 api.post(

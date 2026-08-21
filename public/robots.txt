@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+# The deck is a private control panel — keep crawlers out entirely.
+Disallow: /terminal
+Disallow: /api/
 
 Sitemap: https://www.ronitbaniyagupta.com.np/sitemap.xml

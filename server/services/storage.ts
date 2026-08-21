@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getSupabase } from "../config/supabase.js";
 import { hasSupabase } from "../config/env.js";
+import { HttpError } from "../middleware/errorHandler.js";
 import { EMBEDDED_DATA } from "../data.embedded.js";
 import {
   contentToRows,
@@ -73,10 +74,23 @@ export interface Counts {
   subscribers: number;
 }
 
+/** One user-configured IoT relay in the Cyber-Deck registry. `hub` refers to
+    a token by INDEX ("hub-1", "hub-2"…) — raw Blynk tokens never reach the
+    client or get stored here. */
+export interface StoredIotDevice {
+  id: string;
+  name: string;
+  hub: string;
+  pin: string;
+  /** Active-low channel: server complements writes + reads for this device. */
+  invert?: boolean;
+}
+
 interface DynamicData {
   messages: NewMessage[];
   visitors: NewVisitor[];
   subscribers: string[];
+  iotDevices?: StoredIotDevice[];
 }
 
 export interface StorageBackend {
@@ -92,6 +106,8 @@ export interface StorageBackend {
   deleteMessage(id: string): Promise<void>;
   deleteSubscriber(email: string): Promise<void>;
   uploadImage(name: string, contentType: string, buffer: Buffer): Promise<string>;
+  getIotDevices(): Promise<StoredIotDevice[]>;
+  setIotDevices(devices: StoredIotDevice[]): Promise<void>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -209,6 +225,14 @@ const jsonBackend: StorageBackend = {
           : `Failed to write image: ${code ?? (err as Error).message}`,
       );
     }
+  },
+  async getIotDevices() {
+    return readDynamic().iotDevices ?? [];
+  },
+  async setIotDevices(devices) {
+    const data = readDynamic();
+    data.iotDevices = devices;
+    writeDynamic(data);
   },
 };
 
@@ -347,6 +371,31 @@ const supabaseBackend: StorageBackend = {
     if (error) throw new Error(`supabase storage: ${error.message}`);
     return client.storage.from(bucket).getPublicUrl(name).data.publicUrl;
   },
+  /** Device registry lives as one jsonb row — a single admin user means
+      read-modify-write races aren't a real concern. */
+  async getIotDevices() {
+    const { data, error } = await getSupabase()
+      .from("iot_config")
+      .select("data")
+      .eq("id", "devices")
+      .maybeSingle();
+    if (error) {
+      // Missing table (schema.sql not yet run) surfaces as 42P01 (postgres)
+      // or PGRST205 (postgREST) — behave like an empty registry so the deck
+      // still boots with defaults.
+      if (error.code === "42P01" || error.code === "PGRST205") return [];
+      throw new Error(`supabase iot: ${error.message}`);
+    }
+    return ((data?.data as { devices?: StoredIotDevice[] } | null)?.devices) ?? [];
+  },
+  async setIotDevices(devices) {
+    const { error } = await getSupabase()
+      .from("iot_config")
+      .upsert({ id: "devices", data: { devices }, updated_at: new Date().toISOString() });
+    if (error && (error.code === "42P01" || error.code === "PGRST205"))
+      throw new HttpError(503, "Device storage not configured — run supabase/schema.sql first");
+    if (error) throw new Error(`supabase iot save: ${error.message}`);
+  },
 };
 
 /* ------------------------------------------------------------------ */
@@ -413,6 +462,8 @@ export const storage: Storage = {
   deleteMessage: (id) => (hasSupabase() ? supabaseBackend : jsonBackend).deleteMessage(id),
   deleteSubscriber: (email) => (hasSupabase() ? supabaseBackend : jsonBackend).deleteSubscriber(email),
   uploadImage: (n, c, b) => (hasSupabase() ? supabaseBackend : jsonBackend).uploadImage(n, c, b),
+  getIotDevices: () => (hasSupabase() ? supabaseBackend : jsonBackend).getIotDevices(),
+  setIotDevices: (d) => (hasSupabase() ? supabaseBackend : jsonBackend).setIotDevices(d),
 
   /** Write data.json content into Supabase (service role).
       Deep-merge (not replace) existing row data so admin-added fields that

@@ -1,23 +1,29 @@
 import { createHmac, randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
-import { env, adminEnabled, hasSupabase } from "../config/env.js";
+import { env, adminEnabled, deckEnabled, hasSupabase } from "../config/env.js";
 import { getSupabase } from "../config/supabase.js";
 
 const TTL_MS = 12 * 60 * 60 * 1000;
 const SCRYPT_KEYLEN = 64;
 const ADMIN_AUTH_TABLE = "admin_auth";
-const ADMIN_AUTH_ID = "admin";
+
+/** Two independent vaults: the content admin panel and the Cyber-Deck.
+    Each has its own password row, its own env fallback, and tokens scoped to
+    exactly one role — a deck token can never call admin routes, and vice
+    versa. */
+export type AuthRole = "admin" | "deck";
+const ROLE_ID: Record<AuthRole, string> = { admin: "admin", deck: "deck" };
+
+function envPasswordFor(role: AuthRole): string {
+  return role === "deck" ? env.deckPassword : env.adminPassword;
+}
+
+function roleConfigured(role: AuthRole): boolean {
+  return role === "deck" ? deckEnabled() : adminEnabled();
+}
 
 export function adminConfigured(): boolean {
   return adminEnabled();
-}
-
-/** Constant-time password comparison for the env fallback password. */
-export function passwordMatches(input: string): boolean {
-  if (!env.adminPassword || !input) return false;
-  const a = Buffer.from(env.adminPassword);
-  const b = Buffer.from(input);
-  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 /* ---- scrypt password hashing (node:crypto — no new dependency) ---- */
@@ -50,12 +56,12 @@ export interface StoredAuth {
   tokenVersion: number;
 }
 
-export async function getStoredAuth(): Promise<StoredAuth | null> {
+export async function getStoredAuth(role: AuthRole = "admin"): Promise<StoredAuth | null> {
   if (!hasSupabase()) return null;
   const { data, error } = await getSupabase()
     .from(ADMIN_AUTH_TABLE)
     .select("password_hash, token_version")
-    .eq("id", ADMIN_AUTH_ID)
+    .eq("id", ROLE_ID[role])
     .maybeSingle();
   if (error) {
     // 42P01 = table not created yet — fall back to env-password mode gracefully.
@@ -66,18 +72,22 @@ export async function getStoredAuth(): Promise<StoredAuth | null> {
   return { passwordHash: data.password_hash as string, tokenVersion: data.token_version as number };
 }
 
-/** Password check against the stored hash, falling back to the env password
-    before the first rotation (or in JSON mode). */
-export async function verifyAdminPassword(input: string): Promise<boolean> {
-  const stored = await getStoredAuth();
+/** Password check against the stored hash, falling back to the role's env
+    password before the first rotation (or in JSON mode). */
+export async function verifyAdminPassword(input: string, role: AuthRole = "admin"): Promise<boolean> {
+  const stored = await getStoredAuth(role);
   if (stored?.passwordHash) return verifyPassword(input, stored.passwordHash);
-  return passwordMatches(input);
+  const fallback = envPasswordFor(role);
+  if (!fallback || !input) return false;
+  const a = Buffer.from(fallback);
+  const b = Buffer.from(input);
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 /** Persist the new password hash and bump the token version (signs out old sessions). */
-export async function setAdminPassword(hash: string, version: number): Promise<void> {
+export async function setAdminPassword(hash: string, version: number, role: AuthRole = "admin"): Promise<void> {
   const { error } = await getSupabase().from(ADMIN_AUTH_TABLE).upsert({
-    id: ADMIN_AUTH_ID,
+    id: ROLE_ID[role],
     password_hash: hash,
     token_version: version,
     updated_at: new Date().toISOString(),
@@ -85,8 +95,8 @@ export async function setAdminPassword(hash: string, version: number): Promise<v
   if (error) throw error;
 }
 
-function isConfigured(stored: StoredAuth | null): boolean {
-  return Boolean(stored?.passwordHash) || adminEnabled();
+function isConfigured(stored: StoredAuth | null, role: AuthRole): boolean {
+  return Boolean(stored?.passwordHash) || roleConfigured(role);
 }
 
 /* ---- HMAC-signed, expiring bearer tokens ---- */
@@ -96,9 +106,9 @@ function base64url(buf: Buffer): string {
 }
 
 /** The HMAC key is the effective credential secret: the stored hash once a
-    password has been rotated, otherwise the env password. */
-function tokenSecret(stored: StoredAuth | null): string {
-  return stored?.passwordHash || env.adminPassword;
+    password has been rotated, otherwise the role's env password. */
+function tokenSecret(stored: StoredAuth | null, role: AuthRole): string {
+  return stored?.passwordHash || envPasswordFor(role);
 }
 
 function sign(payload: string, secret: string): string {
@@ -106,40 +116,50 @@ function sign(payload: string, secret: string): string {
   return `${payload}.${base64url(sig)}`;
 }
 
-/** v = token version: bumped on password change so old tokens stop working. */
-export function issueToken(version: number, secret: string): string {
-  const payload = base64url(Buffer.from(JSON.stringify({ exp: Date.now() + TTL_MS, v: version })));
+/** v = token version: bumped on password change so old tokens stop working.
+    a = audience: tokens only verify against their own role's guard. */
+export function issueToken(version: number, secret: string, role: AuthRole): string {
+  const payload = base64url(Buffer.from(JSON.stringify({ exp: Date.now() + TTL_MS, v: version, a: role })));
   return sign(payload, secret);
 }
 
-function verifyToken(token: string, stored: StoredAuth | null): boolean {
+function verifyToken(token: string, stored: StoredAuth | null, role: AuthRole): boolean {
   const [payload, sig] = token.split(".");
   if (!payload || !sig) return false;
-  const secret = tokenSecret(stored);
+  const secret = tokenSecret(stored, role);
   const expected = createHmac("sha256", secret).update(payload).digest();
   const received = Buffer.from(sig, "base64url");
   if (received.length !== expected.length || !timingSafeEqual(received, expected)) return false;
   try {
-    const { exp, v } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { exp?: number; v?: number };
+    const { exp, v, a } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as {
+      exp?: number;
+      v?: number;
+      a?: AuthRole;
+    };
     const version = stored?.tokenVersion ?? 0;
-    return typeof exp === "number" && exp > Date.now() && v === version;
+    return typeof exp === "number" && exp > Date.now() && v === version && a === role;
   } catch {
     return false;
   }
 }
 
-/** Express guard for admin routes (async — reads the stored token version). */
-export async function requireAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const stored = await getStoredAuth();
-  if (!isConfigured(stored)) {
-    res.status(503).json({ error: "Admin panel not configured (ADMIN_PASSWORD missing)" });
-    return;
-  }
-  const auth = req.headers.authorization ?? "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!token || !verifyToken(token, stored)) {
-    res.status(401).json({ error: "Unauthorized" });
-    return;
-  }
-  next();
+/** Express guard factory — one per role (async — reads the stored token version). */
+function requireRole(role: AuthRole) {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const stored = await getStoredAuth(role);
+    if (!isConfigured(stored, role)) {
+      res.status(503).json({ error: `${role} panel not configured (password env missing)` });
+      return;
+    }
+    const auth = req.headers.authorization ?? "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    if (!token || !verifyToken(token, stored, role)) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+    next();
+  };
 }
+
+export const requireAdmin = requireRole("admin");
+export const requireDeck = requireRole("deck");

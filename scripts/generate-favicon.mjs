@@ -107,7 +107,7 @@ function decodePNG(buf) {
 }
 
 /** Area-weighted box downsample with premultiplied alpha (no dark fringe). */
-function downsample({ w, h, rgba }, dst) {
+function downsample({ w, h: _h, rgba }, dst) {
   const out = Buffer.alloc(dst * dst * 4);
   const scale = w / dst;
   for (let y = 0; y < dst; y++) {
@@ -159,6 +159,14 @@ function encodePNG(rgba, size) {
 
 const apple = downsample(img, 180);
 fs.writeFileSync(path.join(ROOT, "public", "images", "apple-touch-icon.png"), encodePNG(apple, 180));
+
+// PWA manifest icons (referenced by vite.config.ts -> VitePWA manifest).
+for (const size of [192, 512]) {
+  fs.writeFileSync(
+    path.join(ROOT, "public", "images", `icon-${size}.png`),
+    encodePNG(downsample(img, size), size),
+  );
+}
 
 const pngs = [48, 32, 16].map((s) => [s, encodePNG(downsample(img, s), s)]);
 const header = Buffer.alloc(6);

@@ -71,10 +71,12 @@ create table if not exists newsletter (
 );
 
 -- ---------- Admin credential store ------------------------------------
--- Password hash + token version persist here so the admin password can be
--- rotated from the admin panel without redeploying. No anon policies are
--- defined below, so even a leaked anon key cannot touch this table — the
--- service role (server) is the only actor.
+-- Password hash + token version persist here so passwords can be rotated
+-- without redeploying. TWO rows share this table: id='admin' (content panel)
+-- and id='deck' (Cyber-Deck / IoT) — independent credentials, tokens are
+-- audience-scoped so one vault's token is worthless to the other. No anon
+-- policies are defined below, so even a leaked anon key cannot touch this
+-- table — the service role (server) is the only actor.
 create table if not exists admin_auth (
   id            text primary key default 'admin',
   password_hash text not null default '',
@@ -159,3 +161,14 @@ create policy "public subscribe" on newsletter for insert to anon
 
 -- Use the SQL editor in the Supabase dashboard to run this file.
 -- Then: `npm run server:seed` to load data.json into the tables.
+
+-- ---------- Cyber-Deck IoT device registry ----------------------------
+-- Single jsonb row (id='devices') holding the user-editable device list.
+-- Service-role only (RLS on, no policies) � like admin_auth.
+create table if not exists iot_config (
+  id         text primary key,
+  data       jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table iot_config enable row level security;

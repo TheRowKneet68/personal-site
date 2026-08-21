@@ -376,3 +376,60 @@
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Cyber-Deck HUD tokens — scoped --cd-* namespace, independent of    */
+/*  the public site theme. Only /terminal consumes these utilities.    */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Surfaces — deep obsidian glass */
+  --color-cd-void: #04070c;
+  --color-cd-hull: #0a0f18;
+  --color-cd-glass: rgba(10, 18, 32, 0.72);
+  --color-cd-line: rgba(90, 190, 255, 0.16);
+
+  /* Accents */
+  --color-cd-cyan: #38e1ff;
+  --color-cd-amber: #ffb454;
+  --color-cd-red: #ff4757;
+  --color-cd-green: #3dffab;
+
+  /* Text hierarchy — white for values, dim for labels, cyan ONLY interactive */
+  --color-cd-white: #eaf7ff;
+  --color-cd-dim: #6f93b8;
+
+  --font-cd-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-cd-cyan: 0 0 12px rgba(56, 225, 255, 0.45), inset 0 0 18px rgba(56, 225, 255, 0.06);
+  --shadow-cd-amber: 0 0 16px rgba(255, 180, 84, 0.6);
+}
+
+/* Signature FUI silhouette — cut TL + BR corners. Apply alongside borders;
+   the clipped corners read as machined plate edges. */
+.cd-chamfer {
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+
+/* CRT scanline overlay — barely-there texture, not stripes. */
+.cd-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(120, 200, 255, 0.016) 3px,
+    rgba(120, 200, 255, 0.016) 4px
+  );
+}
+
+/* Edge vignette so screens fade into the bezel instead of stopping hard. */
+.cd-vignette {
+  background: radial-gradient(ellipse at center, transparent 58%, rgba(2, 5, 9, 0.55) 100%);
+}
+
+/* Micro-grid backdrop for the deck background. */
+.cd-grid-bg {
+  background-image:
+    linear-gradient(rgba(90, 190, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(90, 190, 255, 0.05) 1px, transparent 1px);
+  background-size: 36px 36px;
+}

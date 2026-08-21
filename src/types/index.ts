@@ -163,3 +163,32 @@ export interface ContactMessage {
 export interface ApiError {
   error: string;
 }
+
+/* ---- Cyber-Deck (Suraksha Ghar home hub) ---- */
+
+/** One user-configured relay. `hub` is an opaque label ("hub-1") resolved to
+    a token server-side — raw Blynk tokens never reach the client. */
+export interface IotDevice {
+  id: string;
+  name: string;
+  hub: string;
+  pin: string;
+  /** Active-low relay channels: deck ON sends 0 upstream (and reads inverted). */
+  invert?: boolean;
+}
+
+export interface IotDevicesResponse {
+  hubs: string[];
+  devices: IotDevice[];
+}
+
+/** Live pin values keyed by device id: 0 = off, 1 = on, null = unknown. */
+export interface IotStateResponse {
+  state: Record<string, 0 | 1 | null>;
+}
+
+export interface IotSetResponse {
+  ok: boolean;
+  id: string;
+  value: 0 | 1;
+}

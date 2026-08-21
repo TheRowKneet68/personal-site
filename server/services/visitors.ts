@@ -17,18 +17,21 @@ function plausibleIp(value: string | undefined): string | null {
 }
 
 function clientIp(req: Request): string {
-  // X-Forwarded-For is only trusted because the app runs behind Vercel, which
-  // overwrites the header. Anything that doesn't look like an IP is dropped.
-  const fwd = req.headers["x-forwarded-for"];
-  if (typeof fwd === "string") {
-    const first = fwd.split(",")[0];
-    const ip = plausibleIp(first);
-    if (ip) return ip;
+  // Forwarded headers are honored ONLY on Vercel, whose edge overwrites them.
+  // Anywhere else they're attacker-controlled — spoofing a fresh IP per request
+  // would bypass the brute-force lockout and every per-IP rate limit.
+  if (env.isVercel) {
+    const fwd = req.headers["x-forwarded-for"];
+    if (typeof fwd === "string") {
+      const first = fwd.split(",")[0];
+      const ip = plausibleIp(first);
+      if (ip) return ip;
+    }
+    const real = req.headers["x-real-ip"];
+    const realFirst = Array.isArray(real) ? real[0] : real;
+    const realIp = plausibleIp(realFirst);
+    if (realIp) return realIp;
   }
-  const real = req.headers["x-real-ip"];
-  const realFirst = Array.isArray(real) ? real[0] : real;
-  const realIp = plausibleIp(realFirst);
-  if (realIp) return realIp;
   const socket = plausibleIp(req.socket?.remoteAddress);
   return socket || "";
 }
