@@ -18,7 +18,7 @@ import { HC05_MAC, isNativeApp } from "../lib/native";
 /*  of a fake signal bar.                                               */
 /* ------------------------------------------------------------------ */
 
-export type IgnitionCommand = "O" | "S" | "R" | "E";
+export type IgnitionCommand = "I" | "S" | "R" | "x";
 
 export type LinkState =
   | "web-sim" // browser: hardware disabled by design
@@ -163,10 +163,9 @@ export function useIgnition() {
         await BluetoothSerial.write({ address: HC05_MAC, value: cmd });
         const ms = performance.now() - t0;
         setLatency((prev) => (prev === null ? ms : prev * 0.7 + ms * 0.3));
-        pushLog(`TX '${cmd}' · ${Math.round(ms)}ms`);
       } catch {
-        pushLog(`TX '${cmd}' FAILED`);
         scheduleReconnect();
+        pushLog("TRANSMIT FAILED");
         throw new Error("Transmit failed — link dropped");
       }
     },

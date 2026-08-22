@@ -433,3 +433,14 @@
     linear-gradient(to right, rgba(90, 190, 255, 0.05) 1px, transparent 1px);
   background-size: 36px 36px;
 }
+
+/* Swift Ignition — engine shake while cranking */
+@keyframes engine-crank-shake {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25% { transform: translate3d(-1.5px, 1px, 0) rotate(-0.6deg); }
+  50% { transform: translate3d(1.5px, -1px, 0) rotate(0.6deg); }
+  75% { transform: translate3d(-1px, -1.5px, 0) rotate(-0.4deg); }
+}
+.engine-crank-shake {
+  animation: engine-crank-shake 120ms linear infinite;
+}

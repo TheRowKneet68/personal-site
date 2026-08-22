@@ -67,7 +67,7 @@ export function SwiftIgnition() {
       window.clearInterval(chargeTimer.current);
       chargeTimer.current = null;
     }
-    void ign.send("E").catch(() => undefined);
+    void ign.send("x").catch(() => undefined);
   }, [ign]);
 
   const startCrank = useCallback(() => {
@@ -105,7 +105,7 @@ export function SwiftIgnition() {
   const unlockVoice = useCallback(
     async (next: boolean): Promise<void> => {
       if (ign.status !== "connected") return;
-      await ign.send(next ? "O" : "S").catch(() => undefined);
+      await ign.send(next ? "I" : "S").catch(() => undefined);
       setUnlocked(next);
     },
     [ign],
@@ -136,8 +136,8 @@ export function SwiftIgnition() {
 
   useEffect(
     () => () => {
-      // unmount mid-hold: make sure 'E' fires
-      if (crankingRef.current) void ign.send("E").catch(() => undefined);
+      // unmount mid-hold: make sure the starter releases
+      if (crankingRef.current) void ign.send("x").catch(() => undefined);
       if (chargeTimer.current) window.clearInterval(chargeTimer.current);
     },
     [ign],
@@ -148,7 +148,7 @@ export function SwiftIgnition() {
     const next = !unlocked;
     setUnlocked(next); // optimistic
     try {
-      await ign.send(next ? "O" : "S");
+      await ign.send(next ? "I" : "S");
     } catch {
       setUnlocked(!next);
     }
@@ -194,10 +194,6 @@ export function SwiftIgnition() {
           >
             {linkLive ? "DISCONNECT" : ign.status === "connecting" || ign.status === "reconnecting" ? "WORKING…" : "CONNECT DEVICE"}
           </button>
-          {/* event ticker */}
-          <div className="border-t border-cd-line pt-2 text-[9px] leading-relaxed text-cd-dim/60">
-            {ign.log.length === 0 ? "NO EVENTS" : ign.log.map((line) => <div key={line}>{line}</div>)}
-          </div>
         </div>
       </HudPanel>
 
@@ -218,7 +214,6 @@ export function SwiftIgnition() {
               <p className={`font-cd-mono text-[15px] tracking-wide ${unlocked ? "text-cd-white" : "text-cd-dim"}`}>
                 {unlocked ? "UNLOCKED" : "LOCKED"}
               </p>
-              <p className="mt-1 font-cd-mono text-[9px] tracking-[0.22em] text-cd-dim/60">TX '{unlocked ? "O" : "S"}' ON SWITCH</p>
             </div>
           </div>
           <button
@@ -262,9 +257,9 @@ export function SwiftIgnition() {
             onPointerCancel={stopCrank}
             onPointerLeave={stopCrank}
             onContextMenu={(e) => e.preventDefault()}
-            className="relative select-none outline-none disabled:cursor-not-allowed"
+            className={`relative select-none outline-none transition-transform duration-150 disabled:cursor-not-allowed ${cranking ? "scale-95" : "active:scale-95"}`}
           >
-            <svg width="200" height="200" viewBox="0 0 200 200">
+            <svg width="200" height="200" viewBox="0 0 200 200" className={cranking ? "engine-crank-shake" : undefined}>
               {/* rotating decorative ring */}
               <circle
                 cx="100"
@@ -299,7 +294,7 @@ export function SwiftIgnition() {
                 cx="100"
                 cy="100"
                 r="46"
-                className={cranking ? "fill-cd-amber/15" : "fill-cd-cyan/5"}
+                className={cranking ? "fill-cd-amber/15 animate-pulse" : "fill-cd-cyan/5"}
                 style={{ filter: cranking ? "drop-shadow(0 0 24px rgba(255,180,84,0.55))" : undefined }}
               />
               <circle cx="100" cy="100" r="34" fill="none" stroke={cranking ? "#ffb454" : "rgba(56,225,255,0.35)"} strokeWidth="1" />
@@ -315,6 +310,13 @@ export function SwiftIgnition() {
             {!linkLive ? "LINK REQUIRED" : !unlocked ? "IGNITION INTERLOCKED" : cranking ? `CRANKING · ${Math.round(charge * MAX_CRANK_MS / 1000)}s` : "HOLD TO CRANK"}
           </p>
 
+        </div>
+      </HudPanel>
+
+      {/* ---- event log (bottom of the deck) ---- */}
+      <HudPanel label="EVENT LOG">
+        <div className="text-[9px] leading-relaxed text-cd-dim/60">
+          {ign.log.length === 0 ? "NO EVENTS" : ign.log.map((line) => <div key={line}>{line}</div>)}
         </div>
       </HudPanel>
     </div>
