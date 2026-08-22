@@ -45,13 +45,29 @@ export function isMasterDevice(d: IotDevice): boolean {
   return /main\s*power|^power$/i.test(d.name);
 }
 
+/** Registry/state survive restarts: hydrate from localStorage instantly,
+ *  re-sync over the network in the background. The deck must never sit
+ *  empty on a phone while a round-trip decides whether to render. */
+const REGISTRY_KEY = "rk-iot-registry";
+const STATE_KEY = "rk-iot-state";
+
+function loadCache<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export function useHomeHub(authToken: string) {
-  const [hubs, setHubs] = useState<string[]>([]);
-  const [devices, setDevices] = useState<IotDevice[]>([]);
-  const [state, setState] = useState<Record<string, 0 | 1 | null>>({});
+  const cachedRegistry = loadCache<{ hubs: string[]; devices: IotDevice[] } | null>(REGISTRY_KEY, null);
+  const [hubs, setHubs] = useState<string[]>(cachedRegistry?.hubs ?? []);
+  const [devices, setDevices] = useState<IotDevice[]>(cachedRegistry?.devices ?? []);
+  const [state, setState] = useState<Record<string, 0 | 1 | null>>(() => loadCache(STATE_KEY, {}));
   const [error, setError] = useState("");
   const [pending, setPending] = useState<Record<string, boolean>>({});
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(Boolean(cachedRegistry));
 
   // Latest-value refs so timers/retries never act on stale closures.
   const pendingRef = useRef(pending);
@@ -103,17 +119,24 @@ export function useHomeHub(authToken: string) {
       if (!changed) return; // identical telemetry → zero re-render
       setState(fresh);
       setError("");
+      try {
+        localStorage.setItem(STATE_KEY, JSON.stringify(fresh));
+      } catch {
+        /* best-effort */
+      }
       // The master follows AND(siblings) even when a child changes OUTSIDE the
       // deck (Blynk app / wall switch): reconcile every hub after each poll.
       for (const hub of new Set(devicesRef.current.map((d) => d.hub))) {
         void reconcileMaster(hub, devicesRef.current);
       }
     } catch {
+      // Offline/stale: cached telemetry stays on screen, no red banner spam.
       setError("TELEMETRY LINK LOST — retrying on next cycle");
     }
   }, [authToken, reconcileMaster]);
 
-  // Initial registry load.
+  // Initial registry load. (cachedRegistry is read once on purpose)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let cancelled = false;
     api
@@ -123,8 +146,16 @@ export function useHomeHub(authToken: string) {
         setHubs(r.hubs);
         setDevices(r.devices);
         setLoaded(true);
+        try {
+          localStorage.setItem(REGISTRY_KEY, JSON.stringify({ hubs: r.hubs, devices: r.devices }));
+        } catch {
+          /* storage full/blocked — cache is best-effort */
+        }
       })
-      .catch(() => !cancelled && setError("Could not load device registry"));
+      .catch(() => {
+        // Stale cache beats an error banner; only complain with nothing to show.
+        if (!cancelled && !cachedRegistry) setError("Could not load device registry");
+      });
     return () => {
       cancelled = true;
     };

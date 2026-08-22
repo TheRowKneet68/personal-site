@@ -49,23 +49,41 @@ function LatencyMeter({ bars }: { bars: 0 | 1 | 2 | 3 }) {
   );
 }
 
+const BIKE_STATE_KEY = "rk-bike-unlocked";
+/** While held, 'R' is re-transmitted so one lost SPP byte can't strand the
+ *  starter — the firmware re-asserts SLF LOW on every R it sees. */
+const CRANK_REPEAT_MS = 600;
+
 export function SwiftIgnition() {
   const ign = useIgnition();
-  const [unlocked, setUnlocked] = useState(false);
+  // Last commanded lock state survives app restarts; the link adoption in
+  // useIgnition restores the transport, this restores the dashboard truth.
+  const [unlocked, setUnlocked] = useState(() => localStorage.getItem(BIKE_STATE_KEY) === "1");
   const [cranking, setCranking] = useState(false);
   const [charge, setCharge] = useState(0);
   const crankingRef = useRef(false);
   const chargeTimer = useRef<number | null>(null);
+  const repeatTimer = useRef<number | null>(null);
 
-  /** Any release path funnels here — exactly one 'E' goes out. */
+  const rememberUnlocked = useCallback((next: boolean): void => {
+    try {
+      localStorage.setItem(BIKE_STATE_KEY, next ? "1" : "0");
+    } catch {
+      /* best-effort */
+    }
+  }, []);
+
+  /** Any release path funnels here — stop repeats, then exactly one 'x'. */
   const stopCrank = useCallback(() => {
     if (!crankingRef.current) return;
     crankingRef.current = false;
     setCranking(false);
     setCharge(0);
-    if (chargeTimer.current) {
-      window.clearInterval(chargeTimer.current);
-      chargeTimer.current = null;
+    for (const t of [chargeTimer, repeatTimer] as const) {
+      if (t.current) {
+        window.clearInterval(t.current);
+        t.current = null;
+      }
     }
     void ign.send("x").catch(() => undefined);
   }, [ign]);
@@ -76,6 +94,11 @@ export function SwiftIgnition() {
     setCranking(true);
     setCharge(0);
     void ign.send("R").catch(() => stopCrank());
+    // Continuous crank bytes while held (user-requested): robust against
+    // packet loss and the firmware's any-byte-releases else-branch.
+    repeatTimer.current = window.setInterval(() => {
+      if (ign.status === "connected") void ign.send("R").catch(() => undefined);
+    }, CRANK_REPEAT_MS);
     chargeTimer.current = window.setInterval(() => {
       setCharge((c) => {
         const next = c + CHARGE_TICK_MS / MAX_CRANK_MS;
@@ -106,9 +129,10 @@ export function SwiftIgnition() {
     async (next: boolean): Promise<void> => {
       if (ign.status !== "connected") return;
       await ign.send(next ? "I" : "S").catch(() => undefined);
+      rememberUnlocked(next);
       setUnlocked(next);
     },
-    [ign],
+    [ign, rememberUnlocked],
   );
 
   useEffect(() => {
@@ -126,19 +150,26 @@ export function SwiftIgnition() {
     return () => window.removeEventListener("deck-voice", onVoice);
   }, [startCrank, stopCrank, unlockVoice]);
 
-  // A dropped link means bike state is unknown — re-arm the interlock.
+  // Re-arm the interlock ONLY on a live→dead transition (dropped link mid-ride
+  // = bike state unknown). At boot the status is merely "not yet adopted" —
+  // resetting then would wipe the restored lock state for no reason.
+  const prevStatus = useRef(ign.status);
   useEffect(() => {
-    if (ign.status !== "connected") {
+    if (prevStatus.current === "connected" && ign.status !== "connected") {
+      rememberUnlocked(false);
       setUnlocked(false);
       stopCrank();
     }
-  }, [ign.status, stopCrank]);
+    prevStatus.current = ign.status;
+  }, [ign.status, stopCrank, rememberUnlocked]);
 
   useEffect(
     () => () => {
       // unmount mid-hold: make sure the starter releases
       if (crankingRef.current) void ign.send("x").catch(() => undefined);
-      if (chargeTimer.current) window.clearInterval(chargeTimer.current);
+      for (const t of [chargeTimer, repeatTimer] as const) {
+        if (t.current) window.clearInterval(t.current);
+      }
     },
     [ign],
   );
@@ -149,6 +180,7 @@ export function SwiftIgnition() {
     setUnlocked(next); // optimistic
     try {
       await ign.send(next ? "I" : "S");
+      rememberUnlocked(next);
     } catch {
       setUnlocked(!next);
     }

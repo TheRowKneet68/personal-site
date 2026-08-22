@@ -113,6 +113,40 @@ export function useIgnition() {
     tryOnce();
   }, [establishLink, native, pushLog]);
 
+  /** Keepalive: poll isConnected so silent drops trigger auto-reconnect. */
+  const startKeepalive = useCallback((): void => {
+    if (keepaliveTimer.current) return;
+    keepaliveTimer.current = window.setInterval(() => {
+      void (async () => {
+        if (statusRef.current !== "connected") return;
+        try {
+          const { connected } = await BluetoothSerial.isConnected({ address: HC05_MAC });
+          if (!connected) scheduleReconnect();
+        } catch {
+          scheduleReconnect();
+        }
+      })();
+    }, KEEPALIVE_MS);
+  }, [scheduleReconnect]);
+
+  /** Adopt an OS-level SPP socket that survived an app restart. Closing the
+   *  APK does not close the RFCOMM link — blindly calling connect again
+   *  fails with "already connected", which users read as a broken deck. */
+  const adoptExistingLink = useCallback(async (): Promise<boolean> => {
+    if (!native) return false;
+    try {
+      const { connected } = await BluetoothSerial.isConnected({ address: HC05_MAC });
+      if (!connected) return false;
+      setStatus("connected");
+      setError("");
+      startKeepalive();
+      pushLog("EXISTING LINK ADOPTED");
+      return true;
+    } catch {
+      return false;
+    }
+  }, [native, pushLog, startKeepalive]);
+
   const connect = useCallback(async (): Promise<void> => {
     setError("");
     if (!native) {
@@ -125,6 +159,8 @@ export function useIgnition() {
       return;
     }
     setStatus("connecting");
+    // Socket already alive from a previous session? Just take it over.
+    if (await adoptExistingLink()) return;
     try {
       const { enabled } = await BluetoothSerial.isEnabled();
       if (!enabled) await BluetoothSerial.enable();
@@ -132,18 +168,7 @@ export function useIgnition() {
       setStatus("connected");
       setLatency(null);
       pushLog(`SPP LINK UP · ${HC05_MAC}`);
-      // Keepalive: poll isConnected so silent drops trigger auto-reconnect.
-      keepaliveTimer.current = window.setInterval(() => {
-        void (async () => {
-          if (statusRef.current !== "connected") return;
-          try {
-            const { connected } = await BluetoothSerial.isConnected({ address: HC05_MAC });
-            if (!connected) scheduleReconnect();
-          } catch {
-            scheduleReconnect();
-          }
-        })();
-      }, KEEPALIVE_MS);
+      startKeepalive();
     } catch (err) {
       setStatus("disconnected");
       const message = err instanceof Error ? err.message : String(err ?? "");
@@ -151,7 +176,14 @@ export function useIgnition() {
       setError(/permission/i.test(message) ? "Bluetooth permission denied — grant it in Android settings" : "Pair the HC-05 in Android settings first, then retry");
       pushLog("CONNECT FAILED");
     }
-  }, [establishLink, native, pushLog, scheduleReconnect]);
+  }, [adoptExistingLink, establishLink, native, pushLog, startKeepalive]);
+
+  // App relaunch while the RFCOMM socket is still open: surface LINK STABLE
+  // immediately instead of waiting for the user to press CONNECT.
+  useEffect(() => {
+    void adoptExistingLink();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /** Send one protocol byte. Measures real round-trip latency for the meter. */
   const send = useCallback(
