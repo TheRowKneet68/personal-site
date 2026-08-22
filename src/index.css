@@ -444,3 +444,12 @@
 .engine-crank-shake {
   animation: engine-crank-shake 120ms linear infinite;
 }
+
+/* Super Splendor hologram — head/pilot lamps blink at 1 Hz when unlocked */
+@keyframes bike-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.12; }
+}
+.bike-blink {
+  animation: bike-blink 1s steps(1, end) infinite;
+}

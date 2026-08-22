@@ -27,10 +27,10 @@ export function HudPanel({
 }) {
   return (
     <section
-      className={`cd-chamfer relative border border-cd-line bg-gradient-to-b from-cd-hull/90 to-cd-glass p-5 pt-8 backdrop-blur-md ${className}`}
+      className={`cd-chamfer relative border border-cd-line bg-gradient-to-b from-cd-hull/90 to-cd-glass p-5 pt-8 ${className}`}
     >
       {/* notched label tab — sits ON the top edge, breaking the border */}
-      <span className="absolute -top-px left-4 flex h-5 items-center gap-2 bg-cd-cyan/10 px-2 font-cd-mono text-[9px] tracking-[0.28em] text-cd-dim">
+        <span className="absolute -top-px left-4 flex h-5 items-center gap-2 whitespace-nowrap bg-cd-cyan/10 px-2 font-cd-mono text-[9px] tracking-[0.2em] text-cd-dim">
         <span className="h-1 w-1 bg-cd-cyan shadow-[0_0_6px_rgba(56,225,255,0.9)]" />
         {label}
       </span>

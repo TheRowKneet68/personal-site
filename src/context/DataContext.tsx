@@ -74,6 +74,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     mounted.current = true;
+    // Offline: fail instantly instead of hanging the splash for 12s.
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      setStatus("error");
+      return;
+    }
     void load();
     return () => {
       mounted.current = false;

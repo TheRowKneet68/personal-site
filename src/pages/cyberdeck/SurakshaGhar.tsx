@@ -155,7 +155,7 @@ export function SurakshaGhar({ authToken }: { authToken: string }) {
     <div className="space-y-5">
       {/* command bar */}
       <div className="flex items-center justify-between">
-        <p className="font-cd-mono text-[10px] tracking-[0.25em] text-cd-dim">
+        <p className="whitespace-nowrap font-cd-mono text-[9px] tracking-[0.14em] text-cd-dim sm:text-[10px] sm:tracking-[0.25em]">
           {hub.hubs.length} UPLINK{hub.hubs.length === 1 ? "" : "S"} · {hub.devices.length} NODE
           {hub.devices.length === 1 ? "" : "S"} · POLL 2s
         </p>
@@ -334,7 +334,7 @@ export function SurakshaGhar({ authToken }: { authToken: string }) {
       </div>
 
       {/* voice console */}
-      <div className="flex items-center gap-3.5 border border-cd-line bg-gradient-to-b from-cd-hull/90 to-cd-glass px-4 py-3 backdrop-blur-md">
+      <div className="flex items-center gap-3.5 border border-cd-line bg-gradient-to-b from-cd-hull/90 to-cd-glass px-4 py-3">
         <button
           onClick={toggleVoice}
           aria-label="Voice command"

@@ -38,7 +38,7 @@ export function DeckGate({ auth }: { auth: DeckAuth }) {
       </div>
 
       <form
-        className="cd-chamfer relative w-full max-w-sm border border-cd-line bg-gradient-to-b from-cd-hull/90 to-cd-glass p-7 backdrop-blur-md"
+        className="cd-chamfer relative w-full max-w-sm whitespace-nowrap border border-cd-line bg-gradient-to-b from-cd-hull/90 to-cd-glass p-7"
         onSubmit={(e) => {
           e.preventDefault();
           void submit();

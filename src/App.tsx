@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import { DataProvider, useData } from "./context/DataContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { CommandProvider } from "./context/CommandContext";
@@ -20,28 +20,35 @@ const TerminalPage = lazy(() =>
 
 function RoutesShell() {
   const { status } = useData();
+  // No network: the deck is bundled in the APK and works offline — jump
+  // straight to it instead of a portfolio that can't load its data.
+  const offline = typeof navigator !== "undefined" && !navigator.onLine;
 
   return (
     <>
-      <LoadingScreen show={status === "loading"} />
+      <LoadingScreen show={status === "loading" && !offline} />
       <Suspense fallback={null}>
         <Routes>
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/terminal" element={<TerminalPage />} />
-          <Route
-            path="*"
-            element={
-              <Layout>
-                <Suspense fallback={null}>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/projects/:id" element={<ProjectDetailPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Routes>
-                </Suspense>
-              </Layout>
-            }
-          />
+          {offline ? (
+            <Route path="*" element={<Navigate to="/terminal" replace />} />
+          ) : (
+            <Route
+              path="*"
+              element={
+                <Layout>
+                  <Suspense fallback={null}>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                      <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                  </Suspense>
+                </Layout>
+              }
+            />
+          )}
         </Routes>
       </Suspense>
     </>

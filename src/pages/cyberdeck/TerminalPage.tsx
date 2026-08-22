@@ -124,18 +124,18 @@ export function TerminalPage() {
       <div className="cd-grid-bg pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_85%)]" />
 
       {/* ---- system bar ---- */}
-      <header className="relative z-10 flex items-center justify-between border-b border-cd-line bg-black/30 px-5 py-3">
-        <div className="flex items-center gap-3">
+      <header className="relative z-10 flex items-center justify-between gap-2 whitespace-nowrap border-b border-cd-line bg-black/30 px-3 py-3 sm:px-5">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* rotating reactor glyph */}
-          <span className="relative flex h-7 w-7 items-center justify-center" aria-hidden>
+          <span className="relative flex h-7 w-7 shrink-0 items-center justify-center" aria-hidden>
             <span className="absolute inset-0 animate-[spin_9s_linear_infinite] rounded-full border border-dashed border-cd-cyan/40" />
             <span className="h-1.5 w-1.5 rounded-full bg-cd-cyan shadow-[0_0_8px_rgba(56,225,255,0.9)]" />
           </span>
-          <h1 className="font-cd-mono text-sm font-bold tracking-[0.32em] text-cd-white">
+          <h1 className="whitespace-nowrap font-cd-mono text-xs font-bold tracking-[0.18em] text-cd-white sm:text-sm sm:tracking-[0.32em]">
             CYBER<span className="text-cd-cyan">·</span>DECK
           </h1>
         </div>
-        <div className="flex items-center gap-4 font-cd-mono text-[10px] tracking-[0.22em]">
+        <div className="flex items-center gap-2 font-cd-mono text-[9px] tracking-[0.14em] sm:gap-4 sm:text-[10px] sm:tracking-[0.22em]">
           <span className="hidden items-center gap-1.5 text-cd-dim sm:flex">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cd-green shadow-[0_0_6px_rgba(61,255,171,0.8)]" />
             ONLINE
@@ -143,13 +143,13 @@ export function TerminalPage() {
           <UtcClock />
           <button
             onClick={() => setKeyPanel(true)}
-            className="border border-cd-line px-2 py-1 tracking-[0.22em] text-cd-dim transition-colors hover:border-cd-cyan/50 hover:text-cd-cyan"
+            className="border border-cd-line px-2 py-1 tracking-[0.14em] text-cd-dim transition-colors hover:border-cd-cyan/50 hover:text-cd-cyan sm:tracking-[0.22em]"
           >
             KEY
           </button>
           <button
             onClick={() => auth.lock()}
-            className="border border-cd-line px-2 py-1 tracking-[0.22em] text-cd-red/80 transition-colors hover:border-cd-red/50 hover:text-cd-red"
+            className="border border-cd-line px-2 py-1 tracking-[0.14em] text-cd-red/80 transition-colors hover:border-cd-red/50 hover:text-cd-red sm:tracking-[0.22em]"
           >
             LOCK
           </button>
@@ -164,7 +164,7 @@ export function TerminalPage() {
             <button
               key={t.id}
               onClick={() => setActive(t.id)}
-              className={`group relative px-2 pb-3 pt-2 font-cd-mono text-[11px] tracking-[0.24em] transition-colors ${
+              className={`group relative whitespace-nowrap px-2 pb-3 pt-2 font-cd-mono text-[10px] tracking-[0.14em] transition-colors sm:text-[11px] sm:tracking-[0.24em] ${
                 active === t.id ? "text-cd-cyan" : "text-cd-dim/60 hover:text-cd-dim"
               }`}
             >
@@ -190,7 +190,7 @@ export function TerminalPage() {
       </main>
 
       {/* ---- status footer ---- */}
-      <footer className="relative z-10 flex items-center justify-between border-t border-cd-line bg-black/30 px-5 py-2 font-cd-mono text-[9px] tracking-[0.22em] text-cd-dim/70">
+      <footer className="relative z-10 flex items-center justify-between gap-2 whitespace-nowrap border-t border-cd-line bg-black/30 px-5 py-2 font-cd-mono text-[8px] tracking-[0.14em] text-cd-dim/70 sm:text-[9px] sm:tracking-[0.22em]">
         <span>THEROWKNEET · DECK OS 2.0</span>
         <span className="hidden sm:inline">ESC TO LOCK</span>
       </footer>

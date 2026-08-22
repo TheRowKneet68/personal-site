@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Bluetooth, Lock, Power, Unlock } from "lucide-react";
+import { Bluetooth, Lock, Unlock } from "lucide-react";
 import { useIgnition } from "../../hooks/useIgnition";
 import type { LinkState } from "../../hooks/useIgnition";
 import { Chip, HudPanel } from "./hud";
@@ -186,7 +186,7 @@ export function SwiftIgnition() {
           {ign.error ? <p className="text-cd-red">{ign.error}</p> : null}
           <button
             onClick={linkLive ? ign.disconnect : ign.connect}
-            className={`cd-chamfer mt-1 w-full border px-3 py-2.5 text-[10px] tracking-[0.26em] transition-colors ${
+            className={`cd-chamfer mt-1 w-full whitespace-nowrap border px-3 py-2.5 text-[10px] tracking-[0.26em] transition-colors ${
               linkLive
                 ? "border-cd-red/40 bg-cd-red/5 text-cd-red hover:bg-cd-red/15"
                 : "border-cd-cyan/50 bg-cd-cyan/10 text-cd-cyan hover:bg-cd-cyan/20 hover:shadow-[0_0_16px_rgba(56,225,255,0.25)]"
@@ -298,15 +298,60 @@ export function SwiftIgnition() {
                 style={{ filter: cranking ? "drop-shadow(0 0 24px rgba(255,180,84,0.55))" : undefined }}
               />
               <circle cx="100" cy="100" r="34" fill="none" stroke={cranking ? "#ffb454" : "rgba(56,225,255,0.35)"} strokeWidth="1" />
-              <Power
-                x={88}
-                y={88}
-                size={24}
-                className={cranking ? "text-cd-amber" : linkLive && unlocked ? "text-cd-cyan" : "text-cd-dim/40"}
-              />
+              {/* hologram of the Super Splendor — headlight + pilot lamp
+                  blink 1s while unlocked, everything burns solid on crank */}
+              <g
+                className={`transition-opacity duration-300 ${unlocked ? "opacity-100" : "opacity-35"}`}
+                style={{
+                  color: cranking ? "#ffb454" : "#38e1ff",
+                  filter: `drop-shadow(0 0 ${cranking ? 5 : 3}px ${cranking ? "rgba(255,180,84,0.8)" : "rgba(56,225,255,0.55)"})`,
+                }}
+                transform="translate(68 82)"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {/* wheels */}
+                <circle cx="11" cy="26" r="7" />
+                <circle cx="53" cy="26" r="7" />
+                {/* frame */}
+                <path d="M11 26 L22 12 L40 12 L53 26" />
+                <path d="M22 12 L30 26 L47 26" opacity="0.7" />
+                {/* seat + handlebar */}
+                <path d="M17 12 H27" strokeWidth="1.8" />
+                <path d="M40 12 L45 6 H51" />
+                {/* headlight */}
+                <circle
+                  cx="57"
+                  cy="9"
+                  r="2.8"
+                  className={
+                    cranking
+                      ? "fill-cd-amber/90 stroke-cd-amber"
+                      : unlocked && linkLive
+                        ? "bike-blink fill-cd-cyan/80 stroke-cd-cyan"
+                        : "stroke-current"
+                  }
+                />
+                {/* pilot / sidelight */}
+                <circle
+                  cx="51.5"
+                  cy="15.5"
+                  r="1.5"
+                  className={
+                    cranking
+                      ? "fill-cd-amber/90 stroke-cd-amber"
+                      : unlocked && linkLive
+                        ? "bike-blink fill-cd-cyan/70 stroke-cd-cyan"
+                        : "stroke-current"
+                  }
+                />
+              </g>
             </svg>
           </button>
-          <p className={`mt-3 font-cd-mono text-[11px] tracking-[0.3em] ${cranking ? "animate-pulse text-cd-amber" : unlocked && linkLive ? "text-cd-white/80" : "text-cd-dim/70"}`}>
+          <p className={`mt-3 whitespace-nowrap font-cd-mono text-[10px] tracking-[0.24em] sm:text-[11px] ${cranking ? "animate-pulse text-cd-amber" : unlocked && linkLive ? "text-cd-white/80" : "text-cd-dim/70"}`}>
             {!linkLive ? "LINK REQUIRED" : !unlocked ? "IGNITION INTERLOCKED" : cranking ? `CRANKING · ${Math.round(charge * MAX_CRANK_MS / 1000)}s` : "HOLD TO CRANK"}
           </p>
 
