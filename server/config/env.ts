@@ -49,7 +49,14 @@ export const env = {
     .map((t) => t.trim())
     .filter(Boolean),
 
-  corsOrigins: (process.env.CORS_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean),
+  // Capacitor WebView origins are always allowed: the APK serves its UI
+  // locally (https://localhost on Android, capacitor://localhost on iOS)
+  // and calls this API cross-origin. Bearer auth still gates every route.
+  corsOrigins: [
+    ...(process.env.CORS_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean),
+    "capacitor://localhost",
+    "https://localhost",
+  ],
   geolocate: process.env.IP_GEOLOCATION === "true",
 } as const;
 

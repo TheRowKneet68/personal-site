@@ -12,6 +12,7 @@ import type {
   SkillsResponse,
   StatsResponse,
 } from "../types";
+import { isNativeApp } from "../lib/native";
 
 export class ApiClientError extends Error {
   constructor(
@@ -23,8 +24,13 @@ export class ApiClientError extends Error {
   }
 }
 
+/** Inside the APK the WebView serves the bundled UI from https://localhost,
+    where no /api exists — calls must go absolute to the live backend.
+    On the website this stays "" (same-origin), exactly as before. */
+const API_BASE = isNativeApp() ? "https://www.ronitbaniyagupta.com.np" : "";
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetch(path, {
+  const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     // Hard ceiling so a dead mobile link can never leave a toggle pending forever.
     signal: AbortSignal.timeout(12_000),
@@ -64,7 +70,7 @@ export const api = {
 
   /** Fire-and-forget visit beacon. */
   trackVisit: () => {
-    fetch("/api/visitors", { method: "POST", keepalive: true }).catch(() => undefined);
+    fetch(`${API_BASE}/api/visitors`, { method: "POST", keepalive: true }).catch(() => undefined);
   },
 
   /* ---- Admin ---- */
