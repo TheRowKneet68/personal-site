@@ -26,7 +26,7 @@ export function About() {
                 alt="Portrait of Ronit Baniya Gupta at his workbench"
                 width={640}
                 height={800}
-                loading="lazy"
+                fetchPriority="high"
                 decoding="async"
                 className="aspect-[4/5] w-full border border-line object-cover"
               />

@@ -86,6 +86,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [load]);
 
   const logoUrl = data.profile?.logo ?? null;
+
+  // Kick off image downloads the instant the URLs arrive from the API,
+  // before React renders the <img> tags.
+  useEffect(() => {
+    for (const url of [data.profile?.portrait1, data.profile?.portrait]) {
+      if (url) { const i = new Image(); i.src = url; }
+    }
+  }, [data.profile?.portrait1, data.profile?.portrait]);
+
   useEffect(() => {
     const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
     if (!link) return;
