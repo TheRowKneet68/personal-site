@@ -72,6 +72,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Silent background refresh — no loading spinner, just swaps data in.
+  const refresh = useCallback(async () => {
+    if (!mounted.current) return;
+    try {
+      const [profileRes, projectsRes, skillsRes, experienceRes, statsRes] = await Promise.all([
+        api.getProfile(),
+        api.getProjects(),
+        api.getSkills(),
+        api.getExperience(),
+        api.getStats(),
+      ]);
+      if (!mounted.current) return;
+      setData({
+        profile: profileRes.profile,
+        achievements: profileRes.achievements,
+        projects: projectsRes.projects,
+        skills: skillsRes.skills,
+        experience: experienceRes.experience,
+        profileStats: statsRes.stats,
+        counts: statsRes.counts,
+        github: statsRes.github,
+        storage: statsRes.storage,
+      });
+    } catch { /* silent — keep showing stale data */ }
+  }, []);
+
   useEffect(() => {
     mounted.current = true;
     // Offline: fail instantly instead of hanging the splash for 12s.
@@ -84,6 +110,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
       mounted.current = false;
     };
   }, [load]);
+
+  // Auto-refresh: refetch silently when tab becomes visible, plus every 60s.
+  useEffect(() => {
+    const onVisible = () => { if (document.visibilityState === "visible") void refresh(); };
+    document.addEventListener("visibilitychange", onVisible);
+    const id = window.setInterval(() => void refresh(), 60_000);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      clearInterval(id);
+    };
+  }, [refresh]);
 
   const logoUrl = data.profile?.logo ?? null;
 
