@@ -72,6 +72,7 @@ export interface ExperienceEntry {
   title: string;
   note: string;
   order?: number;
+  type?: "journey" | "achievement";
 }
 
 export interface Skills {

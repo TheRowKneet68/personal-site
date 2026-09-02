@@ -88,17 +88,31 @@ export function About() {
             <Reveal delay={0.16}>
               <h3 className="mono-label mt-10 mb-6">the journey so far</h3>
               <ol className="relative space-y-8 border-l border-line pl-6">
-                {(experience ?? []).map((e) => (
-                  <li key={`${e.year}-${e.title}`} className="relative">
-                    <span
-                      className="absolute -left-[29px] top-1.5 size-2 rounded-full border border-line-strong bg-bg"
-                      aria-hidden
-                    />
-                    <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">{e.year}</p>
-                    <h4 className="mt-1 font-semibold text-ink">{e.title}</h4>
-                    <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-ink-dim">{e.note}</p>
-                  </li>
-                ))}
+                {(experience ?? []).map((e) => {
+                  const isAchievement = e.type === "achievement";
+                  return (
+                    <li key={`${e.year}-${e.title}`} className="relative">
+                      <span
+                        className={`absolute -left-[29px] top-1.5 size-2 rounded-full border ${
+                          isAchievement
+                            ? "border-accent bg-accent"
+                            : "border-line-strong bg-bg"
+                        }`}
+                        aria-hidden
+                      />
+                      <div className="flex items-center gap-2">
+                        <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">{e.year}</p>
+                        {isAchievement && (
+                          <span className="rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[0.6rem] text-accent-ink">
+                            award
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="mt-1 font-semibold text-ink">{e.title}</h4>
+                      <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-ink-dim">{e.note}</p>
+                    </li>
+                  );
+                })}
               </ol>
             </Reveal>
 
