@@ -32,6 +32,7 @@ const API_BASE = isNativeApp() ? "https://www.ronitbaniyagupta.com.np" : "";
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,
+    cache: "no-store",
     // Hard ceiling so a dead mobile link can never leave a toggle pending forever.
     signal: AbortSignal.timeout(12_000),
     headers: { "Content-Type": "application/json", ...(init.headers as Record<string, string> | undefined) },
@@ -70,7 +71,7 @@ export const api = {
 
   /** Fire-and-forget visit beacon. */
   trackVisit: () => {
-    fetch(`${API_BASE}/api/visitors`, { method: "POST", keepalive: true }).catch(() => undefined);
+    fetch(`${API_BASE}/api/visitors`, { method: "POST", keepalive: true, cache: "no-store" }).catch(() => undefined);
   },
 
   /* ---- Admin ---- */

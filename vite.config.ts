@@ -10,8 +10,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
     /* Offline-first PWA. Caching policy:
-       - PRECACHE the public portfolio shell + assets (code is secret-free by
+       - PRECACHE the public portfolio shell + code (code is secret-free by
          design — Phase 1 keeps all credentials server-side).
+       - Images are NOT precached — they use StaleWhileRevalidate at runtime
+         so deploys don't leave stale images stuck in the precache.
        - NEVER cache /api/* (auth responses, IoT state) and never serve the
          SPA shell for /terminal offline — the deck stays network-only.
        - resume.pdf + Supabase storage images get runtime caches so the
@@ -41,7 +43,7 @@ export default defineConfig({
       },
       workbox: {
         // Fonts + images ride in the install bundle; the heavy PDF does not.
-        globPatterns: ["**/*.{js,css,html}", "**/*.{woff2,svg,png,jpg,ico}"],
+        globPatterns: ["**/*.{js,css,html}", "**/*.{woff2,svg}"],
         globIgnores: ["**/resume.pdf"],
         navigateFallback: "/index.html",
         // /api/* must always hit the network (never stale auth/IoT state);
@@ -63,6 +65,15 @@ export default defineConfig({
             options: {
               cacheName: "media",
               expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 14 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /\.(png|jpe?g|gif|ico|webp|svg)$/,
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "images",
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 7 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
