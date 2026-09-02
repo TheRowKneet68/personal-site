@@ -69,7 +69,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\.(png|jpe?g|gif|ico|webp|svg)$/,
+            urlPattern: /^https?:\/\/[^/]+\/images\/.+\.(png|jpe?g|gif|ico|webp|svg)$/,
             handler: "StaleWhileRevalidate",
             options: {
               cacheName: "images",
