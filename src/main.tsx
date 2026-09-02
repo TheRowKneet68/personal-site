@@ -16,14 +16,6 @@ window.addEventListener("vite:preloadError", () => {
   }
 });
 
-// A new service worker taking control means fresh assets are available.
-// Reload so the new DOM (with updated asset URLs) replaces the stale one.
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    window.location.reload();
-  });
-}
-
 const rootEl = document.getElementById("root");
 if (!rootEl) throw new Error("root element missing");
 

@@ -12,12 +12,10 @@ export default defineConfig({
     /* Offline-first PWA. Caching policy:
        - PRECACHE the public portfolio shell + code (code is secret-free by
          design — Phase 1 keeps all credentials server-side).
-       - Images are NOT precached — they use StaleWhileRevalidate at runtime
-         so deploys don't leave stale images stuck in the precache.
        - NEVER cache /api/* (auth responses, IoT state) and never serve the
          SPA shell for /terminal offline — the deck stays network-only.
-       - resume.pdf + Supabase storage images get runtime caches so the
-         portfolio survives offline after first view. */
+       - Images are served directly by the browser/CDN — no SW caching to
+         avoid stale cross-origin fetch failures. */
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["images/favicon.svg", "images/apple-touch-icon.png", "robots.txt"],
@@ -42,12 +40,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Fonts + images ride in the install bundle; the heavy PDF does not.
         globPatterns: ["**/*.{js,css,html}", "**/*.{woff2,svg}"],
         globIgnores: ["**/resume.pdf"],
         navigateFallback: "/index.html",
-        // /api/* must always hit the network (never stale auth/IoT state);
-        // /terminal is intentionally unusable offline.
         navigateFallbackDenylist: [/^\/api\//, /^\/terminal$/],
         runtimeCaching: [
           {
@@ -56,24 +51,6 @@ export default defineConfig({
             options: {
               cacheName: "resume",
               expiration: { maxEntries: 1, maxAgeSeconds: 60 * 60 * 24 * 30 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/csmfpzbyzqqsnwffzjqg\.supabase\.co\/storage\/v1\/object\/public\//,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "media",
-              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 14 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            urlPattern: /^https?:\/\/[^/]+\/images\/.+\.(png|jpe?g|gif|ico|webp|svg)$/,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "images",
-              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 7 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
