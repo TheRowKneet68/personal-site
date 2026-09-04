@@ -33,7 +33,7 @@ function CaseStudyContent({ project }: { project: Project }) {
   return (
     <div className="border-t border-line">
       <Container className="divide-y divide-line">
-        {cs.problem.length > 0 && (
+        {cs.problem && cs.problem.length > 0 && (
           <CaseStudyBlock label="the problem">
             {cs.problem.map((p, i) => (
               <p key={i} className="mb-4 text-lg leading-relaxed text-ink-dim last:mb-0">
@@ -43,7 +43,7 @@ function CaseStudyContent({ project }: { project: Project }) {
           </CaseStudyBlock>
         )}
 
-        {cs.solution.length > 0 && (
+        {cs.solution && cs.solution.length > 0 && (
           <CaseStudyBlock label="the build">
             {cs.solution.map((p, i) => (
               <p key={i} className="mb-4 text-lg leading-relaxed text-ink-dim last:mb-0">
