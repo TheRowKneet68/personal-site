@@ -15,7 +15,7 @@ export function ProjectCard({ project }: { project: Project }) {
           alt=""
           loading="lazy"
           decoding="async"
-          className="mb-5 aspect-[16/10] w-full rounded-sm border border-line object-cover"
+          className="mb-5 aspect-[16/10] w-full rounded-sm border border-line bg-raised p-2 object-contain"
         />
       ) : null}
       <div className="flex items-center justify-between font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">

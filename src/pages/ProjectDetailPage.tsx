@@ -241,7 +241,7 @@ export function ProjectDetailPage() {
                 alt=""
                 loading="lazy"
                 decoding="async"
-                className="max-h-[30rem] w-full rounded-sm border border-line object-cover"
+                className="max-h-[30rem] w-full rounded-sm border border-line bg-raised p-4 object-contain"
               />
               {project.images.length > 1 ? (
                 <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
@@ -259,7 +259,7 @@ export function ProjectDetailPage() {
                         alt=""
                         loading="lazy"
                         decoding="async"
-                        className="aspect-[16/10] w-full rounded-sm border border-line object-cover transition-opacity hover:opacity-80"
+                        className="aspect-[16/10] w-full rounded-sm border border-line bg-raised p-2 object-contain transition-opacity hover:opacity-80"
                       />
                     </a>
                   ))}
