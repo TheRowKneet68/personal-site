@@ -271,7 +271,7 @@ export const EMBEDDED_DATA = {
         ]
       }
     ],
-    "portrait": "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/ronit-Image.jpeg",
+    "portrait": "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/WhatsApp-Image-2026-07-28-at-9.41.09-PM.jpg",
     "social_links": [
       {
         "id": "social-github",
@@ -1504,8 +1504,7 @@ export const EMBEDDED_DATA = {
       "id": "call-motor-control",
       "date": "2025-05-27",
       "year": "2025",
-      "event": "Call-Based Smart Motor Control",
-      "title": "Market-launched",
+      "title": "Call-Based Smart Motor Control",
       "detail": "Launched to market 27 May 2025 - control industrial and agricultural motors with a phone call. No internet needed, no app, no subscription.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Poster-SMCD.png"
@@ -1573,7 +1572,7 @@ export const EMBEDDED_DATA = {
       "date": "2026-01-28,29",
       "year": "2026",
       "event": "9th PEC Tech Expo 2026",
-      "title": "Participant - multiple projects",
+      "title": "Multiple projects",
       "detail": "28-29 Jan 2026 - Participation certificates: Construction of Roundabout with Pedestrian Bridge at Prithvichowk, HerLegal, Surakshya 360, Suraksha360, Rudra 1, RUDRA-I, and Laser Tag.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1-RUDRA-1-9th-PEC-Tech-Expo-Certificate-of-Participation.jpeg",
@@ -1617,8 +1616,7 @@ export const EMBEDDED_DATA = {
       "id": "hackathon-nova-volunteer",
       "date": "2026-01-28,29",
       "year": "2026",
-      "event": "Hackathon Nova",
-      "title": "Volunteer",
+      "title": "Hackathon Nova Volunteer",
       "detail": "Certificate of Appreciation as Volunteer.",
       "images": [
         "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/1.Hackathon-Nova-2025-Volunteer-Certificate-Of-Appericiation.jpeg"

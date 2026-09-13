@@ -18,15 +18,11 @@ export async function getSkills(_req: Request, res: Response): Promise<void> {
 }
 
 /** GET /api/experience - the journey timeline, with achievements merged in,
-    sorted oldest → newest. Narrative milestones whose text merely repeats the
-    dated achievements of the same year are dropped so no event shows twice. */
+    sorted oldest → newest. Every journey milestone is kept; nothing is dropped. */
 export async function getExperience(_req: Request, res: Response): Promise<void> {
   const content = await storage.getContent();
 
   const achievementEntries: ExperienceEntry[] = [];
-  // Distinctive words per year, built from achievement titles/events/results.
-  // Used to detect journey lines that merely narrate the same dated events.
-  const vocabByYear = new Map<number, Set<string>>();
   for (const a of content.achievements ?? []) {
     const prettyYear = a.date || a.year;
     const { y } = parseTimeline(prettyYear);
@@ -38,16 +34,13 @@ export async function getExperience(_req: Request, res: Response): Promise<void>
       order: a.order,
       yearGroup: y,
     });
-    if (y >= 1960 && y <= 9998) {
-      const vocab = vocabByYear.get(y) ?? new Set<string>();
-      for (const w of significantWords(`${a.title} ${a.event ?? ""} ${a.result ?? ""}`)) vocab.add(w);
-      vocabByYear.set(y, vocab);
-    }
   }
 
-  const milestones: ExperienceEntry[] = (content.experience ?? [])
-    .filter((e) => keepNarrative(e, vocabByYear))
-    .map((e) => ({ ...e, type: "journey" as const, yearGroup: parseTimeline(e.year).y }));
+  const milestones: ExperienceEntry[] = (content.experience ?? []).map((e) => ({
+    ...e,
+    type: "journey" as const,
+    yearGroup: parseTimeline(e.year).y,
+  }));
 
   const merged = [...milestones, ...achievementEntries].sort(compareEntries);
   res.json({ experience: merged });
@@ -77,27 +70,12 @@ function compareEntries(a: ExperienceEntry, b: ExperienceEntry): number {
   const ka = parseTimeline(a.year);
   const kb = parseTimeline(b.year);
   if (ka.y !== kb.y) return ka.y - kb.y;
+  const ar = a.type === "journey" ? 0 : 1;
+  const br = b.type === "journey" ? 0 : 1;
+  if (ar !== br) return ar - br;
   if (ka.m !== kb.m) return ka.m - kb.m;
   if (ka.d !== kb.d) return ka.d - kb.d;
   return (a.order ?? 0) - (b.order ?? 0);
-}
-
-/** Content words (≥4 chars, alphanumeric only) - the basis of repetition checks. */
-function significantWords(text: string): string[] {
-  return (text || "").toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 4);
-}
-
-/** A year-summary milestone is dropped when it merely narrates the same events
-    as the dated achievements of that year (3+ shared significant words =
-    "this milestone recaps those achievements"). Word-based, so it is immune
-    to emoji/„??"/wording differences between the seed and the DB copy.
-    Milestones for years without achievements are always kept. */
-function keepNarrative(e: ExperienceEntry, vocabByYear: Map<number, Set<string>>): boolean {
-  const { y } = parseTimeline(e.year);
-  const vocab = vocabByYear.get(y);
-  if (!vocab || vocab.size === 0) return true;
-  const hits = significantWords(`${e.title} ${e.note}`).filter((w) => vocab.has(w)).length;
-  return hits < 3;
 }
 
 /** GET /api/profile - everything about the person (used by the hero/about). */

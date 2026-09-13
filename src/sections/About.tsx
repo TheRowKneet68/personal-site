@@ -102,14 +102,15 @@ export function About() {
                   const prev = i > 0 ? all[i - 1] : undefined;
                   const prevGroup = prev ? (prev.yearGroup ?? yearGroupOf(prev.year)) : null;
                   const isFirstInYear = prevGroup === null || prevGroup !== group;
+                  const groupLabel = group >= 9000 ? "present" : String(group);
+                  const showRowDate =
+                    isAchievement && e.year?.trim().toLowerCase() !== groupLabel.toLowerCase();
                   return (
                     <Fragment key={`${e.year}-${e.title}-${i}`}>
                       {isFirstInYear && (
                         <li className="relative">
                           <span className="absolute -left-[29px] top-1 size-2 rounded-full bg-accent" aria-hidden />
-                          <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">
-                            {group >= 9000 ? "present" : group}
-                          </p>
+                          <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">{groupLabel}</p>
                         </li>
                       )}
                       <li className="relative">
@@ -122,7 +123,9 @@ export function About() {
                         <div className="flex items-center gap-2">
                           {isAchievement && (
                             <>
-                              <p className="font-mono text-[0.7rem] tracking-[0.14em] text-ink-faint">{e.year}</p>
+                              {showRowDate && (
+                                <p className="font-mono text-[0.7rem] tracking-[0.14em] text-ink-faint">{e.year}</p>
+                              )}
                               <span className="rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[0.6rem] text-accent-ink">
                                 award
                               </span>
