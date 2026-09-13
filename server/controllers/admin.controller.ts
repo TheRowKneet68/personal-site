@@ -9,7 +9,13 @@ import {
   type AuthRole,
 } from "../middleware/auth.js";
 import { HttpError } from "../middleware/errorHandler.js";
-import { normalizeFromFile, type Content } from "../services/content.js";
+import {
+  migrateSocialLinks,
+  normalizeFromFile,
+  normalizeSocialLinks,
+  validateSocialLinks,
+  type Content,
+} from "../services/content.js";
 import { storage } from "../services/storage.js";
 import type { BruteForceRequest } from "../middleware/bruteForce.js";
 
@@ -164,8 +170,13 @@ export async function updateContent(req: Request, res: Response): Promise<void> 
   if (!body || typeof body.profile !== "object") {
     throw new HttpError(400, "Invalid content: profile is required");
   }
+  // Trust-boundary guard for the social links — every admin save re-validates
+  // the URLs and display text so javascript:/data:/etc. never reach the DB.
+  const socialError = validateSocialLinks(body.profile.social_links);
+  if (socialError) throw new HttpError(400, socialError);
+  const profile = migrateSocialLinks(body.profile as Content["profile"]);
   const content = normalizeFromFile({
-    profile: body.profile,
+    profile: { ...profile, social_links: normalizeSocialLinks(profile.social_links ?? []) },
     projects: Array.isArray(body.projects) ? body.projects : [],
     achievements: Array.isArray(body.achievements) ? body.achievements : [],
   });

@@ -4,6 +4,8 @@ export interface SeoOptions {
   title: string;
   description: string;
   path?: string;
+  /** Exact canonical URL override (e.g. the non-www connect page). */
+  canonical?: string;
   image?: string;
   type?: "website" | "article";
   jsonLd?: object;
@@ -38,7 +40,7 @@ const absolute = (path: string): string => (path.startsWith("http") ? path : `${
 export function applySeo(options: SeoOptions): void {
   const title = options.title;
   const description = options.description;
-  const url = absolute(options.path ?? "/");
+  const url = options.canonical ?? absolute(options.path ?? "/");
   const image = absolute(options.image ?? SITE.ogImage);
 
   document.title = title;

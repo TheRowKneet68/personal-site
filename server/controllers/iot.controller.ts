@@ -44,13 +44,13 @@ function hubToken(hubParam: string): string {
   const match = /^hub-(\d+)$/.exec(hubParam);
   const index = match ? Number(match[1]) - 1 : -1;
   if (index < 0 || index >= hubs.length) throw new HttpError(404, "Unknown hub");
-  return hubs[index];
+  return hubs[index] as string;
 }
 
 /** Call the Blynk external API. Fetch errors embed the full URL — which
     contains the token — so every failure mode is normalised to a generic
     message before it can reach a response or a log. */
-async function blynk(token: string, path: string): Promise<globalThis.Response> {
+async function blynk(path: string): Promise<globalThis.Response> {
   try {
     return await fetch(`${BLYNK_BASE}${path}`, {
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
@@ -126,14 +126,14 @@ export async function getState(_req: Request, res: ExpressResponse): Promise<voi
       const token = hubToken(hub);
       const pins = [...new Set(devs.map((d) => d.pin))];
       try {
-        const r = await blynk(token, `/get?token=${encodeURIComponent(token)}&${pins.join("&")}`);
+        const r = await blynk(`/get?token=${encodeURIComponent(token)}&${pins.join("&")}`);
         /* Blynk answers a single-pin get with a bare value ("1") and a
            multi-pin get with an object — normalise both to key→value. */
         let body: Record<string, unknown> = {};
         if (r.ok) {
           const j: unknown = await r.json();
           if (typeof j === "number" || typeof j === "boolean" || typeof j === "string") {
-            if (pins.length === 1) body = { [pins[0]]: j };
+            if (pins.length === 1) body = { [pins[0] as string]: j };
           } else if (isRecord(j)) {
             body = j;
           }
@@ -164,7 +164,7 @@ export async function setDeviceState(req: Request, res: ExpressResponse): Promis
   const token = hubToken(device.hub);
   // Active-low channels energise on 0 — complement at the wire.
   const wireValue = device.invert ? ((value ^ 1) as 0 | 1) : value;
-  const r = await blynk(token, `/update?token=${encodeURIComponent(token)}&${device.pin}=${wireValue}`);
+  const r = await blynk(`/update?token=${encodeURIComponent(token)}&${device.pin}=${wireValue}`);
   if (!r.ok) throw new HttpError(502, "Device rejected the command");
   res.json({ ok: true, id: device.id, value });
 }

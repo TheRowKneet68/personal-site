@@ -12,6 +12,7 @@ const ProjectDetailPage = lazy(() =>
 );
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage })));
 const AdminPage = lazy(() => import("./pages/AdminPage").then((m) => ({ default: m.AdminPage })));
+const ConnectPage = lazy(() => import("./pages/ConnectPage").then((m) => ({ default: m.ConnectPage })));
 // Cyber-Deck: lazy + outside the public Layout; module code never enters the
 // initial bundle and the route is unlinked/noindex'd.
 const TerminalPage = lazy(() =>
@@ -42,6 +43,7 @@ function RoutesShell() {
                     <Routes>
                       <Route path="/" element={<HomePage />} />
                       <Route path="/projects/:id" element={<ProjectDetailPage />} />
+                      <Route path="/connect" element={<ConnectPage />} />
                       <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                   </Suspense>

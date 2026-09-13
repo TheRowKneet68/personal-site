@@ -271,7 +271,53 @@ export const EMBEDDED_DATA = {
         ]
       }
     ],
-    "portrait": "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/ronit-Image.jpeg"
+    "portrait": "https://csmfpzbyzqqsnwffzjqg.supabase.co/storage/v1/object/public/images/ronit-Image.jpeg",
+    "social_links": [
+      {
+        "id": "social-github",
+        "platform": "github",
+        "name": "GitHub",
+        "url": "https://github.com/TheRowKneet68",
+        "description": "",
+        "enabled": true,
+        "showOnConnect": true,
+        "sortOrder": 0,
+        "iconOverride": null
+      },
+      {
+        "id": "social-linkedin",
+        "platform": "linkedin",
+        "name": "LinkedIn",
+        "url": "https://www.linkedin.com/in/jr-erronitbaniya/",
+        "description": "",
+        "enabled": true,
+        "showOnConnect": true,
+        "sortOrder": 1,
+        "iconOverride": null
+      },
+      {
+        "id": "social-facebook",
+        "platform": "facebook",
+        "name": "Facebook",
+        "url": "https://www.facebook.com/TheRowKneet/",
+        "description": "",
+        "enabled": true,
+        "showOnConnect": true,
+        "sortOrder": 2,
+        "iconOverride": null
+      },
+      {
+        "id": "social-instagram",
+        "platform": "instagram",
+        "name": "Instagram",
+        "url": "https://www.instagram.com/jr.er_ronitbaniya68",
+        "description": "",
+        "enabled": true,
+        "showOnConnect": true,
+        "sortOrder": 3,
+        "iconOverride": null
+      }
+    ]
   },
   "projects": [
     {

@@ -1,8 +1,9 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { GripVertical } from "lucide-react";
-import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, Testimonial } from "../../types";
+import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, SocialLink, Testimonial } from "../../types";
 import { cn } from "../../utils/format";
-import { Field, ImageField, ImageList, MapEditor, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
+import { detectPlatform, isValidHttpUrl, platformIcon, platformName, PLATFORMS } from "../../lib/platforms";
+import { Field, ImageField, ImageList, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
 
 /* ---------------- generic repeater ---------------- */
 
@@ -343,8 +344,8 @@ export function BasicsSection({
         onChange={(v) => set({ portrait1: v })}
         uploadImage={uploadImage}
       />
-      <Field label="Socials" hint="Key = platform name, value = URL.">
-        <MapEditor value={value.socials} onChange={(v) => set({ socials: v })} keyPlaceholder="platform" valuePlaceholder="url" itemLabel="social" />
+      <Field label="Social links" hint="The /connect page manager — add, edit, reorder, enable/disable. Old key/value socials were migrated here automatically.">
+        <ConnectSection value={value.social_links ?? []} onChange={(v) => set({ social_links: v })} />
       </Field>
     </div>
   );
@@ -697,6 +698,231 @@ export function FeaturedInSection({
         );
       }}
     />
+  );
+}
+
+/* ---------------- /connect social link manager ---------------- */
+
+const linkInputCls =
+  "w-full rounded-md border border-line bg-bg px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none";
+
+export function ConnectSection({ value, onChange }: { value: SocialLink[]; onChange: (v: SocialLink[]) => void }) {
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const move = (from: number, to: number) => {
+    const next = [...value];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item as SocialLink);
+    onChange(next);
+  };
+  const duplicate = (i: number, item: SocialLink) =>
+    onChange([...value.slice(0, i + 1), { ...item, id: `${item.id || "social"}-copy-${crypto.randomUUID().slice(0, 6)}` }, ...value.slice(i + 1)]);
+  const add = () =>
+    onChange([
+      ...value,
+      {
+        id: crypto.randomUUID().slice(0, 8),
+        platform: "",
+        name: "",
+        url: "",
+        description: "",
+        enabled: true,
+        showOnConnect: true,
+        sortOrder: value.length,
+        iconOverride: null,
+      },
+    ]);
+  const btnCls = "rounded border border-line px-2 py-1 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent disabled:opacity-30";
+
+  return (
+    <div className="space-y-3">
+      <datalist id="rk-platform-list">
+        {PLATFORMS.map((p) => (
+          <option key={p.id} value={p.id}>
+            {p.name}
+          </option>
+        ))}
+      </datalist>
+      {value.length === 0 ? (
+        <p className="text-sm text-ink-faint">No social links yet — paste a URL below and the platform is detected for you.</p>
+      ) : (
+        value.map((link, i) => (
+          <SocialLinkRow
+            key={link.id || i}
+            link={link}
+            index={i}
+            count={value.length}
+            dragIdx={dragIdx}
+            onDragIndex={setDragIdx}
+            onPatch={(patch) => onChange(value.map((l, j) => (j === i ? { ...l, ...patch } : l)))}
+            onMove={move}
+            onRemove={() => onChange(value.filter((_, j) => j !== i))}
+            onDuplicate={() => duplicate(i, link)}
+            buttonCls={btnCls}
+          />
+        ))
+      )}
+      <button
+        type="button"
+        className="rounded border border-line px-3 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent"
+        onClick={add}
+      >
+        + add social link
+      </button>
+    </div>
+  );
+}
+
+function SocialLinkRow({
+  link,
+  index,
+  count,
+  dragIdx,
+  onDragIndex,
+  onPatch,
+  onMove,
+  onRemove,
+  onDuplicate,
+  buttonCls,
+}: {
+  link: SocialLink;
+  index: number;
+  count: number;
+  dragIdx: number | null;
+  onDragIndex: (i: number | null) => void;
+  onPatch: (patch: Partial<SocialLink>) => void;
+  onMove: (from: number, to: number) => void;
+  onRemove: () => void;
+  onDuplicate: () => void;
+  buttonCls: string;
+}) {
+  // Remembers whether the current platform came from URL auto-detection. As
+  // long as it did, pasting a different URL re-detects; once the admin picks a
+  // platform manually, further pastes respect that override.
+  const auto = useRef<string | null>(null);
+  const onUrl = (url: string) => {
+    const detected = detectPlatform(url);
+    if (detected && (link.platform === "" || auto.current !== null)) {
+      auto.current = detected;
+      onPatch({ url, platform: detected, name: link.name || platformName(detected) });
+      return;
+    }
+    onPatch({ url });
+  };
+  const onPlatform = (platform: string) => {
+    auto.current = null;
+    onPatch({ platform, name: link.name || platformName(platform) });
+  };
+  const Icon = platformIcon(link.iconOverride ?? link.platform);
+  const urlInvalid = link.url.trim() !== "" && !isValidHttpUrl(link.url);
+  const preview = !urlInvalid && link.url ? link.url : "";
+
+  return (
+    <div
+      className={cn("rounded-lg border border-line bg-surface p-4", dragIdx === index && "opacity-50")}
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <span
+          draggable
+          onDragStart={(e) => {
+            e.dataTransfer.effectAllowed = "move";
+            onDragIndex(index);
+          }}
+          onDragOver={(e) => {
+            if (dragIdx === null || dragIdx === index) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            onMove(dragIdx, index);
+            onDragIndex(index);
+          }}
+          onDragEnd={() => onDragIndex(null)}
+          className="cursor-grab text-ink-faint"
+          title="Drag to reorder"
+          aria-hidden
+        >
+          <GripVertical className="size-4" />
+        </span>
+        <span className="grid size-8 shrink-0 place-items-center rounded border border-line bg-bg text-ink-dim" aria-hidden>
+          <Icon className="size-4" />
+        </span>
+        <input
+          className={cn(linkInputCls, "min-w-32 flex-1")}
+          list="rk-platform-list"
+          placeholder="platform (type or paste URL)"
+          value={link.platform}
+          onChange={(e) => onPlatform(e.target.value)}
+        />
+        <input
+          className={cn(linkInputCls, "min-w-32 flex-1")}
+          placeholder="Display name"
+          value={link.name}
+          onChange={(e) => onPatch({ name: e.target.value })}
+        />
+        <div className="ml-auto flex items-center gap-1">
+          <button type="button" className={buttonCls} disabled={index === 0} onClick={() => onMove(index, index - 1)} title="Move up">
+            ↑
+          </button>
+          <button type="button" className={buttonCls} disabled={index === count - 1} onClick={() => onMove(index, index + 1)} title="Move down">
+            ↓
+          </button>
+          <button type="button" className={buttonCls} onClick={onDuplicate} title="Duplicate this link">
+            copy
+          </button>
+          <button type="button" className={cn(buttonCls, "text-warn hover:border-warn hover:text-warn")} onClick={onRemove} title="Delete this link">
+            ×
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-2 flex items-center gap-2">
+        <input
+          className={cn(linkInputCls, urlInvalid && "border-warn")}
+          placeholder="https://www.instagram.com/example"
+          value={link.url}
+          onChange={(e) => onUrl(e.target.value)}
+        />
+        {preview ? (
+          <a
+            href={preview}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded border border-line px-2 py-2 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent"
+            title="Open URL"
+          >
+            ↗
+          </a>
+        ) : null}
+      </div>
+      {urlInvalid ? <p className="mt-1 text-xs text-warn">URL must start with http:// or https://</p> : null}
+
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <input
+          className={linkInputCls}
+          placeholder="Optional description shown on the card"
+          value={link.description}
+          onChange={(e) => onPatch({ description: e.target.value })}
+        />
+        <label className="flex items-center gap-2 font-mono text-xs text-ink-dim">
+          Icon
+          <select
+            className="w-full rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+            value={link.iconOverride ?? ""}
+            onChange={(e) => onPatch({ iconOverride: e.target.value || null })}
+          >
+            <option value="">auto</option>
+            {PLATFORMS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-4">
+        <Toggle label="Enabled" checked={link.enabled} onChange={(v) => onPatch({ enabled: v })} />
+        <Toggle label="Show on /connect" checked={link.showOnConnect} onChange={(v) => onPatch({ showOnConnect: v })} />
+      </div>
+    </div>
   );
 }
 

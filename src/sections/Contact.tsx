@@ -1,4 +1,5 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Phone, QrCode } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useData } from "../context/DataContext";
 import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
@@ -6,7 +7,6 @@ import { Reveal } from "../components/Reveal";
 import { ContactForm } from "../components/ContactForm";
 import { NewsletterForm } from "../components/NewsletterForm";
 import { CopyButton } from "../components/CopyButton";
-import { SocialLinks } from "../components/SocialLinks";
 import { SITE } from "../lib/constants";
 
 export function Contact() {
@@ -50,8 +50,15 @@ export function Contact() {
             </ul>
 
             <div className="mt-6 border-t border-line pt-6">
-              <p className="mono-label mb-3">find me online</p>
-              <SocialLinks />
+              <p className="mono-label mb-3">one tap — save my card</p>
+              <Link
+                to="/connect"
+                className="group flex items-center gap-3 rounded-sm border border-line bg-surface p-4 text-ink-dim transition-colors hover:border-line-strong hover:text-ink"
+              >
+                <QrCode className="size-4 shrink-0 text-ink-faint" aria-hidden />
+                <span className="text-sm">Social profiles, contact card &amp; QR</span>
+                <ArrowRight className="ml-auto size-4 text-ink-faint transition-transform group-hover:translate-x-0.5" aria-hidden />
+              </Link>
             </div>
 
             <div className="mt-8 rounded-sm border border-line bg-surface p-6">

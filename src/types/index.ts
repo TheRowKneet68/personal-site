@@ -14,6 +14,8 @@ export interface ExperienceEntry {
   note: string;
   order?: number;
   type?: "journey" | "achievement";
+  /** Numeric year bucket (9999 = "Present"), stamped by /api/experience. */
+  yearGroup?: number;
 }
 
 export interface Testimonial {
@@ -25,6 +27,18 @@ export interface FeaturedIn {
   name: string;
   url: string;
   images?: string[];
+}
+
+export interface SocialLink {
+  id: string;
+  platform: string;
+  name: string;
+  url: string;
+  description: string;
+  enabled: boolean;
+  showOnConnect: boolean;
+  sortOrder: number;
+  iconOverride: string | null;
 }
 
 export interface Profile {
@@ -42,6 +56,9 @@ export interface Profile {
   whatsapp: string;
   email: string;
   socials: Record<string, string>;
+  /** Structured social links — the /connect page + admin "Connect" manager.
+      `socials` above is derived from the enabled entries server-side. */
+  social_links?: SocialLink[];
   badges: string[];
   stats: ProfileStats[];
   focus: string[];

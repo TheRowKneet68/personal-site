@@ -13,6 +13,10 @@ export const SITE = {
   resume: "/resume.pdf",
 } as const;
 
+/** Canonical, non-www connect URL. The business card QR encodes EXACTLY this
+    string, so a change of social accounts never requires reprinting. */
+export const CONNECT_URL = "https://ronitbaniyagupta.com.np/connect";
+
 export const NAV_LINKS = [
   { label: "about", href: "#about" },
   { label: "work", href: "#work" },

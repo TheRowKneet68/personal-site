@@ -1,7 +1,15 @@
+import { Fragment } from "react";
 import { useData } from "../context/DataContext";
 import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
 import { Reveal } from "../components/Reveal";
+
+/** Timeline year bucket for older responses that lack the server's yearGroup. */
+function yearGroupOf(value: string): number {
+  const m = /\b(19|20)\d{2}\b/.exec(value ?? "");
+  if (m) return Number(m[0]);
+  return /present/i.test(value ?? "") ? 9999 : 0;
+}
 
 export function About() {
   const { profile, experience } = useData();
@@ -87,30 +95,44 @@ export function About() {
 
             <Reveal delay={0.16}>
               <h3 className="mono-label mt-10 mb-6">the journey so far</h3>
-              <ol className="relative space-y-8 border-l border-line pl-6">
-                {(experience ?? []).map((e) => {
+              <ol className="relative space-y-6 border-l border-line pl-6">
+                {(experience ?? []).map((e, i, all) => {
                   const isAchievement = e.type === "achievement";
+                  const group = e.yearGroup ?? yearGroupOf(e.year);
+                  const prev = i > 0 ? all[i - 1] : undefined;
+                  const prevGroup = prev ? (prev.yearGroup ?? yearGroupOf(prev.year)) : null;
+                  const isFirstInYear = prevGroup === null || prevGroup !== group;
                   return (
-                    <li key={`${e.year}-${e.title}`} className="relative">
-                      <span
-                        className={`absolute -left-[29px] top-1.5 size-2 rounded-full border ${
-                          isAchievement
-                            ? "border-accent bg-accent"
-                            : "border-line-strong bg-bg"
-                        }`}
-                        aria-hidden
-                      />
-                      <div className="flex items-center gap-2">
-                        <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">{e.year}</p>
-                        {isAchievement && (
-                          <span className="rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[0.6rem] text-accent-ink">
-                            award
-                          </span>
-                        )}
-                      </div>
-                      <h4 className="mt-1 font-semibold text-ink">{e.title}</h4>
-                      <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-ink-dim">{e.note}</p>
-                    </li>
+                    <Fragment key={`${e.year}-${e.title}-${i}`}>
+                      {isFirstInYear && (
+                        <li className="relative">
+                          <span className="absolute -left-[29px] top-1 size-2 rounded-full bg-accent" aria-hidden />
+                          <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">
+                            {group >= 9000 ? "present" : group}
+                          </p>
+                        </li>
+                      )}
+                      <li className="relative">
+                        <span
+                          className={`absolute -left-[29px] top-1.5 size-2 rounded-full border ${
+                            isAchievement ? "border-accent bg-accent" : "border-line-strong bg-bg"
+                          }`}
+                          aria-hidden
+                        />
+                        <div className="flex items-center gap-2">
+                          {isAchievement && (
+                            <>
+                              <p className="font-mono text-[0.7rem] tracking-[0.14em] text-ink-faint">{e.year}</p>
+                              <span className="rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[0.6rem] text-accent-ink">
+                                award
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <h4 className="mt-1 font-semibold text-ink">{e.title}</h4>
+                        <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-ink-dim">{e.note}</p>
+                      </li>
+                    </Fragment>
                   );
                 })}
               </ol>

@@ -10,6 +10,7 @@ import {
   dedupeRowsById,
   deriveBadges,
   deriveStats,
+  migrateSocialLinks,
   normalizeFromFile,
   normalizeProfile,
   rowsToContent,
@@ -512,7 +513,7 @@ function deriveContentStats(content: Content): Content {
     achievements: [...content.achievements].sort(byOrder),
     experience: [...content.experience].sort(byOrder),
     profile: {
-      ...content.profile,
+      ...migrateSocialLinks(content.profile),
       stats: deriveStats(content.profile, content.projects, content.achievements),
       badges: deriveBadges(content.profile, content.achievements),
     },

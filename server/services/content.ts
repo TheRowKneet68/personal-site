@@ -1,5 +1,17 @@
 /* Shared content model + normalization between the JSON fallback and Supabase. */
 
+export interface SocialLinkRecord {
+  id: string;
+  platform: string;
+  name: string;
+  url: string;
+  description: string;
+  enabled: boolean;
+  showOnConnect: boolean;
+  sortOrder: number;
+  iconOverride: string | null;
+}
+
 export interface ProfileRecord {
   name: string;
   handle: string;
@@ -12,6 +24,10 @@ export interface ProfileRecord {
   whatsapp: string;
   email: string;
   socials: Record<string, string>;
+  /** Structured social links (the /connect page + admin manager). The legacy
+      `socials` record above is DERIVED from the enabled links on serve — one
+      source of truth, nothing else in the site needs to change. */
+  social_links?: SocialLinkRecord[];
   badges: string[];
   stats: { label: string; value: string }[];
   focus: string[];
@@ -73,6 +89,9 @@ export interface ExperienceEntry {
   note: string;
   order?: number;
   type?: "journey" | "achievement";
+  /** Numeric (1960–9998) bucket used to group a timeline chronologically;
+      gets stamped by the /api/experience controller. */
+  yearGroup?: number;
 }
 
 export interface Skills {
@@ -210,4 +229,159 @@ export function normalizeProfile(profile: ProfileRecord): ProfileRecord {
     stats: dedupeBy(profile.stats, (s) => s.label),
     badges: dedupeBy(profile.badges, (b) => b),
   };
+}
+
+/* ---- Social links (display names used by the auto-migration below). Keep
+        in sync with src/lib/platforms.ts (the client's detection table). ---- */
+
+const DEFAULT_PLATFORM_LABELS: Record<string, string> = {
+  instagram: "Instagram",
+  facebook: "Facebook",
+  tiktok: "TikTok",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+  youtube: "YouTube",
+  x: "X",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  threads: "Threads",
+  bluesky: "Bluesky",
+  mastodon: "Mastodon",
+  snapchat: "Snapchat",
+  reddit: "Reddit",
+  pinterest: "Pinterest",
+  discord: "Discord",
+  twitch: "Twitch",
+  medium: "Medium",
+  substack: "Substack",
+  dev: "dev.to",
+  hashnode: "Hashnode",
+  dribbble: "Dribbble",
+  behance: "Behance",
+  figma: "Figma",
+  codepen: "CodePen",
+  codesandbox: "CodeSandbox",
+  replit: "Replit",
+  spotify: "Spotify",
+  vimeo: "Vimeo",
+  soundcloud: "SoundCloud",
+  bandcamp: "Bandcamp",
+  mixcloud: "Mixcloud",
+  stackoverflow: "Stack Overflow",
+  gitlab: "GitLab",
+  bitbucket: "Bitbucket",
+  huggingface: "Hugging Face",
+  quora: "Quora",
+  paypal: "PayPal",
+  linktree: "Linktree",
+  tumblr: "Tumblr",
+  flickr: "Flickr",
+  yelp: "Yelp",
+  tripadvisor: "Tripadvisor",
+  kaggle: "Kaggle",
+  hackerrank: "HackerRank",
+  leetcode: "LeetCode",
+  producthunt: "Product Hunt",
+  patreon: "Patreon",
+  zoom: "Zoom",
+  signal: "Signal",
+  line: "LINE",
+  wechat: "WeChat",
+  messenger: "Messenger",
+  meetup: "Meetup",
+  kick: "Kick",
+};
+
+function makeSocialLink(platform: string, url: string, sortOrder: number): SocialLinkRecord {
+  return {
+    id: `social-${platform}`,
+    platform,
+    name: DEFAULT_PLATFORM_LABELS[platform] ?? platform,
+    url,
+    description: "",
+    enabled: true,
+    showOnConnect: true,
+    sortOrder,
+    iconOverride: null,
+  };
+}
+
+/** Idempotent bridge between the legacy `socials` record and the structured
+    `social_links` array. Any socials key without a matching social_links row
+    gets absorbed once (with defaults); `socials` is then re-derived from the
+    ENABLED links so the rest of the site keeps working with no code change.
+    Running it on every serve/save means existing URLs migrate automatically —
+    nothing has to be re-entered by hand. */
+export function migrateSocialLinks(profile: ProfileRecord): ProfileRecord {
+  const socials = profile.socials ?? {};
+  const existing = Array.isArray(profile.social_links) ? [...profile.social_links] : [];
+  const byPlatform = new Map<string, SocialLinkRecord>();
+  for (const link of existing) byPlatform.set(link.platform, link);
+
+  let nextOrder = existing.reduce((m, l) => Math.max(m, l.sortOrder + 1), existing.length);
+  for (const [platform, url] of Object.entries(socials)) {
+    if (typeof url !== "string" || !url.trim()) continue;
+    if (!byPlatform.has(platform)) {
+      const link = makeSocialLink(platform, url, nextOrder++);
+      existing.push(link);
+      byPlatform.set(platform, link);
+    }
+  }
+
+  const sorted = [...existing].sort((a, b) => a.sortOrder - b.sortOrder);
+  const enabled = sorted.filter((l) => l.enabled);
+  return {
+    ...profile,
+    social_links: sorted,
+    socials: Object.fromEntries(enabled.map((l) => [l.platform, l.url])),
+  };
+}
+
+/** Only http(s) is allowed — rejects javascript:, data:, vbscript:, file:, etc. */
+export function isValidHttpUrl(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  let parsed: URL;
+  try {
+    parsed = new URL(value.trim());
+  } catch {
+    return false;
+  }
+  return parsed.protocol === "http:" || parsed.protocol === "https:";
+}
+
+/** Data-only cleanup of an admin-submitted social_links array: trims text,
+    nulls empty icon overrides, stamps sort order from array position. */
+export function normalizeSocialLinks(links: SocialLinkRecord[]): SocialLinkRecord[] {
+  return links.map((l, i) => ({
+    id: l.id && /^[a-z0-9._-]+$/i.test(l.id) ? l.id : `social-${(l.platform || "").toLowerCase() || i}`,
+    platform: l.platform.trim().toLowerCase().replace(/[^a-z0-9]/g, "") || "link",
+    name: l.name.trim().slice(0, 80),
+    url: l.url.trim(),
+    description: l.description.trim().slice(0, 300),
+    enabled: Boolean(l.enabled),
+    showOnConnect: Boolean(l.showOnConnect),
+    sortOrder: i,
+    iconOverride: l.iconOverride && l.iconOverride.trim() ? l.iconOverride.trim().slice(0, 100) : null,
+  }));
+}
+
+/** Returns a human-readable error message, or null when the links are safe
+    to store. Trust-boundary check — runs on the server on every admin save. */
+export function validateSocialLinks(links: unknown): string | null {
+  if (!Array.isArray(links)) return null;
+  for (let i = 0; i < links.length; i++) {
+    const l = links[i] as Partial<SocialLinkRecord> | null;
+    if (!l || typeof l !== "object") return `social link #${i + 1}: invalid record`;
+    if (typeof l.platform !== "string" || !l.platform.trim())
+      return `social link #${i + 1}: platform is required`;
+    if (typeof l.name !== "string" || !l.name.trim())
+      return `social link #${i + 1}: display name is required`;
+    if (l.name.trim().length > 80) return `social link #${i + 1}: display name is too long (max 80)`;
+    if (typeof l.url !== "string" || !isValidHttpUrl(l.url))
+      return `social link #${i + 1}: URL must start with http:// or https://`;
+    if (l.url.length > 2048) return `social link #${i + 1}: URL is too long (max 2048)`;
+    if (typeof l.description === "string" && l.description.length > 300)
+      return `social link #${i + 1}: description is too long (max 300)`;
+  }
+  return null;
 }

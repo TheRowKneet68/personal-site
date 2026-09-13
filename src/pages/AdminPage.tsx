@@ -10,6 +10,7 @@ import {
   AchievementsSection,
   AdminCard,
   BasicsSection,
+  ConnectSection,
   FeaturedInSection,
   JourneySection,
   PrinciplesSection,
@@ -17,13 +18,16 @@ import {
   SkillsSection,
   TestimonialsSection,
 } from "../components/admin/sections";
+import { QrCode } from "../components/QrCode";
+import { CONNECT_URL } from "../lib/constants";
 
 const TOKEN_KEY = "rk-admin-token";
 
-type Tab = "basics" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "featured" | "testimonials" | "inbox" | "subscribers" | "security";
+type Tab = "basics" | "connect" | "about" | "journey" | "principles" | "skills" | "projects" | "achievements" | "featured" | "testimonials" | "inbox" | "subscribers" | "security";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "basics", label: "Basics" },
+  { id: "connect", label: "Connect" },
   { id: "about", label: "About" },
   { id: "journey", label: "Journey" },
   { id: "principles", label: "Principles" },
@@ -360,6 +364,27 @@ export function AdminPage() {
             {tab === "basics" && (
               <AdminCard title="Basics" kicker="Identity, contact details and social links.">
                 <BasicsSection value={content.profile} onChange={patchProfile} uploadImage={uploadImage} />
+              </AdminCard>
+            )}
+            {tab === "connect" && (
+              <AdminCard
+                title="Connect"
+                kicker="Social links shown on /connect — add, edit, reorder, enable/disable. Changes appear on the public page after a refresh, no redeploy needed."
+                actions={
+                  <span className="flex items-center gap-3">
+                    <span className="hidden text-ink sm:block" aria-hidden>
+                      <QrCode value={CONNECT_URL} size={64} />
+                    </span>
+                    <span className="hidden max-w-40 font-mono text-[0.62rem] leading-snug text-ink-faint sm:block">
+                      {CONNECT_URL}
+                    </span>
+                  </span>
+                }
+              >
+                <ConnectSection
+                  value={content.profile.social_links ?? []}
+                  onChange={(v) => patchProfile({ ...content.profile, social_links: v })}
+                />
               </AdminCard>
             )}
             {tab === "about" && (

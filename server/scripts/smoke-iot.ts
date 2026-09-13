@@ -6,8 +6,8 @@ import { getStoredAuth, issueToken } from "../middleware/auth.js";
 
 const BASE = "http://localhost:3001/api";
 
-const stored = await getStoredAuth();
-const token = issueToken(stored?.tokenVersion ?? 0, stored?.passwordHash || process.env.ADMIN_PASSWORD || "");
+const stored = await getStoredAuth("deck");
+const token = issueToken(stored?.tokenVersion ?? 0, stored?.passwordHash || process.env.DECK_PASSWORD || "", "deck");
 const auth = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
 
 const beforeRaw = await fetch(`${BASE}/iot/devices`, { headers: auth });
