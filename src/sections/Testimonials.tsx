@@ -28,7 +28,7 @@ export function Testimonials() {
                   {t.quote}
                 </blockquote>
                 <figcaption className="mt-6 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
-                  — {t.source}
+                  - {t.source}
                 </figcaption>
               </figure>
             </Reveal>

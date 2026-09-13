@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ------------------------------------------------------------------ */
-/*  Fonts (self-hosted — no third-party request on the critical path)  */
+/*  Fonts (self-hosted - no third-party request on the critical path)  */
 /* ------------------------------------------------------------------ */
 @font-face {
   font-family: "Bricolage Grotesque";
@@ -39,7 +39,7 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  Semantic tokens — flip with .dark so utilities read the same names */
+/*  Semantic tokens - flip with .dark so utilities read the same names */
 /* ------------------------------------------------------------------ */
 :root {
   --rk-bg: #f6f4ef;
@@ -225,7 +225,7 @@
     letter-spacing: -0.015em;
   }
 
-  /* serif italic accent — the human note */
+  /* serif italic accent - the human note */
   .accent-serif {
     font-family: var(--font-serif);
     font-style: italic;
@@ -242,7 +242,7 @@
     color: var(--rk-ink-faint);
   }
 
-  /* readability floor — the site leans on tiny mono eyebrows/metadata that
+  /* readability floor - the site leans on tiny mono eyebrows/metadata that
      fall below a comfortable reading size. Bump them so labels stay legible
      without touching layout (they're still the smallest text on screen). */
   .text-\[0\.6rem\] {
@@ -263,7 +263,7 @@
   .text-\[0\.72rem\] {
     font-size: 0.82rem;
   }
-  /* wide letter-spacing on small uppercase text slows reading — pull it in */
+  /* wide letter-spacing on small uppercase text slows reading - pull it in */
   .tracking-\[0\.14em\] {
     letter-spacing: 0.09em;
   }
@@ -272,7 +272,7 @@
   }
 
 
-  /* container — editorial measure */
+  /* container - editorial measure */
   .container-rk {
     width: 100%;
     max-width: 76rem;
@@ -378,11 +378,11 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  Cyber-Deck HUD tokens — scoped --cd-* namespace, independent of    */
+/*  Cyber-Deck HUD tokens - scoped --cd-* namespace, independent of    */
 /*  the public site theme. Only /terminal consumes these utilities.    */
 /* ------------------------------------------------------------------ */
 @theme {
-  /* Surfaces — deep obsidian glass */
+  /* Surfaces - deep obsidian glass */
   --color-cd-void: #04070c;
   --color-cd-hull: #0a0f18;
   --color-cd-glass: rgba(10, 18, 32, 0.72);
@@ -394,7 +394,7 @@
   --color-cd-red: #ff4757;
   --color-cd-green: #3dffab;
 
-  /* Text hierarchy — white for values, dim for labels, cyan ONLY interactive */
+  /* Text hierarchy - white for values, dim for labels, cyan ONLY interactive */
   --color-cd-white: #eaf7ff;
   --color-cd-dim: #6f93b8;
 
@@ -404,13 +404,13 @@
   --shadow-cd-amber: 0 0 16px rgba(255, 180, 84, 0.6);
 }
 
-/* Signature FUI silhouette — cut TL + BR corners. Apply alongside borders;
+/* Signature FUI silhouette - cut TL + BR corners. Apply alongside borders;
    the clipped corners read as machined plate edges. */
 .cd-chamfer {
   clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
 }
 
-/* CRT scanline overlay — barely-there texture, not stripes. */
+/* CRT scanline overlay - barely-there texture, not stripes. */
 .cd-scanlines {
   background-image: repeating-linear-gradient(
     to bottom,
@@ -434,7 +434,7 @@
   background-size: 36px 36px;
 }
 
-/* Swift Ignition — engine shake while cranking */
+/* Swift Ignition - engine shake while cranking */
 @keyframes engine-crank-shake {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
   25% { transform: translate3d(-1.5px, 1px, 0) rotate(-0.6deg); }
@@ -445,7 +445,7 @@
   animation: engine-crank-shake 120ms linear infinite;
 }
 
-/* Super Splendor hologram — head/pilot lamps blink at 1 Hz when unlocked */
+/* Super Splendor hologram - head/pilot lamps blink at 1 Hz when unlocked */
 @keyframes bike-blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0.12; }

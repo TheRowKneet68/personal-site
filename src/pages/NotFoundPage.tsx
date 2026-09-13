@@ -3,7 +3,7 @@ import { Button } from "../components/Button";
 
 export function NotFoundPage() {
   useSeo({
-    title: "404 — this page doesn't exist | Ronit Baniya Gupta",
+    title: "404 - this page doesn't exist | Ronit Baniya Gupta",
     description: "The page you're looking for doesn't exist.",
   });
 

@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // The single project-wide env file lives at the repo root. Walk up from this
 // file so dev (server/config) and build (server/dist/config) both find it
-// regardless of cwd. On Vercel there is no .env — vars come from the dashboard.
+// regardless of cwd. On Vercel there is no .env - vars come from the dashboard.
 function repoRoot(): string {
   let dir = __dirname;
   while (dir !== path.parse(dir).root) {
@@ -19,7 +19,7 @@ function repoRoot(): string {
 
 dotenv.config({ path: path.join(repoRoot(), ".env"), quiet: true });
 
-/** Centralised env access — every value read once, typed, validated. */
+/** Centralised env access - every value read once, typed, validated. */
 export const env = {
   isVercel: process.env.VERCEL === "1",
   isProduction: process.env.NODE_ENV === "production",
@@ -32,12 +32,18 @@ export const env = {
   githubToken: process.env.GITHUB_TOKEN || "",
   githubUser: process.env.GITHUB_USER || "TheRowKneet68",
 
-  /** No default — a default password would be public knowledge from this repo. */
+  /** No default - a default password would be public knowledge from this repo. */
   adminPassword: process.env.ADMIN_PASSWORD || "",
 
-  /** Cyber-Deck credential — deliberately SEPARATE from ADMIN_PASSWORD so a
+  /** Cyber-Deck credential - deliberately SEPARATE from ADMIN_PASSWORD so a
       leaked deck key can't edit site content and vice versa. */
   deckPassword: process.env.DECK_PASSWORD || "",
+
+  /** Hide the deck + IoT endpoints under a non-standard mount so the live
+      paths don't match the /api/iot/* and /api/deck/* this public repo
+      advertises - a scanner or crawler probing those gets a 404. MUST match
+      VITE_DECK_API_PREFIX on the client build. */
+  deckApiPrefix: (process.env.DECK_API_PREFIX || "rk-vault").replace(/^\/+|\/+$/g, ""),
 
   /** Blynk IoT tokens (Suraksha Ghar home hub). Server-side ONLY: proxied
       through /api/iot/* so they never reach the browser bundle. Comma-
@@ -77,7 +83,7 @@ export function deckEnabled(): boolean {
     if (env.deckPassword.length < 12) {
       if (!deckWarned) {
         deckWarned = true;
-        console.warn("[deck] DECK_PASSWORD is shorter than 12 characters — the deck is disabled.");
+        console.warn("[deck] DECK_PASSWORD is shorter than 12 characters - the deck is disabled.");
       }
       return false;
     }
@@ -85,7 +91,7 @@ export function deckEnabled(): boolean {
   }
   if (!deckWarned) {
     deckWarned = true;
-    console.warn("[deck] DECK_PASSWORD is not set — the deck is disabled.");
+    console.warn("[deck] DECK_PASSWORD is not set - the deck is disabled.");
   }
   return false;
 }
@@ -97,7 +103,7 @@ export function adminEnabled(): boolean {
     if (!adminPasswordValid()) {
       if (!adminWarned) {
         adminWarned = true;
-        console.warn("[admin] ADMIN_PASSWORD is shorter than 12 characters — the admin panel is disabled.");
+        console.warn("[admin] ADMIN_PASSWORD is shorter than 12 characters - the admin panel is disabled.");
       }
       return false;
     }
@@ -105,7 +111,7 @@ export function adminEnabled(): boolean {
   }
   if (!adminWarned) {
     adminWarned = true;
-    console.warn("[admin] ADMIN_PASSWORD is not set — the admin panel is disabled.");
+    console.warn("[admin] ADMIN_PASSWORD is not set - the admin panel is disabled.");
   }
   return false;
 }

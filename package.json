@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Ronit Baniya Gupta (TheRowKneet) — production portfolio. React + Vite frontend, Express + Supabase backend.",
+  "description": "Ronit Baniya Gupta (TheRowKneet) - production portfolio. React + Vite frontend, Express + Supabase backend.",
   "workspaces": [
     "server"
   ],

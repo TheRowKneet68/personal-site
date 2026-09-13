@@ -130,7 +130,7 @@ export function Repeater<T extends object>({
               }}
               onDragEnd={() => setDragIdx(null)}
               className="flex cursor-pointer select-none list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden"
-              title={sorted ? "Reorder is disabled while a sort is active — choose 'sort: manual order' first" : "Drag to reorder, click to edit"}
+              title={sorted ? "Reorder is disabled while a sort is active - choose 'sort: manual order' first" : "Drag to reorder, click to edit"}
             >
               <span
                 className={cn("shrink-0 text-ink-faint", !sorted ? "cursor-grab" : "cursor-default")}
@@ -160,7 +160,7 @@ export function Repeater<T extends object>({
                       "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em]",
                       on ? "border-accent bg-accent/10 text-accent-ink" : "border-line text-ink-faint",
                     )}
-                    title={`${t.label} — toggle without opening`}
+                    title={`${t.label} - toggle without opening`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <input
@@ -219,7 +219,7 @@ export function Repeater<T extends object>({
                       >
                         {(f.options ?? []).map((o) => (
                           <option key={o} value={o}>
-                            {o === "" ? "— none —" : o}
+                            {o === "" ? "- none -" : o}
                           </option>
                         ))}
                       </select>
@@ -344,7 +344,7 @@ export function BasicsSection({
         onChange={(v) => set({ portrait1: v })}
         uploadImage={uploadImage}
       />
-      <Field label="Social links" hint="The /connect page manager — add, edit, reorder, enable/disable. Old key/value socials were migrated here automatically.">
+      <Field label="Social links" hint="The /connect page manager - add, edit, reorder, enable/disable. Old key/value socials were migrated here automatically.">
         <ConnectSection value={value.social_links ?? []} onChange={(v) => set({ social_links: v })} />
       </Field>
     </div>
@@ -391,7 +391,7 @@ export function JourneySection({ value, onChange }: { value: ExperienceEntry[]; 
         { key: "note", label: "Note", type: "textarea" },
       ]}
       newItem={() => ({ year: "", title: "", note: "" })}
-      titleOf={(i) => `${i.year} — ${i.title}`}
+      titleOf={(i) => `${i.year} - ${i.title}`}
       sorts={[
         { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
         { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
@@ -412,7 +412,7 @@ export function PrinciplesSection({ value, onChange }: { value: Principle[]; onC
   );
 }
 
-/** profile.tech — Record<category, string[]>. Double as the site's skills. */
+/** profile.tech - Record<category, string[]>. Double as the site's skills. */
 export function SkillsSection({ value, onChange }: { value: Record<string, string[]>; onChange: (v: Record<string, string[]>) => void }) {
   const entries = Object.entries(value);
   const set = (list: [string, string[]][]) => onChange(Object.fromEntries(list.filter(([k]) => k.trim() !== "")));
@@ -542,7 +542,7 @@ export function ProjectsSection({
         { key: "year", label: "Year", type: "text", placeholder: "e.g. 2026" },
         { key: "status", label: "Status", type: "text", placeholder: "e.g. shipped, ongoing" },
         { key: "featured", label: "Featured", type: "toggle" },
-        { key: "weight", label: "Weight", type: "number", hint: "Legacy tiebreak — use the ↑ / ↓ buttons to reorder; manual order wins on the site." },
+        { key: "weight", label: "Weight", type: "number", hint: "Legacy tiebreak - use the ↑ / ↓ buttons to reorder; manual order wins on the site." },
         { key: "tech", label: "Tech", type: "list", placeholder: "tech" },
         { key: "description", label: "Description", type: "textarea" },
         { key: "highlights", label: "Highlights", type: "list", placeholder: "highlight" },
@@ -557,7 +557,7 @@ export function ProjectsSection({
         tech: [],
         description: "",
       })}
-      titleOf={(p) => `${p.year} — ${p.title}`}
+      titleOf={(p) => `${p.year} - ${p.title}`}
       view={(p) => (p.id ? `/projects/${p.id}` : undefined)}
       summaryToggles={[
         {
@@ -627,14 +627,14 @@ export function AchievementsSection({
           key: "rank",
           label: "Placement",
           type: "select",
-          hint: "Controls the sort order on the site — 1 shows first, 2 second, etc. Leave none to auto-detect from the result.",
+          hint: "Controls the sort order on the site - 1 shows first, 2 second, etc. Leave none to auto-detect from the result.",
           options: ["", ...Array.from({ length: 10 }, (_, i) => String(i + 1))],
         },
         { key: "highlight", label: "Highlight", type: "toggle" },
         { key: "detail", label: "Detail", type: "textarea" },
       ]}
       newItem={() => ({ id: crypto.randomUUID().slice(0, 8), event: "", title: "", year: "", result: "", detail: "" })}
-      titleOf={(a) => `${a.year} — ${a.event}`}
+      titleOf={(a) => `${a.year} - ${a.event}`}
       view={() => "/#wins"}
       sorts={[
         { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
@@ -743,7 +743,7 @@ export function ConnectSection({ value, onChange }: { value: SocialLink[]; onCha
         ))}
       </datalist>
       {value.length === 0 ? (
-        <p className="text-sm text-ink-faint">No social links yet — paste a URL below and the platform is detected for you.</p>
+        <p className="text-sm text-ink-faint">No social links yet - paste a URL below and the platform is detected for you.</p>
       ) : (
         value.map((link, i) => (
           <SocialLinkRow

@@ -26,7 +26,7 @@ export function NewsletterForm() {
   };
 
   const message: Partial<Record<State, string>> = {
-    success: "subscribed — I'll only email when there's something real to say.",
+    success: "subscribed - I'll only email when there's something real to say.",
     duplicate: "you're already on the list. thanks for sticking around.",
     error: "that email doesn't look right.",
   };

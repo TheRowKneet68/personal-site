@@ -72,7 +72,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Silent background refresh — no loading spinner, just swaps data in.
+  // Silent background refresh - no loading spinner, just swaps data in.
   const refresh = useCallback(async () => {
     if (!mounted.current) return;
     try {
@@ -95,7 +95,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         github: statsRes.github,
         storage: statsRes.storage,
       });
-    } catch { /* silent — keep showing stale data */ }
+    } catch { /* silent - keep showing stale data */ }
   }, []);
 
   useEffect(() => {

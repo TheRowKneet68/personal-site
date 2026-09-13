@@ -5,7 +5,7 @@ import type { LinkState } from "../../hooks/useIgnition";
 import { Chip, HudPanel } from "./hud";
 
 /* ------------------------------------------------------------------ */
-/*  SWIFT IGNITION — arc-reactor bike controller                       */
+/*  SWIFT IGNITION - arc-reactor bike controller                       */
 /*                                                                     */
 /*  Safety model:                                                      */
 /*   · Browser builds are SIMULATION ONLY (no radio access).           */
@@ -51,7 +51,7 @@ function LatencyMeter({ bars }: { bars: 0 | 1 | 2 | 3 }) {
 
 const BIKE_STATE_KEY = "rk-bike-unlocked";
 /** While held, 'R' is re-transmitted so one lost SPP byte can't strand the
- *  starter — the firmware re-asserts SLF LOW on every R it sees. */
+ *  starter - the firmware re-asserts SLF LOW on every R it sees. */
 const CRANK_REPEAT_MS = 600;
 
 export function SwiftIgnition() {
@@ -73,7 +73,7 @@ export function SwiftIgnition() {
     }
   }, []);
 
-  /** Any release path funnels here — stop repeats, then exactly one 'x'. */
+  /** Any release path funnels here - stop repeats, then exactly one 'x'. */
   const stopCrank = useCallback(() => {
     if (!crankingRef.current) return;
     crankingRef.current = false;
@@ -151,7 +151,7 @@ export function SwiftIgnition() {
   }, [startCrank, stopCrank, unlockVoice]);
 
   // Re-arm the interlock ONLY on a live→dead transition (dropped link mid-ride
-  // = bike state unknown). At boot the status is merely "not yet adopted" —
+  // = bike state unknown). At boot the status is merely "not yet adopted" -
   // resetting then would wipe the restored lock state for no reason.
   const prevStatus = useRef(ign.status);
   useEffect(() => {
@@ -198,7 +198,7 @@ export function SwiftIgnition() {
       >
         {!ign.native ? (
           <p className="cd-chamfer mb-4 border border-cd-amber/30 bg-cd-amber/5 px-3 py-2 font-cd-mono text-[10px] tracking-[0.22em] text-cd-amber">
-            ⚠ SIMULATION MODE — BLUETOOTH REQUIRES THE ANDROID APK
+            ⚠ SIMULATION MODE - BLUETOOTH REQUIRES THE ANDROID APK
           </p>
         ) : null}
         <div className="space-y-2.5 font-cd-mono text-[11px]">
@@ -330,7 +330,7 @@ export function SwiftIgnition() {
                 style={{ filter: cranking ? "drop-shadow(0 0 24px rgba(255,180,84,0.55))" : undefined }}
               />
               <circle cx="100" cy="100" r="34" fill="none" stroke={cranking ? "#ffb454" : "rgba(56,225,255,0.35)"} strokeWidth="1" />
-              {/* hologram of the Super Splendor — headlight + pilot lamp
+              {/* hologram of the Super Splendor - headlight + pilot lamp
                   blink 1s while unlocked, everything burns solid on crank */}
               <g
                 className={`transition-opacity duration-300 ${unlocked ? "opacity-100" : "opacity-35"}`}

@@ -76,7 +76,7 @@ export function LoadingScreen({ show }: { show: boolean }) {
               <span className="pointer-events-none absolute -bottom-px -right-px size-3 border-b-2 border-r-2 border-accent/60" aria-hidden />
 
               <p className="text-ink-dim">
-                <span className="text-accent">therowkneet@pokhara</span>:~$ <span className="text-ink">init</span>
+                <span className="text-accent">rowkneetlabs@pokhara</span>:~$ <span className="text-ink">init</span>
                 <span className="ml-0.5 inline-block h-3.5 w-[7px] animate-pulse bg-accent align-middle" aria-hidden />
               </p>
 

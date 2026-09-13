@@ -76,7 +76,7 @@ export interface Counts {
 }
 
 /** One user-configured IoT relay in the Cyber-Deck registry. `hub` refers to
-    a token by INDEX ("hub-1", "hub-2"…) — raw Blynk tokens never reach the
+    a token by INDEX ("hub-1", "hub-2"…) - raw Blynk tokens never reach the
     client or get stored here. */
 export interface StoredIotDevice {
   id: string;
@@ -112,7 +112,7 @@ export interface StorageBackend {
 }
 
 /* ------------------------------------------------------------------ */
-/*  JSON fallback — lets the whole stack run with zero credentials.    */
+/*  JSON fallback - lets the whole stack run with zero credentials.    */
 /* ------------------------------------------------------------------ */
 
 function readDynamic(): DynamicData {
@@ -127,7 +127,7 @@ function writeDynamic(data: DynamicData): void {
     mkdirSync(SERVER_ROOT, { recursive: true });
     writeFileSync(DYNAMIC_FILE, JSON.stringify(data, null, 2));
   } catch {
-    // Vercel's filesystem is ephemeral — a failed write shouldn't 500 the
+    // Vercel's filesystem is ephemeral - a failed write shouldn't 500 the
     // request. Supabase is the durable backend; JSON fallback is best-effort.
   }
 }
@@ -143,7 +143,7 @@ const jsonBackend: StorageBackend = {
   async getContent() {
     return normalizeFromFile(readDataFile());
   },
-  /** Persist edits into data.json — the source of truth for the JSON backend. */
+  /** Persist edits into data.json - the source of truth for the JSON backend. */
   async updateContent(content) {
     const c = {
       ...content,
@@ -199,7 +199,7 @@ const jsonBackend: StorageBackend = {
   async listSubscribers() {
     return readDynamic().subscribers;
   },
-  /** JSON messages carry no id — the frontend passes created_at as the id. */
+  /** JSON messages carry no id - the frontend passes created_at as the id. */
   async deleteMessage(id) {
     const data = readDynamic();
     data.messages = data.messages.filter((m) => (m as NewMessage & { created_at?: string }).created_at !== id);
@@ -210,7 +210,7 @@ const jsonBackend: StorageBackend = {
     data.subscribers = data.subscribers.filter((e) => e !== email);
     writeDynamic(data);
   },
-  /** Best-effort local save (repo public/images) — Vercel is read-only, Supabase is the durable path. */
+  /** Best-effort local save (repo public/images) - Vercel is read-only, Supabase is the durable path. */
   async uploadImage(name, _contentType, buffer) {
     const dir = path.join(path.dirname(DATA_FILE), "public", "images");
     const dest = path.join(dir, name);
@@ -222,7 +222,7 @@ const jsonBackend: StorageBackend = {
       const code = (err as NodeJS.ErrnoException)?.code;
       throw new Error(
         code === "EROFS" || code === "EACCES" || code === "ENOSPC"
-          ? "Local image storage is read-only here — configure Supabase to upload images on the deployed server."
+          ? "Local image storage is read-only here - configure Supabase to upload images on the deployed server."
           : `Failed to write image: ${code ?? (err as Error).message}`,
       );
     }
@@ -372,7 +372,7 @@ const supabaseBackend: StorageBackend = {
     if (error) throw new Error(`supabase storage: ${error.message}`);
     return client.storage.from(bucket).getPublicUrl(name).data.publicUrl;
   },
-  /** Device registry lives as one jsonb row — a single admin user means
+  /** Device registry lives as one jsonb row - a single admin user means
       read-modify-write races aren't a real concern. */
   async getIotDevices() {
     const { data, error } = await getSupabase()
@@ -382,7 +382,7 @@ const supabaseBackend: StorageBackend = {
       .maybeSingle();
     if (error) {
       // Missing table (schema.sql not yet run) surfaces as 42P01 (postgres)
-      // or PGRST205 (postgREST) — behave like an empty registry so the deck
+      // or PGRST205 (postgREST) - behave like an empty registry so the deck
       // still boots with defaults.
       if (error.code === "42P01" || error.code === "PGRST205") return [];
       throw new Error(`supabase iot: ${error.message}`);
@@ -394,7 +394,7 @@ const supabaseBackend: StorageBackend = {
       .from("iot_config")
       .upsert({ id: "devices", data: { devices }, updated_at: new Date().toISOString() });
     if (error && (error.code === "42P01" || error.code === "PGRST205"))
-      throw new HttpError(503, "Device storage not configured — run supabase/schema.sql first");
+      throw new HttpError(503, "Device storage not configured - run supabase/schema.sql first");
     if (error) throw new Error(`supabase iot save: ${error.message}`);
   },
 };
@@ -468,7 +468,7 @@ export const storage: Storage = {
 
   /** Write data.json content into Supabase (service role).
       Deep-merge (not replace) existing row data so admin-added fields that
-      live only in Supabase — image URLs in particular — survive re-seeding.
+      live only in Supabase - image URLs in particular - survive re-seeding.
       data.json wins on scalar conflicts; arrays union; prior-only keys stay. */
   async seed() {
     if (!hasSupabase()) return { mode: "json", ok: true };

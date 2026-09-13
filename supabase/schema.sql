@@ -1,5 +1,5 @@
 -- =====================================================================
--- TheRowKneet portfolio — Supabase schema
+-- TheRowKneet portfolio - Supabase schema
 -- Content rows are stored as jsonb payloads keyed by id (admin-editable,
 -- flexible for new fields). Dynamic tables are column-typed for queries.
 -- =====================================================================
@@ -73,10 +73,10 @@ create table if not exists newsletter (
 -- ---------- Admin credential store ------------------------------------
 -- Password hash + token version persist here so passwords can be rotated
 -- without redeploying. TWO rows share this table: id='admin' (content panel)
--- and id='deck' (Cyber-Deck / IoT) — independent credentials, tokens are
+-- and id='deck' (Cyber-Deck / IoT) - independent credentials, tokens are
 -- audience-scoped so one vault's token is worthless to the other. No anon
 -- policies are defined below, so even a leaked anon key cannot touch this
--- table — the service role (server) is the only actor.
+-- table - the service role (server) is the only actor.
 create table if not exists admin_auth (
   id            text primary key default 'admin',
   password_hash text not null default '',

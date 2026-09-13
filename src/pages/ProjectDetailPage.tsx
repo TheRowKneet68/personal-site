@@ -182,7 +182,7 @@ export function ProjectDetailPage() {
   useSeo(
     project
       ? {
-          title: `${project.title} — ${project.tagline} | Ronit Baniya Gupta`,
+          title: `${project.title} - ${project.tagline} | Ronit Baniya Gupta`,
           description: project.description,
           path: `/projects/${project.id}`,
           jsonLd: {

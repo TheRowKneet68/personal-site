@@ -25,7 +25,7 @@ export interface ProfileRecord {
   email: string;
   socials: Record<string, string>;
   /** Structured social links (the /connect page + admin manager). The legacy
-      `socials` record above is DERIVED from the enabled links on serve — one
+      `socials` record above is DERIVED from the enabled links on serve - one
       source of truth, nothing else in the site needs to change. */
   social_links?: SocialLinkRecord[];
   badges: string[];
@@ -58,7 +58,7 @@ export interface ProjectRecord {
   year: string;
   status: string;
   featured?: boolean;
-  /** Manual display order — stamped from array position on save/seed. */
+  /** Manual display order - stamped from array position on save/seed. */
   order?: number;
   weight?: number;
   images?: string[];
@@ -89,7 +89,7 @@ export interface ExperienceEntry {
   note: string;
   order?: number;
   type?: "journey" | "achievement";
-  /** Numeric (1960–9998) bucket used to group a timeline chronologically;
+  /** Numeric (1960-9998) bucket used to group a timeline chronologically;
       gets stamped by the /api/experience controller. */
   yearGroup?: number;
 }
@@ -209,7 +209,7 @@ export function deriveBadges(profile: ProfileRecord, achievements: AchievementRe
   return dedupeBy(mapped, (b) => b);
 }
 
-/** First occurrence wins — a safety net against duplicate labels/values that
+/** First occurrence wins - a safety net against duplicate labels/values that
     seed's additive merge can introduce when derived values land in the DB. */
 function dedupeBy<T>(items: T[], key: (item: T) => string): T[] {
   const seen = new Set<string>();
@@ -310,7 +310,7 @@ function makeSocialLink(platform: string, url: string, sortOrder: number): Socia
     `social_links` array. Any socials key without a matching social_links row
     gets absorbed once (with defaults); `socials` is then re-derived from the
     ENABLED links so the rest of the site keeps working with no code change.
-    Running it on every serve/save means existing URLs migrate automatically —
+    Running it on every serve/save means existing URLs migrate automatically -
     nothing has to be re-entered by hand. */
 export function migrateSocialLinks(profile: ProfileRecord): ProfileRecord {
   const socials = profile.socials ?? {};
@@ -337,7 +337,7 @@ export function migrateSocialLinks(profile: ProfileRecord): ProfileRecord {
   };
 }
 
-/** Only http(s) is allowed — rejects javascript:, data:, vbscript:, file:, etc. */
+/** Only http(s) is allowed - rejects javascript:, data:, vbscript:, file:, etc. */
 export function isValidHttpUrl(value: unknown): value is string {
   if (typeof value !== "string") return false;
   let parsed: URL;
@@ -366,7 +366,7 @@ export function normalizeSocialLinks(links: SocialLinkRecord[]): SocialLinkRecor
 }
 
 /** Returns a human-readable error message, or null when the links are safe
-    to store. Trust-boundary check — runs on the server on every admin save. */
+    to store. Trust-boundary check - runs on the server on every admin save. */
 export function validateSocialLinks(links: unknown): string | null {
   if (!Array.isArray(links)) return null;
   for (let i = 0; i < links.length; i++) {

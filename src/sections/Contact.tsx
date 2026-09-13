@@ -50,7 +50,7 @@ export function Contact() {
             </ul>
 
             <div className="mt-6 border-t border-line pt-6">
-              <p className="mono-label mb-3">one tap — save my card</p>
+              <p className="mono-label mb-3">one tap - save my card</p>
               <Link
                 to="/connect"
                 className="group flex items-center gap-3 rounded-sm border border-line bg-surface p-4 text-ink-dim transition-colors hover:border-line-strong hover:text-ink"

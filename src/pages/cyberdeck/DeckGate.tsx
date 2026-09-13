@@ -6,7 +6,7 @@ const inputCls =
   "w-full border border-cd-line bg-black/40 px-3 py-2.5 font-cd-mono text-sm tracking-wider text-cd-white placeholder:text-cd-dim/40 focus:border-cd-cyan focus:shadow-[0_0_14px_rgba(56,225,255,0.15)] focus:outline-none";
 
 /**
- * Auth gate for /terminal. Not the security boundary itself — the server's
+ * Auth gate for /terminal. Not the security boundary itself - the server's
  * HMAC bearer token + login rate limit is. This screen just collects the
  * password and surfaces why the previous session ended.
  */
@@ -54,7 +54,7 @@ export function DeckGate({ auth }: { auth: DeckAuth }) {
         </h1>
         <p className="mt-2 font-cd-mono text-[11px] leading-relaxed text-cd-dim">
           {auth.lockReason === "idle" ? (
-            <span className="text-cd-amber">SESSION LOCKED — idle timeout</span>
+            <span className="text-cd-amber">SESSION LOCKED - idle timeout</span>
           ) : (
             "Authenticate to arm hardware controls."
           )}

@@ -175,7 +175,7 @@ export function CommandPalette() {
             <div className="flex items-center gap-4 border-t border-line px-4 py-2 font-mono text-[0.62rem] uppercase tracking-wider text-ink-faint">
               <span><kbd className="mr-1">↑↓</kbd> navigate</span>
               <span><kbd className="mr-1">↵</kbd> select</span>
-              <span className="ml-auto">therowkneet://menu</span>
+              <span className="ml-auto">rowkneetlabs://menu</span>
             </div>
           </motion.div>
         </motion.div>

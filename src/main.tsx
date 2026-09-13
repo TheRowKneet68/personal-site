@@ -5,7 +5,7 @@ import App from "./App";
 import "./index.css";
 
 // A deploy between page-load and navigation orphans the old hashed chunk
-// URLs (Vercel purges them) — sections then fail silently until a manual
+// URLs (Vercel purges them) - sections then fail silently until a manual
 // hard refresh. Reload once per session instead.
 const CHUNK_FLAG = "rk-chunk-reload";
 sessionStorage.removeItem(CHUNK_FLAG);

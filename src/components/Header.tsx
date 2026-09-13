@@ -39,7 +39,7 @@ export function Header() {
       )}
     >
       <div className="container-rk flex h-16 items-center justify-between gap-3 sm:gap-6">
-        <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="TheRowKneet — home">
+        <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="RowKneetLabs - home">
           <img src={logo} alt="" width={32} height={32} className="size-8 shrink-0 rounded-full object-cover" />
           <span className="truncate font-mono text-[0.72rem] font-bold uppercase tracking-[0.12em] sm:text-[0.85rem] sm:tracking-[0.14em]">
             {name}
@@ -99,7 +99,7 @@ export function Header() {
                 }}
                 className="cursor-pointer py-2 text-left font-mono text-[0.8rem] uppercase tracking-[0.14em] text-ink-dim"
               >
-                ⌘K — command menu
+                ⌘K - command menu
               </button>
             </div>
           </motion.nav>

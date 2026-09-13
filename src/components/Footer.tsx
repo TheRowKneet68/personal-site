@@ -16,7 +16,7 @@ export function Footer() {
             {profile?.name ?? "Ronit Baniya"} <span className="text-ink-faint">/</span> {profile?.handle ?? SITE.handle}
           </p>
           <p className="mt-3 max-w-xs text-sm text-ink-dim">
-            Computer engineer from Pokhara, Nepal. Embedded systems, IoT, vision and web —
+            Computer engineer from Pokhara, Nepal. Embedded systems, IoT, vision and web -
             built one stubborn project at a time.
           </p>
           <SocialLinks className="mt-5" />
@@ -63,12 +63,11 @@ export function Footer() {
 
       <div className="border-t border-line">
         <div className="container-rk flex flex-col items-start justify-between gap-2 py-6 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-ink-faint md:flex-row md:items-center">
-          <span>© {new Date().getFullYear()} Ronit Baniya Gupta — if it doesn't exist, I build it.</span>
+          <span>© {new Date().getFullYear()} Ronit Baniya Gupta - if it doesn't exist, I build it.</span>
           <span className="flex items-center gap-4">
             <span>react · express · supabase</span>
             <span className="hidden sm:inline" title="backend storage">{storage}</span>
             <Link to="/admin" className="opacity-60 transition-opacity hover:opacity-100">/admin</Link>
-            <Link to="/terminal" className="opacity-60 transition-opacity hover:opacity-100">/terminal</Link>
           </span>
         </div>
       </div>

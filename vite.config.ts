@@ -11,18 +11,18 @@ export default defineConfig({
     tailwindcss(),
     /* Offline-first PWA. Caching policy:
        - PRECACHE the public portfolio shell + code (code is secret-free by
-         design — Phase 1 keeps all credentials server-side).
+         design - Phase 1 keeps all credentials server-side).
        - NEVER cache /api/* (auth responses, IoT state) and never serve the
-         SPA shell for /terminal offline — the deck stays network-only.
-       - Images are served directly by the browser/CDN — no SW caching to
+         SPA shell for /terminal offline - the deck stays network-only.
+       - Images are served directly by the browser/CDN - no SW caching to
          avoid stale cross-origin fetch failures. */
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["images/favicon.svg", "images/apple-touch-icon.png", "robots.txt"],
       manifest: {
         id: "/",
-        name: "Ronit Baniya Gupta — TheRowKneet",
-        short_name: "TheRowKneet",
+        name: "Ronit Baniya Gupta - RowKneetLabs",
+        short_name: "RowKneetLabs",
         description:
           "Computer engineer from Pokhara, Nepal building embedded systems, IoT ecosystems, computer vision and web products.",
         lang: "en",

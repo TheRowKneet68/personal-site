@@ -47,7 +47,7 @@ export function ConnectPage() {
   useSeo({
     title: "Ronit Baniya Gupta | Connect",
     description:
-      "Connect with Ronit Baniya Gupta — TheRowKneet. Find his social profiles, projects, contact information and website.",
+      "Connect with Ronit Baniya Gupta - RowKneetLabs. Find his social profiles, projects, contact information and website.",
     canonical: CONNECT_URL,
     jsonLd: profile
       ? {
@@ -136,7 +136,7 @@ export function ConnectPage() {
         {links.length === 0 ? (
           <p className="flex items-center justify-center gap-2 rounded-md border border-line bg-bg px-4 py-6 text-center text-sm text-ink-faint">
             <ShieldOff className="size-4 shrink-0" aria-hidden />
-            No platforms to show yet — check back soon.
+            No platforms to show yet - check back soon.
           </p>
         ) : (
           <ul className="space-y-2.5">
@@ -202,7 +202,7 @@ export function ConnectPage() {
               <QrCode value={CONNECT_URL} size={168} />
             </span>
             <p className="text-center text-xs text-ink-faint">
-              Scanning {CONNECT_URL} opens this card — it updates when I change platforms, so the printed card
+              Scanning {CONNECT_URL} opens this card - it updates when I change platforms, so the printed card
               never goes stale.
             </p>
             <CopyButton text={CONNECT_URL} label="copy link" className="w-full justify-center" />

@@ -31,7 +31,7 @@ export function HomePage() {
   const { status, profile, reload } = useData();
 
   useSeo({
-    title: "Ronit Baniya Gupta - TheRowKneet",
+    title: "Ronit Baniya Gupta - RowKneetLabs",
     description:
       "Computer engineer from Pokhara, Nepal building embedded systems, IoT ecosystems, computer vision and web products. If it doesn't exist, I build it.",
     jsonLd: profile ? jsonLd(profile) : undefined,

@@ -13,7 +13,7 @@ const TABS: { id: Module; label: string; code: string }[] = [
   { id: "ignition", label: "SWIFT IGNITION", code: "02" },
 ];
 
-/** UTC clock for the system bar — HUDs feel alive when something ticks.
+/** UTC clock for the system bar - HUDs feel alive when something ticks.
  *  Self-contained so the 1s tick re-renders ONLY this span, not the deck. */
 function UtcClock(): React.JSX.Element {
   const [now, setNow] = useState(() => new Date());
@@ -24,7 +24,7 @@ function UtcClock(): React.JSX.Element {
   return <span className="tabular-nums text-cd-dim">{now.toISOString().slice(11, 19)} UTC</span>;
 }
 
-/** Password rotation panel — POST /api/admin/change-password. On success the
+/** Password rotation panel - POST /api/admin/change-password. On success the
  *  server bumps its token version (all other sessions die) and hands back a
  *  fresh token, which keeps THIS session signed in via reauth(). */
 function KeyRotationPanel({ auth, onClose }: { auth: ReturnType<typeof useDeckAuth>; onClose: () => void }): React.JSX.Element {
@@ -43,7 +43,7 @@ function KeyRotationPanel({ auth, onClose }: { auth: ReturnType<typeof useDeckAu
     try {
       const { token } = await api.deckChangePassword(auth.token!, current, next);
       auth.reauth(token);
-      setMsg("VAULT KEY ROTATED — OTHER SESSIONS SIGNED OUT");
+      setMsg("VAULT KEY ROTATED - OTHER SESSIONS SIGNED OUT");
       setTimeout(onClose, 1200);
     } catch (e) {
       setMsg(e instanceof ApiClientError ? e.message.toUpperCase() : "ROTATION FAILED");
@@ -107,7 +107,7 @@ export function TerminalPage() {
     };
   }, []);
 
-  // ESC locks the deck — muscle-memory for a hardware panel.
+  // ESC locks the deck - muscle-memory for a hardware panel.
   useEffect(() => {
     if (!auth.token) return;
     const onKey = (e: KeyboardEvent): void => {
@@ -158,7 +158,7 @@ export function TerminalPage() {
 
       {/* ---- main deck area ---- */}
       <main className="relative z-10 mx-auto flex w-full max-w-xl flex-1 flex-col px-5 py-6">
-        {/* module tabs — underline style with chamfer marker */}
+        {/* module tabs - underline style with chamfer marker */}
         <nav className="grid grid-cols-2">
           {TABS.map((t) => (
             <button
@@ -191,7 +191,7 @@ export function TerminalPage() {
 
       {/* ---- status footer ---- */}
       <footer className="relative z-10 flex items-center justify-between gap-2 whitespace-nowrap border-t border-cd-line bg-black/30 px-5 py-2 font-cd-mono text-[8px] tracking-[0.14em] text-cd-dim/70 sm:text-[9px] sm:tracking-[0.22em]">
-        <span>THEROWKNEET · DECK OS 2.0</span>
+        <span>ROWKNEETLABS · DECK OS 2.0</span>
         <span className="hidden sm:inline">ESC TO LOCK</span>
       </footer>
 

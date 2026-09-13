@@ -7,7 +7,7 @@ import { isNativeApp } from "../../lib/native";
 import { HudPanel, StatusDot, TacticalToggle, deckInputCls } from "./hud";
 
 /* ------------------------------------------------------------------ */
-/*  SURAKSHA GHAR — home automation matrix                             */
+/*  SURAKSHA GHAR - home automation matrix                             */
 /*                                                                     */
 /*  Relay cards with optimistic toggles (see useHomeHub), an inline    */
 /*  CONFIG mode for editing the registry (name / hub / pin per device) */
@@ -32,7 +32,7 @@ function getSpeechCtor(): SpeechRecognitionCtor | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
-/** Card icon by name keyword — cheap delight, no config needed.
+/** Card icon by name keyword - cheap delight, no config needed.
  *  Colour is inherited from the tile (green when energised, dim idle). */
 function DeviceIcon({ name, lit }: { name: string; lit: boolean }) {
   const n = name.toLowerCase();
@@ -93,7 +93,7 @@ export function SurakshaGhar({ authToken }: { authToken: string }) {
       void SpeechRecognition.stop();
       return;
     }
-    // Native shell: Android SpeechRecognizer via the Capacitor plugin —
+    // Native shell: Android SpeechRecognizer via the Capacitor plugin -
     // webkitSpeechRecognition is unavailable inside the APK WebView.
     if (isNativeApp()) {
       setListening(true);
@@ -201,7 +201,7 @@ export function SurakshaGhar({ authToken }: { authToken: string }) {
         </p>
       ) : null}
 
-      {/* relay matrix — grouped per uplink in both run + config modes */}
+      {/* relay matrix - grouped per uplink in both run + config modes */}
       <div className="space-y-6">
         {(configMode
           ? hub.hubs.map((h) => ({ hub: h, devs: draft.filter((d) => d.hub === h) }))

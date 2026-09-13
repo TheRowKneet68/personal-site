@@ -23,7 +23,7 @@ export function GitHubStats() {
         <SectionHeading
           index="05"
           title={<>github <em className="accent-serif">stats</em></>}
-          kicker="Pulled live from the account — no screenshot, no inflation."
+          kicker="Pulled live from the account - no screenshot, no inflation."
         />
 
         <Reveal>
@@ -53,7 +53,7 @@ export function GitHubStats() {
 
           <div className="mt-6 flex items-center justify-between">
             <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">
-              @{github.username} — most of the real code is private
+              @{github.username} - most of the real code is private
             </span>
             <a
               href={SITE.github}

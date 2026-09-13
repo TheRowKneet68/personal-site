@@ -9,7 +9,7 @@ const ADMIN_AUTH_TABLE = "admin_auth";
 
 /** Two independent vaults: the content admin panel and the Cyber-Deck.
     Each has its own password row, its own env fallback, and tokens scoped to
-    exactly one role — a deck token can never call admin routes, and vice
+    exactly one role - a deck token can never call admin routes, and vice
     versa. */
 export type AuthRole = "admin" | "deck";
 const ROLE_ID: Record<AuthRole, string> = { admin: "admin", deck: "deck" };
@@ -26,7 +26,7 @@ export function adminConfigured(): boolean {
   return adminEnabled();
 }
 
-/* ---- scrypt password hashing (node:crypto — no new dependency) ---- */
+/* ---- scrypt password hashing (node:crypto - no new dependency) ---- */
 
 function deriveKey(password: string, salt: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -64,7 +64,7 @@ export async function getStoredAuth(role: AuthRole = "admin"): Promise<StoredAut
     .eq("id", ROLE_ID[role])
     .maybeSingle();
   if (error) {
-    // 42P01 = table not created yet — fall back to env-password mode gracefully.
+    // 42P01 = table not created yet - fall back to env-password mode gracefully.
     if (error.code === "42P01") return null;
     throw error;
   }
@@ -143,7 +143,7 @@ function verifyToken(token: string, stored: StoredAuth | null, role: AuthRole): 
   }
 }
 
-/** Express guard factory — one per role (async — reads the stored token version). */
+/** Express guard factory - one per role (async - reads the stored token version). */
 function requireRole(role: AuthRole) {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const stored = await getStoredAuth(role);

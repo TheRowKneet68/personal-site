@@ -88,7 +88,7 @@ try {
   const visitor = await call("/api/visitors", { method: "POST" });
   check("POST /api/visitors -> 200", visitor.status === 200);
 
-  // Password hashing (pure crypto, no DB) — guards the admin change-password feature.
+  // Password hashing (pure crypto, no DB) - guards the admin change-password feature.
   const hash = await hashPassword("smoke-test-password-123");
   check(
     "scrypt hash/verify round-trip",
@@ -144,7 +144,7 @@ try {
   const afterClear = runOnce("203.0.113.2");
   check("success clears the failure counter", afterClear.passed && afterClear.code === 0);
 
-  // Non-destructive seed merge (pure, no DB) — guards the image-loss fix.
+  // Non-destructive seed merge (pure, no DB) - guards the image-loss fix.
   const priorContent = {
     title: "Old title",
     images: ["admin-added.jpg"],

@@ -25,9 +25,18 @@ export class ApiClientError extends Error {
 }
 
 /** Inside the APK the WebView serves the bundled UI from https://localhost,
-    where no /api exists — calls must go absolute to the live backend.
+    where no /api exists - calls must go absolute to the live backend.
     On the website this stays "" (same-origin), exactly as before. */
 const API_BASE = isNativeApp() ? "https://www.ronitbaniyagupta.com.np" : "";
+
+/** Deck + IoT endpoints live under a hidden mount prefix (env-tunable) so
+    the live paths never match the /api/iot/* this public repo advertises.
+    MUST match DECK_API_PREFIX on the server. */
+const DECK_API_PREFIX = ((import.meta.env.VITE_DECK_API_PREFIX as string | undefined) ?? "").trim().replace(/^\/+|\/+$/g, "");
+
+function deckPath(path: string): string {
+  return `${DECK_API_PREFIX ? `/api/${DECK_API_PREFIX}` : "/api"}${path}`;
+}
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
@@ -43,7 +52,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
       const body = (await res.json()) as ApiError;
       if (body.error) message = body.error;
     } catch {
-      /* non-JSON error body — keep the default message */
+      /* non-JSON error body - keep the default message */
     }
     throw new ApiClientError(message, res.status);
   }
@@ -82,15 +91,15 @@ export const api = {
       body: JSON.stringify({ password }),
     }),
 
-  /** Cyber-Deck credential — a separate vault from the content admin. */
+  /** Cyber-Deck credential - a separate vault from the content admin. */
   deckLogin: (password: string) =>
-    request<{ token: string }>("/api/deck/login", {
+    request<{ token: string }>(deckPath("/deck/login"), {
       method: "POST",
       body: JSON.stringify({ password }),
     }),
 
   deckChangePassword: (token: string, currentPassword: string, newPassword: string) =>
-    request<{ ok: boolean; token: string }>("/api/deck/change-password", {
+    request<{ ok: boolean; token: string }>(deckPath("/deck/change-password"), {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify({ currentPassword, newPassword }),
@@ -141,20 +150,20 @@ export const api = {
   /* ---- Cyber-Deck IoT (server proxies to Blynk; no token client-side) ---- */
 
   listIotDevices: (token: string) =>
-    request<IotDevicesResponse>("/api/iot/devices", { headers: { Authorization: `Bearer ${token}` } }),
+    request<IotDevicesResponse>(deckPath("/iot/devices"), { headers: { Authorization: `Bearer ${token}` } }),
 
   saveIotDevices: (token: string, devices: IotDevice[]) =>
-    request<{ ok: boolean; devices: IotDevice[] }>("/api/iot/devices", {
+    request<{ ok: boolean; devices: IotDevice[] }>(deckPath("/iot/devices"), {
       method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify({ devices }),
     }),
 
   getIotState: (token: string) =>
-    request<IotStateResponse>("/api/iot/state", { headers: { Authorization: `Bearer ${token}` } }),
+    request<IotStateResponse>(deckPath("/iot/state"), { headers: { Authorization: `Bearer ${token}` } }),
 
   setIotDeviceState: (token: string, id: string, value: 0 | 1) =>
-    request<IotSetResponse>(`/api/iot/devices/${encodeURIComponent(id)}/state`, {
+    request<IotSetResponse>(`${deckPath("/iot/devices")}/${encodeURIComponent(id)}/state`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify({ value }),

@@ -17,5 +17,5 @@ export function isNativeApp(): boolean {
   return typeof cap?.isNativePlatform === "function" && cap.isNativePlatform();
 }
 
-/** HC-05 MAC from .env.local — bundled, but only consumed by native builds. */
+/** HC-05 MAC from .env.local - bundled, but only consumed by native builds. */
 export const HC05_MAC = import.meta.env.VITE_HC05_MAC ?? "";

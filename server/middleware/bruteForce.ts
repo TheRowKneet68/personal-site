@@ -4,11 +4,11 @@ import { clientIp } from "../services/visitors.js";
 /**
  * Growing lockout for repeated failed logins, keyed by client IP.
  * The window doubles after repeated failures, so hammering the login endpoint
- * gets blocked for longer each round — flat rate limits alone just reset and
+ * gets blocked for longer each round - flat rate limits alone just reset and
  * let an attacker retry forever.
  * Note: a client MAC address is never visible to a server over HTTP(S), so IP
  * (+ the per-IP rate limiter) is the practical fingerprint.
- * ponytail: in-memory only — same per-instance ceiling as rateLimit; move to
+ * ponytail: in-memory only - same per-instance ceiling as rateLimit; move to
  * Vercel KV if abuse ever outgrows a single instance.
  */
 interface Entry {
@@ -48,7 +48,7 @@ export function bruteForce() {
     if (entry && entry.lockedUntil > now) {
       const wait = Math.ceil((entry.lockedUntil - now) / 1000);
       res.setHeader("Retry-After", String(wait));
-      res.status(429).json({ error: `too many failed attempts — try again in ${Math.ceil(wait / 60)} min` });
+      res.status(429).json({ error: `too many failed attempts - try again in ${Math.ceil(wait / 60)} min` });
       return;
     }
 

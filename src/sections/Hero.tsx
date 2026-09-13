@@ -43,7 +43,7 @@ export function Hero() {
             </motion.h1>
 
             <motion.p {...fade(0.16)} className="mt-7 max-w-xl text-lg leading-relaxed text-ink-dim">
-              I'm <span className="font-semibold text-ink">{profile.name}</span> — {profile.slogan}.
+              I'm <span className="font-semibold text-ink">{profile.name}</span> - {profile.slogan}.
               Hardware on the workbench, software in the terminal, and a habit of shipping
               both before anyone asks.
             </motion.p>

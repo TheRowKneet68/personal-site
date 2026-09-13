@@ -58,12 +58,12 @@ import { FaCodepen, FaLinkedin } from "react-icons/fa6";
 import type { ComponentType } from "react";
 
 /**
- * Platform registry — official brand marks (Simple Icons via react-icons, with
+ * Platform registry - official brand marks (Simple Icons via react-icons, with
  * Font Awesome fallbacks for brands Simple Icons dropped) and the hostname
  * table used for auto-detection. Real logos, bundled locally, never scraped.
  * Mirrors the server's label table.
  *
- * Anything NOT listed here can still be added — the admin accepts any http(s)
+ * Anything NOT listed here can still be added - the admin accepts any http(s)
  * URL with a free-form platform name; it just gets the neutral external-link
  * icon (or a manual icon override).
  */
@@ -166,7 +166,7 @@ export function isValidHttpUrl(url: string): boolean {
   }
 }
 
-/** Brand marks — Simple Icons via react-icons (LinkedIn and CodePen were
+/** Brand marks - Simple Icons via react-icons (LinkedIn and CodePen were
     dropped from recent Simple Icons releases, so those fall back to Font
     Awesome). Unknown platforms fall back to a neutral external-link glyph so
     a bad record can never crash. */

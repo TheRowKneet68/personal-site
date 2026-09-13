@@ -3,10 +3,10 @@ import { BluetoothSerial } from "@ascentio-it/capacitor-bluetooth-serial";
 import { HC05_MAC, isNativeApp } from "../lib/native";
 
 /* ------------------------------------------------------------------ */
-/*  useIgnition — Swift Ignition BT-SPP link                           */
+/*  useIgnition - Swift Ignition BT-SPP link                           */
 /*                                                                     */
 /*  HARDWARE GUARD: every Bluetooth call is gated behind isNativeApp(). */
-/*  In a plain browser the hook runs in "web-sim" — commands resolve    */
+/*  In a plain browser the hook runs in "web-sim" - commands resolve    */
 /*  locally, nothing ever touches a radio. Full SPP only inside the     */
 /*  Capacitor APK.                                                      */
 /*                                                                      */
@@ -14,7 +14,7 @@ import { HC05_MAC, isNativeApp } from "../lib/native";
 /*  'R' start crank (hold), 'E' stop crank (release).                   */
 /*                                                                      */
 /*  The plugin exposes no live RSSI for classic SPP, so link quality is */
-/*  reported as measured write latency (EMA) — real telemetry instead   */
+/*  reported as measured write latency (EMA) - real telemetry instead   */
 /*  of a fake signal bar.                                               */
 /* ------------------------------------------------------------------ */
 
@@ -57,7 +57,7 @@ export function useIgnition() {
     setLog((l) => [`[${new Date().toLocaleTimeString()}] ${line}`, ...l].slice(0, 5));
   }, []);
 
-  /** Core connect sequence — secure first, insecure fallback (HC-05 has no
+  /** Core connect sequence - secure first, insecure fallback (HC-05 has no
       encryption handshake and often rejects RFCOMM secure sockets). */
   const establishLink = useCallback(async (): Promise<void> => {
     if (!HC05_MAC) throw new Error("No HC-05 MAC configured (.env.local VITE_HC05_MAC)");
@@ -89,7 +89,7 @@ export function useIgnition() {
   const scheduleReconnect = useCallback((): void => {
     if (!native || statusRef.current === "reconnecting") return;
     setStatus("reconnecting");
-    setError("LINK LOST — re-establishing…");
+    setError("LINK LOST - re-establishing…");
     let attempt = 0;
     const tryOnce = (): void => {
       attempt += 1;
@@ -104,7 +104,7 @@ export function useIgnition() {
             reconnectTimer.current = window.setTimeout(tryOnce, RECONNECT_DELAY_MS);
           } else {
             setStatus("disconnected");
-            setError("Reconnect failed — check bike ignition power on the HC-05");
+            setError("Reconnect failed - check bike ignition power on the HC-05");
             pushLog("RECONNECT FAILED ×3");
           }
         });
@@ -130,7 +130,7 @@ export function useIgnition() {
   }, [scheduleReconnect]);
 
   /** Adopt an OS-level SPP socket that survived an app restart. Closing the
-   *  APK does not close the RFCOMM link — blindly calling connect again
+   *  APK does not close the RFCOMM link - blindly calling connect again
    *  fails with "already connected", which users read as a broken deck. */
   const adoptExistingLink = useCallback(async (): Promise<boolean> => {
     if (!native) return false;
@@ -150,7 +150,7 @@ export function useIgnition() {
   const connect = useCallback(async (): Promise<void> => {
     setError("");
     if (!native) {
-      // SIMULATION MODE — visual demo only, no radio access from browsers.
+      // SIMULATION MODE - visual demo only, no radio access from browsers.
       setStatus("connecting");
       window.setTimeout(() => {
         setStatus("connected");
@@ -173,7 +173,7 @@ export function useIgnition() {
       setStatus("disconnected");
       const message = err instanceof Error ? err.message : String(err ?? "");
       // Android permission prompts surface here as plain denials.
-      setError(/permission/i.test(message) ? "Bluetooth permission denied — grant it in Android settings" : "Pair the HC-05 in Android settings first, then retry");
+      setError(/permission/i.test(message) ? "Bluetooth permission denied - grant it in Android settings" : "Pair the HC-05 in Android settings first, then retry");
       pushLog("CONNECT FAILED");
     }
   }, [adoptExistingLink, establishLink, native, pushLog, startKeepalive]);
@@ -198,13 +198,13 @@ export function useIgnition() {
       } catch {
         scheduleReconnect();
         pushLog("TRANSMIT FAILED");
-        throw new Error("Transmit failed — link dropped");
+        throw new Error("Transmit failed - link dropped");
       }
     },
     [native, pushLog, scheduleReconnect],
   );
 
-  // Cleanup on unmount (leaving /terminal kills timers but NOT the link —
+  // Cleanup on unmount (leaving /terminal kills timers but NOT the link -
   // the deck auto-locks anyway).
   useEffect(() => clearTimers, [clearTimers]);
 

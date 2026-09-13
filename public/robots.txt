@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-# The deck is a private control panel — keep crawlers out entirely.
+# The deck is a private control panel - keep crawlers out entirely.
 Disallow: /terminal
 Disallow: /api/
 

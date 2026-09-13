@@ -12,7 +12,7 @@ const MAX_BUCKETS = 10_000;
  * In-memory rate limit. Per-IP keyed on req.ip; a `global` cap is enforced
  * across all clients of this instance, so spoofed X-Forwarded-For headers
  * can't launder abuse past the limiter.
- * ponytail: in-memory only — on Vercel serverless each instance has its own
+ * ponytail: in-memory only - on Vercel serverless each instance has its own
  * counters, so this is a per-instance limit. Upgrade to Vercel KV if abuse
  * ever becomes a real problem.
  */
@@ -42,7 +42,7 @@ export function rateLimit(options: { windowMs: number; max: number; global?: num
       bucket.count++;
       if (bucket.count > limits[i]!) {
         res.setHeader("Retry-After", String(Math.ceil((bucket.resetAt - now) / 1000)));
-        res.status(429).json({ error: "slow down — try again in a moment" });
+        res.status(429).json({ error: "slow down - try again in a moment" });
         return;
       }
     }

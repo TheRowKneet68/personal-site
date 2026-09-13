@@ -8,7 +8,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
     Portfolio at root; /terminal via the footer link. */
 const config: CapacitorConfig = {
   appId: "com.therowkneet.cyberdeck",
-  appName: "TheRowKneet",
+  appName: "RowKneetLabs",
   webDir: "dist",
 };
 

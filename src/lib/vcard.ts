@@ -1,7 +1,7 @@
 import type { SocialLink } from "../types";
 
 /** Contact details printed on the physical card and embedded in the .vcf.
-    Website deliberately uses the non-www domain — same as the QR target. */
+    Website deliberately uses the non-www domain - same as the QR target. */
 export const CARD = {
   lastName: "Baniya Gupta",
   firstName: "Ronit",
@@ -19,7 +19,7 @@ function escapeVCard(value: string): string {
 }
 
 /** Build a vCard 3.0 string from the card + the enabled social links. Local
-    generation only — no third-party vCard service. */
+    generation only - no third-party vCard service. */
 export function buildVCard(links: SocialLink[]): string {
   const lines = [
     "BEGIN:VCARD",

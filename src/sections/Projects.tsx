@@ -64,7 +64,7 @@ export function Projects() {
         <SectionHeading
           index="02"
           title={<>selected <em className="accent-serif">work</em></>}
-          kicker="Four projects I can talk about properly — problem, build, and what it taught me. Everything else lives in the index below."
+          kicker="Four projects I can talk about properly - problem, build, and what it taught me. Everything else lives in the index below."
         />
 
         <Reveal>
@@ -76,7 +76,7 @@ export function Projects() {
         <Reveal delay={0.1}>
           <div className="mt-20 flex flex-wrap items-end justify-between gap-4 md:mt-28">
             <h3 className="mono-label">
-              everything else — {gridProjects.length} projects
+              everything else - {gridProjects.length} projects
             </h3>
             <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">
               click any card for the full story
@@ -126,7 +126,7 @@ export function Projects() {
             ))}
           </ul>
           <p className="mt-4 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">
-            // {sorted.length} project{sorted.length === 1 ? "" : "s"} in this view — sorted by {SORTS[sort].label}
+            // {sorted.length} project{sorted.length === 1 ? "" : "s"} in this view - sorted by {SORTS[sort].label}
           </p>
         </Reveal>
       </Container>

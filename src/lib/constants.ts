@@ -2,7 +2,7 @@ import type { GitHubStats, StatsResponse } from "../types";
 
 export const SITE = {
   name: "Ronit Baniya Gupta",
-  handle: "TheRowKneet",
+  handle: "RowKneetLabs",
   url: import.meta.env.VITE_SITE_URL || "https://www.ronitbaniyagupta.com.np",
   ogImage: "/images/og-card.jpg",
   email: "ronitbaniya68@gmail.com",

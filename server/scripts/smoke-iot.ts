@@ -1,10 +1,11 @@
-/* One-off smoke test for /api/iot/* — run with the API up:
+/* One-off smoke test for /api/iot/* - run with the API up:
    npx tsx scripts/smoke-iot.ts
    Exercises the registry roundtrip (Supabase/JSON) and read paths.
    Writes a test relay to the registry, then restores the previous list. */
 import { getStoredAuth, issueToken } from "../middleware/auth.js";
 
-const BASE = "http://localhost:3001/api";
+const PREFIX = (process.env.DECK_API_PREFIX || "rk-vault").replace(/^\/+|\/+$/g, "");
+const BASE = `http://localhost:3001/api${PREFIX ? `/${PREFIX}` : ""}`;
 
 const stored = await getStoredAuth("deck");
 const token = issueToken(stored?.tokenVersion ?? 0, stored?.passwordHash || process.env.DECK_PASSWORD || "", "deck");

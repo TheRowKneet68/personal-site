@@ -21,7 +21,7 @@ import type { BruteForceRequest } from "../middleware/bruteForce.js";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
-/** Allowed upload types (magic bytes). SVG is excluded — scriptable vector XSS. */
+/** Allowed upload types (magic bytes). SVG is excluded - scriptable vector XSS. */
 const IMAGE_SIGNATURES: { contentType: string; ext: string; sniff: (b: Buffer) => boolean }[] = [
   { contentType: "image/jpeg", ext: "jpg", sniff: (b) => b.length > 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
   { contentType: "image/png", ext: "png", sniff: (b) => b.length > 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47 && b[4] === 0x0d && b[5] === 0x0a && b[6] === 0x1a && b[7] === 0x0a },
@@ -43,7 +43,7 @@ function safeName(raw: string | undefined, ext: string): string {
   return `${base.slice(0, 80)}.${ext}`;
 }
 
-/** POST /api/admin/login · /api/deck/login — exchange a role's password for a
+/** POST /api/admin/login · /api/deck/login - exchange a role's password for a
     short-lived bearer token scoped to that role. */
 async function doLogin(req: Request, res: Response, role: AuthRole): Promise<void> {
   const stored = await getStoredAuth(role);
@@ -74,7 +74,7 @@ export function loginDeck(req: Request, res: Response): Promise<void> {
   return doLogin(req, res, "deck");
 }
 
-/** POST /api/admin/change-password · /api/deck/change-password — rotate one
+/** POST /api/admin/change-password · /api/deck/change-password - rotate one
     vault's key. The current password must be re-entered, the new one is stored
     as a scrypt hash in Supabase, and the token version is bumped so every
     OTHER session of that role is signed out. A fresh token is returned so the
@@ -114,7 +114,7 @@ export function changeDeckPassword(req: Request, res: Response): Promise<void> {
   return doChangePassword(req, res, "deck");
 }
 
-/** GET /api/admin/content — the full editable content (auth required).
+/** GET /api/admin/content - the full editable content (auth required).
     Reads fresh from the backend (never the TTL cache) so edits always start
     from the true DB state. */
 export async function getContent(_req: Request, res: Response): Promise<void> {
@@ -126,29 +126,29 @@ export async function getContent(_req: Request, res: Response): Promise<void> {
   });
 }
 
-/** GET /api/admin/messages — contact form submissions (auth required). */
+/** GET /api/admin/messages - contact form submissions (auth required). */
 export async function listMessages(_req: Request, res: Response): Promise<void> {
   res.json({ messages: await storage.listMessages() });
 }
 
-/** GET /api/admin/subscribers — newsletter emails (auth required). */
+/** GET /api/admin/subscribers - newsletter emails (auth required). */
 export async function listSubscribers(_req: Request, res: Response): Promise<void> {
   res.json({ subscribers: await storage.listSubscribers() });
 }
 
-/** DELETE /api/admin/messages/:id — remove a contact message (auth required). */
+/** DELETE /api/admin/messages/:id - remove a contact message (auth required). */
 export async function deleteMessage(req: Request, res: Response): Promise<void> {
   await storage.deleteMessage(String(req.params.id));
   res.json({ ok: true });
 }
 
-/** DELETE /api/admin/subscribers/:email — remove a newsletter subscriber (auth required). */
+/** DELETE /api/admin/subscribers/:email - remove a newsletter subscriber (auth required). */
 export async function deleteSubscriber(req: Request, res: Response): Promise<void> {
   await storage.deleteSubscriber(String(req.params.email));
   res.json({ ok: true });
 }
 
-/** POST /api/admin/upload — save an image, return its public URL (auth required). */
+/** POST /api/admin/upload - save an image, return its public URL (auth required). */
 export async function uploadImage(req: Request, res: Response): Promise<void> {
   const { data, name } = (req.body ?? {}) as { data?: string; name?: string };
   if (typeof data !== "string" || !data) throw new HttpError(400, "Image data (base64) is required");
@@ -164,13 +164,13 @@ export async function uploadImage(req: Request, res: Response): Promise<void> {
   res.json({ url });
 }
 
-/** PUT /api/admin/content — persist edits (auth required). */
+/** PUT /api/admin/content - persist edits (auth required). */
 export async function updateContent(req: Request, res: Response): Promise<void> {
   const body = req.body as { profile?: Content["profile"]; projects?: Content["projects"]; achievements?: Content["achievements"] };
   if (!body || typeof body.profile !== "object") {
     throw new HttpError(400, "Invalid content: profile is required");
   }
-  // Trust-boundary guard for the social links — every admin save re-validates
+  // Trust-boundary guard for the social links - every admin save re-validates
   // the URLs and display text so javascript:/data:/etc. never reach the DB.
   const socialError = validateSocialLinks(body.profile.social_links);
   if (socialError) throw new HttpError(400, socialError);

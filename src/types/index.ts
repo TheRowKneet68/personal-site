@@ -56,7 +56,7 @@ export interface Profile {
   whatsapp: string;
   email: string;
   socials: Record<string, string>;
-  /** Structured social links — the /connect page + admin "Connect" manager.
+  /** Structured social links - the /connect page + admin "Connect" manager.
       `socials` above is derived from the enabled entries server-side. */
   social_links?: SocialLink[];
   badges: string[];
@@ -161,7 +161,7 @@ export interface StatsResponse {
   storage: "supabase" | "json";
 }
 
-/** Shape used by the admin panel — profile.tech/focus double as the skills. */
+/** Shape used by the admin panel - profile.tech/focus double as the skills. */
 export interface AdminContent {
   profile: Profile;
   projects: Project[];
@@ -185,7 +185,7 @@ export interface ApiError {
 /* ---- Cyber-Deck (Suraksha Ghar home hub) ---- */
 
 /** One user-configured relay. `hub` is an opaque label ("hub-1") resolved to
-    a token server-side — raw Blynk tokens never reach the client. */
+    a token server-side - raw Blynk tokens never reach the client. */
 export interface IotDevice {
   id: string;
   name: string;

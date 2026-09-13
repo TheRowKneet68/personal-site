@@ -135,7 +135,7 @@ function ChangePasswordForm({ token, onToken }: { token: string; onToken: (t: st
       }}
     >
       {done ? (
-        <p className="text-sm text-accent">Password changed — every other session has been signed out.</p>
+        <p className="text-sm text-accent">Password changed - every other session has been signed out.</p>
       ) : null}
       {error ? <p className="text-sm text-warn">{error}</p> : null}
       <div>
@@ -369,7 +369,7 @@ export function AdminPage() {
             {tab === "connect" && (
               <AdminCard
                 title="Connect"
-                kicker="Social links shown on /connect — add, edit, reorder, enable/disable. Changes appear on the public page after a refresh, no redeploy needed."
+                kicker="Social links shown on /connect - add, edit, reorder, enable/disable. Changes appear on the public page after a refresh, no redeploy needed."
                 actions={
                   <span className="flex items-center gap-3">
                     <span className="hidden text-ink sm:block" aria-hidden>
@@ -403,7 +403,7 @@ export function AdminPage() {
               </AdminCard>
             )}
             {tab === "skills" && (
-              <AdminCard title="Skills" kicker="Skill categories — saved to profile.tech.">
+              <AdminCard title="Skills" kicker="Skill categories - saved to profile.tech.">
                 <SkillsSection value={content.profile.tech} onChange={(v) => patchProfile({ ...content.profile, tech: v })} />
               </AdminCard>
             )}
@@ -418,7 +418,7 @@ export function AdminPage() {
               </AdminCard>
             )}
             {tab === "featured" && (
-              <AdminCard title="Featured In" kicker="Media coverage — press releases, articles and reels. Each row gets a photo or video preview on the site.">
+              <AdminCard title="Featured In" kicker="Media coverage - press releases, articles and reels. Each row gets a photo or video preview on the site.">
                 <FeaturedInSection
                   value={content.profile.featured_in ?? []}
                   onChange={(v) => patchProfile({ ...content.profile, featured_in: v })}
@@ -499,7 +499,7 @@ export function AdminPage() {
                     </button>
                     {subscribers && subscribers.length > 0 ? (
                       <a
-                        href={`mailto:?bcc=${subscribers.join(",")}&subject=${encodeURIComponent("TheRowKneet — ")}`}
+                        href={`mailto:?bcc=${subscribers.join(",")}&subject=${encodeURIComponent("RowKneetLabs - ")}`}
                         className={cn(btnCls, "inline-flex items-center gap-1.5")}
                       >
                         <Send className="size-3.5" aria-hidden /> email all

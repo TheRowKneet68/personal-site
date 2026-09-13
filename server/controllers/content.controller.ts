@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { storage } from "../services/storage.js";
 import type { ExperienceEntry } from "../services/content.js";
 
-/** GET /api/projects — all projects, featured first, newest first. */
+/** GET /api/projects - all projects, featured first, newest first. */
 export async function getProjects(_req: Request, res: Response): Promise<void> {
   const content = await storage.getContent();
   const projects = [...content.projects].sort(
@@ -11,13 +11,13 @@ export async function getProjects(_req: Request, res: Response): Promise<void> {
   res.json({ projects });
 }
 
-/** GET /api/skills — tech categories + focus areas. */
+/** GET /api/skills - tech categories + focus areas. */
 export async function getSkills(_req: Request, res: Response): Promise<void> {
   const content = await storage.getContent();
   res.json({ skills: content.skills });
 }
 
-/** GET /api/experience — the journey timeline, with achievements merged in,
+/** GET /api/experience - the journey timeline, with achievements merged in,
     sorted oldest → newest. Narrative milestones whose text merely repeats the
     dated achievements of the same year are dropped so no event shows twice. */
 export async function getExperience(_req: Request, res: Response): Promise<void> {
@@ -32,7 +32,7 @@ export async function getExperience(_req: Request, res: Response): Promise<void>
     const { y } = parseTimeline(prettyYear);
     achievementEntries.push({
       year: prettyYear,
-      title: `🏆 ${a.result} — ${a.title}${a.event ? ` @ ${a.event}` : ""}`,
+      title: `🏆 ${a.result} - ${a.title}${a.event ? ` @ ${a.event}` : ""}`,
       note: a.detail,
       type: "achievement",
       order: a.order,
@@ -82,7 +82,7 @@ function compareEntries(a: ExperienceEntry, b: ExperienceEntry): number {
   return (a.order ?? 0) - (b.order ?? 0);
 }
 
-/** Content words (≥4 chars, alphanumeric only) — the basis of repetition checks. */
+/** Content words (≥4 chars, alphanumeric only) - the basis of repetition checks. */
 function significantWords(text: string): string[] {
   return (text || "").toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 4);
 }
@@ -100,7 +100,7 @@ function keepNarrative(e: ExperienceEntry, vocabByYear: Map<number, Set<string>>
   return hits < 3;
 }
 
-/** GET /api/profile — everything about the person (used by the hero/about). */
+/** GET /api/profile - everything about the person (used by the hero/about). */
 export async function getProfile(_req: Request, res: Response): Promise<void> {
   const content = await storage.getContent();
   res.json({ profile: content.profile, achievements: content.achievements });

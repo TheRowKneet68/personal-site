@@ -18,7 +18,7 @@ function plausibleIp(value: string | undefined): string | null {
 
 function clientIp(req: Request): string {
   // Forwarded headers are honored ONLY on Vercel, whose edge overwrites them.
-  // Anywhere else they're attacker-controlled — spoofing a fresh IP per request
+  // Anywhere else they're attacker-controlled - spoofing a fresh IP per request
   // would bypass the brute-force lockout and every per-IP rate limit.
   if (env.isVercel) {
     const fwd = req.headers["x-forwarded-for"];

@@ -1,6 +1,6 @@
 import { useData } from "../context/DataContext";
 
-/** Decorative skills ticker — CSS-driven, pauses on hover, aria-hidden. */
+/** Decorative skills ticker - CSS-driven, pauses on hover, aria-hidden. */
 export function Marquee() {
   const { skills } = useData();
   if (!skills) return null;

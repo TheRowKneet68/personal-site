@@ -21,7 +21,7 @@ const TerminalPage = lazy(() =>
 
 function RoutesShell() {
   const { status } = useData();
-  // No network: the deck is bundled in the APK and works offline — jump
+  // No network: the deck is bundled in the APK and works offline - jump
   // straight to it instead of a portfolio that can't load its data.
   const offline = typeof navigator !== "undefined" && !navigator.onLine;
 

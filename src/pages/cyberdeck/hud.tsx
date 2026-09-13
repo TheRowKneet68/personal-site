@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 /* ------------------------------------------------------------------ */
-/*  Cyber-Deck HUD primitives — shared by all deck modules.            */
+/*  Cyber-Deck HUD primitives - shared by all deck modules.            */
 /*  Pure Tailwind + the --cd-* token namespace; no runtime deps.       */
 /*                                                                     */
 /*  Design rules that keep this looking like a machined cockpit and    */
@@ -29,12 +29,12 @@ export function HudPanel({
     <section
       className={`cd-chamfer relative border border-cd-line bg-gradient-to-b from-cd-hull/90 to-cd-glass p-5 pt-8 ${className}`}
     >
-      {/* notched label tab — sits ON the top edge, breaking the border */}
+      {/* notched label tab - sits ON the top edge, breaking the border */}
         <span className="absolute -top-px left-4 flex h-5 items-center gap-2 whitespace-nowrap bg-cd-cyan/10 px-2 font-cd-mono text-[9px] tracking-[0.2em] text-cd-dim">
         <span className="h-1 w-1 bg-cd-cyan shadow-[0_0_6px_rgba(56,225,255,0.9)]" />
         {label}
       </span>
-      {/* single corner accent — top-right only */}
+      {/* single corner accent - top-right only */}
       <span className="absolute -top-px -right-px h-3.5 w-3.5 border-t-2 border-r-2 border-cd-cyan/50" />
       <header className={`flex items-start justify-between gap-2 ${right ? "mt-1" : ""}`}>{right}</header>
       {children}

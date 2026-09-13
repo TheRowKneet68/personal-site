@@ -3,7 +3,7 @@ import { api } from "../services/api";
 import type { IotDevice } from "../types";
 
 /* ------------------------------------------------------------------ */
-/*  useHomeHub — Suraksha Ghar state machine                          */
+/*  useHomeHub - Suraksha Ghar state machine                          */
 /*                                                                     */
 /*  Owns the device registry + live pin states. Toggles are OPTIMISTIC: */
 /*  the UI flips instantly (with haptic tick), the command goes out in  */
@@ -39,7 +39,7 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
 /** Hub master switch: the device in a hub named like "Main Power".
  *  ponytail: name-based detection; promote to a registry field if you ever
  *  need a second differently-named master.
- *  Semantics — toggle(master, v) writes v to EVERY sibling in that hub;
+ *  Semantics - toggle(master, v) writes v to EVERY sibling in that hub;
  *  after any child settles, master is driven to AND(siblings). */
 export function isMasterDevice(d: IotDevice): boolean {
   return /main\s*power|^power$/i.test(d.name);
@@ -96,7 +96,7 @@ export function useHomeHub(authToken: string) {
         setError("");
       } catch {
         setState((s) => ({ ...s, [master.id]: s[master.id] === target ? null : (s[master.id] ?? null) }));
-        setError(`"${master.name}" follow-up failed — check MAIN POWER`);
+        setError(`"${master.name}" follow-up failed - check MAIN POWER`);
       } finally {
         setPending((p) => {
           const rest = { ...p };
@@ -131,7 +131,7 @@ export function useHomeHub(authToken: string) {
       }
     } catch {
       // Offline/stale: cached telemetry stays on screen, no red banner spam.
-      setError("TELEMETRY LINK LOST — retrying on next cycle");
+      setError("TELEMETRY LINK LOST - retrying on next cycle");
     }
   }, [authToken, reconcileMaster]);
 
@@ -149,7 +149,7 @@ export function useHomeHub(authToken: string) {
         try {
           localStorage.setItem(REGISTRY_KEY, JSON.stringify({ hubs: r.hubs, devices: r.devices }));
         } catch {
-          /* storage full/blocked — cache is best-effort */
+          /* storage full/blocked - cache is best-effort */
         }
       })
       .catch(() => {
@@ -197,12 +197,12 @@ export function useHomeHub(authToken: string) {
         } else {
           await withRetry(() => api.setIotDeviceState(authToken, device.id, value));
           setError("");
-          // No immediate re-read — through serverless that doubles the wait.
+          // No immediate re-read - through serverless that doubles the wait.
           // The ≤2s poll is the source of truth and confirms shortly.
         }
       } catch {
         setState((s) => ({ ...s, [device.id]: previous ?? null }));
-        setError(`"${device.name}" did not respond — command aborted`);
+        setError(`"${device.name}" did not respond - command aborted`);
       } finally {
         setPending((p) => {
           const rest = { ...p };

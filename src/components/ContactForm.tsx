@@ -14,7 +14,7 @@ interface FormState {
   email: string;
   subject: string;
   message: string;
-  website: string; // honeypot — humans never see it
+  website: string; // honeypot - humans never see it
 }
 
 const EMPTY: FormState = { name: "", email: "", subject: "", message: "", website: "" };
@@ -35,7 +35,7 @@ export function ContactForm() {
     if (form.name.trim().length < 2) next.name = "a real name helps me reply to the right person.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) next.email = "that email doesn't look right.";
     if (form.subject.trim().length > 200) next.subject = "keep the subject under 200 characters.";
-    if (form.message.trim().length < 10) next.message = "tell me a bit more — at least 10 characters.";
+    if (form.message.trim().length < 10) next.message = "tell me a bit more - at least 10 characters.";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -57,7 +57,7 @@ export function ContactForm() {
       setForm(EMPTY);
     } catch (err) {
       setState("error");
-      setServerError(err instanceof ApiClientError ? err.message : "something broke — try again or email me directly.");
+      setServerError(err instanceof ApiClientError ? err.message : "something broke - try again or email me directly.");
     }
   };
 
@@ -93,13 +93,13 @@ export function ContactForm() {
             message
           </label>
           <textarea id="cf-message" rows={5} className={cn(inputClass, "resize-y", errors.message && "border-warn")}
-            placeholder="Don't send a 10-paragraph brief. Tell me what you want to exist — I'll figure out the rest."
+            placeholder="Don't send a 10-paragraph brief. Tell me what you want to exist - I'll figure out the rest."
             value={form.message} onChange={set("message")} />
           {errors.message && <p className="mt-1 text-xs text-warn">{errors.message}</p>}
         </div>
       </div>
 
-      {/* honeypot — hidden from humans, irresistible to bots */}
+      {/* honeypot - hidden from humans, irresistible to bots */}
       <div className="absolute -left-[9999px]" aria-hidden>
         <label htmlFor="cf-website">leave this field empty</label>
         <input id="cf-website" tabIndex={-1} autoComplete="off" value={form.website} onChange={set("website")} />
@@ -118,7 +118,7 @@ export function ContactForm() {
 
         {state === "success" && (
           <p className="mt-4 flex items-center gap-2 text-sm text-accent-ink" role="status">
-            <CheckCircle2 className="size-4 shrink-0" aria-hidden /> got it — I'll reply within a day or two.
+            <CheckCircle2 className="size-4 shrink-0" aria-hidden /> got it - I'll reply within a day or two.
           </p>
         )}
         {state === "error" && (

@@ -1,23 +1,18 @@
 import { Router } from "express";
 import { rateLimit } from "../middleware/rateLimit.js";
 import { bruteForce } from "../middleware/bruteForce.js";
-import {
-  getExperience,
-  getProfile,
-  getProjects,
-  getSkills,
-} from "../controllers/content.controller.js";
-import {
-  postContact,
-  postNewsletter,
-  postVisitor,
-} from "../controllers/message.controller.js";
+import { getExperience, getProfile, getProjects, getSkills } from "../controllers/content.controller.js";
+import { postContact, postNewsletter, postVisitor } from "../controllers/message.controller.js";
 import { getHealth, getStats } from "../controllers/stats.controller.js";
-import { getContent, changePassword, deleteMessage, deleteSubscriber, listMessages, listSubscribers, login, updateContent, uploadImage, loginDeck, changeDeckPassword } from "../controllers/admin.controller.js";
+import { changePassword, changeDeckPassword, deleteMessage, deleteSubscriber, getContent, listMessages, listSubscribers, login, loginDeck, updateContent, uploadImage } from "../controllers/admin.controller.js";
 import { getState, listDevices, saveDevices, setDeviceState } from "../controllers/iot.controller.js";
+import { env } from "../config/env.js";
 import { requireAdmin, requireDeck } from "../middleware/auth.js";
 
 export const api = Router();
+
+// Hidden mount for the deck + IoT endpoints - see env.deckApiPrefix.
+const deck = env.deckApiPrefix ? `/${env.deckApiPrefix}` : "";
 
 api.get("/health", getHealth);
 
@@ -53,34 +48,34 @@ api.post(
   uploadImage,
 );
 
-/* ---- Cyber-Deck IoT proxy — DECK-scoped bearer token (separate vault from
+/* ---- Cyber-Deck IoT proxy - DECK-scoped bearer token (separate vault from
         the content admin). Writes are rate-limited harder than reads
         (relay chatter guard). ---- */
-api.get("/iot/devices", requireDeck, listDevices);
+api.get(`${deck}/iot/devices`, requireDeck, listDevices);
 api.put(
-  "/iot/devices",
+  `${deck}/iot/devices`,
   rateLimit({ windowMs: 60_000, max: 30, name: "iot-config" }),
   requireDeck,
   saveDevices,
 );
-api.get("/iot/state", rateLimit({ windowMs: 60_000, max: 60, name: "iot-state" }), requireDeck, getState);
+api.get(`${deck}/iot/state`, rateLimit({ windowMs: 60_000, max: 60, name: "iot-state" }), requireDeck, getState);
 api.post(
-  "/iot/devices/:id/state",
+  `${deck}/iot/devices/:id/state`,
   // 60/min: a master-switch flip fans out to every sibling in one burst.
   rateLimit({ windowMs: 60_000, max: 60, name: "iot-write" }),
   requireDeck,
   setDeviceState,
 );
 
-/* ---- Deck credential endpoints — independent password from the admin panel. */
+/* ---- Deck credential endpoints - independent password from the admin panel. */
 api.post(
-  "/deck/login",
+  `${deck}/deck/login`,
   rateLimit({ windowMs: 15 * 60_000, max: 5, name: "deck-login" }),
   bruteForce(),
   loginDeck,
 );
 api.post(
-  "/deck/change-password",
+  `${deck}/deck/change-password`,
   rateLimit({ windowMs: 15 * 60_000, max: 5, name: "deck-change-password" }),
   requireDeck,
   changeDeckPassword,

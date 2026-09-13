@@ -178,7 +178,7 @@ export function ImageList({
   onChange,
   uploadImage,
   hint,
-  emptyText = "No images yet — add a few below.",
+  emptyText = "No images yet - add a few below.",
 }: {
   label: string;
   value: string[];

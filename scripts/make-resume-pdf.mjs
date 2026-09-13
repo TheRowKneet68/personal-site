@@ -1,6 +1,6 @@
 /* Generate public/resume.pdf from data.json with zero dependencies.
    Run: node scripts/make-resume-pdf.mjs
-   ponytail: hand-rolled single-page PDF (letter, Helvetica) — a real,
+   ponytail: hand-rolled single-page PDF (letter, Helvetica) - a real,
    text-searchable, printable resume with no pdf/puppeteer dependency.
    If the resume ever needs multiple pages or rich design, swap in a real
    PDF library then. */
@@ -21,8 +21,7 @@ const BOTTOM = 40;
 
 const ascii = (s) =>
   String(s)
-    .replace(/—/g, "-")
-    .replace(/–/g, "-")
+    .replace(/-/g, "-")
     .replace(/[''`]/g, "'")
     .replace(/[""]/g, '"')
     .replace(/…/g, "...")
@@ -103,21 +102,21 @@ y -= 2;
 
 heading("Selected Projects");
 for (const proj of raw.projects.filter((pr) => pr.featured)) {
-  flow(9.5, "F2", `${proj.title} (${proj.year}) — ${proj.tagline}`);
+  flow(9.5, "F2", `${proj.title} (${proj.year}) - ${proj.tagline}`);
 }
 y -= 2;
 
 heading("Achievements");
 for (const a of (raw.achievements ?? []).slice(0, 6)) {
-  flow(9.5, "F1", `${a.result} — ${a.event} (${a.year}): ${a.title}`, 0);
+  flow(9.5, "F1", `${a.result} - ${a.event} (${a.year}): ${a.title}`, 0);
 }
 
 heading("Principles & Extras");
-for (const pr of (p.principles ?? []).slice(0, 3)) line("F1", 9.5, "-", `${pr.title} — ${pr.note}`);
+for (const pr of (p.principles ?? []).slice(0, 3)) line("F1", 9.5, "-", `${pr.title} - ${pr.note}`);
 for (const f of (p.fun_facts ?? []).slice(0, 2)) line("F1", 9.5, "-", f);
 
 if (y < BOTTOM) {
-  // ponytail: single-page resume — content is tuned to fit. If this fires,
+  // ponytail: single-page resume - content is tuned to fit. If this fires,
   // trim copy in data.json or swap to a real PDF lib (see header note).
   console.warn(`content overflows one page (reached y=${y.toFixed(1)}, limit ${BOTTOM})`);
 }

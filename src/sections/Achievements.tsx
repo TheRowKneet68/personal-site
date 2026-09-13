@@ -9,7 +9,7 @@ import { cn } from "../utils/format";
 /** Wins sorted by placement: 1st, 1st Runner-Up, 2nd Runner-Up, People's Choice, Consolation, then the rest. */
 function placementRank(a: Achievement): number {
   if (a.rank !== undefined && a.rank !== "" && a.rank !== null) return Number(a.rank) || Number.MAX_SAFE_INTEGER;
-  const s = a.result.toLowerCase().replace(/[-–—]/g, " ");
+  const s = a.result.toLowerCase().replace(/-/g, " ");
   if (/\b1st\b/.test(s)) return 1;
   if (s.includes("winner")) return 1;
   if (s.includes("first runner")) return 2;
@@ -61,7 +61,7 @@ export function Achievements() {
         <Reveal>
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">
-              // {sorted.length} {sorted.length === 1 ? "entry" : "entries"} — sorted by {SORTS[sort].label}
+              // {sorted.length} {sorted.length === 1 ? "entry" : "entries"} - sorted by {SORTS[sort].label}
             </span>
             <label className="flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-ink-faint">
               sort
