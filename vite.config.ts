@@ -43,7 +43,7 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html}", "**/*.{woff2,svg}"],
         globIgnores: ["**/resume.pdf"],
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//, /^\/terminal$/],
+        navigateFallbackDenylist: [/^\/api\//, /^\/terminal$/, /^\/resume\.pdf$/],
         runtimeCaching: [
           {
             urlPattern: /\/resume\.pdf$/,
