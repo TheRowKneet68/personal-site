@@ -10,7 +10,6 @@ import type { Profile, SocialLink } from "../types";
 import { buildVCard, downloadVCard } from "../lib/vcard";
 import { Button } from "../components/Button";
 import { CopyButton } from "../components/CopyButton";
-import { QrCode } from "../components/QrCode";
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const;
 
@@ -70,9 +69,9 @@ export function ConnectPage() {
 
   const avatar = profile.portrait1 || profile.portrait || profile.logo || "/images/logo.svg";
 
-  const saveContact = () => {
+  const saveContact = async () => {
     track("save_contact_click");
-    downloadVCard("ronit-baniya-gupta.vcf", buildVCard(links));
+    downloadVCard("ronit-baniya-gupta.vcf", await buildVCard(links));
   };
 
   return (
@@ -198,14 +197,20 @@ export function ConnectPage() {
             <span aria-hidden>▾</span>
           </summary>
           <div className="mt-4 flex flex-col items-center gap-4 rounded-md border border-line bg-bg p-5">
-            <span className="text-ink" aria-label={`QR code for ${CONNECT_URL}`}>
-              <QrCode value={CONNECT_URL} size={168} />
-            </span>
-            <p className="text-center text-xs text-ink-faint">
-              Scanning {CONNECT_URL} opens this card - it updates when I change platforms, so the printed card
-              never goes stale.
-            </p>
-            <CopyButton text={CONNECT_URL} label="copy link" className="w-full justify-center" />
+            <img
+              src="/images/visiting-card.png"
+              alt="Ronit Baniya Gupta visiting card"
+              className="w-full max-w-[340px] rounded-md border border-line bg-surface shadow-card"
+            />
+            <a
+              href="/documents/ronit-visiting-card.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-center text-xs text-ink-faint transition-colors hover:text-ink"
+            >
+              Open the printable PDF ↗
+            </a>
+            <CopyButton text={CONNECT_URL} label="copy share link" className="w-full justify-center" />
           </div>
         </details>
       </motion.div>
