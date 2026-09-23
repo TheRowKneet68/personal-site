@@ -69,7 +69,7 @@ function flow(size, font, str, indent = 0) {
 function heading(title) {
   y -= 4;
   draw(10.5, "F2", title.toUpperCase());
-  rules.push([ML, y + 3, W - 54, y + 3]);
+  rules.push([ML, y - 3, W - 54, y - 3]);
   y -= 17;
 }
 
