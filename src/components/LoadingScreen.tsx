@@ -259,44 +259,47 @@ export function ResumeDownload() {
 
 const esc = (t: string): string => t.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
-/** The new tab's own page: the board draws in, "connecting to host", then it
-    moves on to the real site. Self-contained, since it lives in about:blank. */
-function outboundPage(url: URL): string {
+/** What /go.html shows in the new tab before moving on to `to`. */
+interface GoPage {
+  title: string;
+  css: string;
+  html: string;
+  to: string;
+  ms: number;
+  bg: string;
+}
+
+/** The board version: traces draw in, "connecting to host", then it moves on. */
+function outboundPage(url: URL): GoPage {
   const css = getComputedStyle(document.documentElement);
   const v = (n: string): string => css.getPropertyValue(n).trim();
   const [bg, ink, dim, accent] = [v("--rk-bg"), v("--rk-ink"), v("--rk-ink-faint"), v("--rk-accent")];
-  const traces = TRACES.map((t, i) => `<path d="${t.d}" pathLength="1" style="animation-delay:${i * 18}ms"/>`).join("");
   const local = url.origin === location.origin;
   const platform = local ? null : detectPlatform(url.href);
   if (hasScene(platform)) return socialPage(url, platform, { bg, ink, dim });
+  const traces = TRACES.map((t, i) => `<path d="${t.d}" pathLength="1" style="animation-delay:${i * 18}ms"/>`).join("");
   const host = esc(local ? (url.pathname.split("/").pop() || url.pathname) : url.hostname.replace(/^www\./, ""));
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Opening ${host}</title><style>
-html,body{margin:0;height:100%;background:${bg};overflow:hidden;font:13px/1.4 "JetBrains Mono",ui-monospace,monospace;color:${dim}}
-body{background-image:radial-gradient(color-mix(in oklab,${ink} 9%,transparent) 1px,transparent 1.4px);background-size:22px 22px}
+  return {
+    title: `Opening ${host}`,
+    to: url.href,
+    ms: 800,
+    bg,
+    css: `body{color:${dim};background-image:radial-gradient(color-mix(in oklab,${ink} 9%,transparent) 1px,transparent 1.4px);background-size:22px 22px}
 svg{position:fixed;inset:0;width:100%;height:100%}
 path,rect{fill:none;stroke:${accent};vector-effect:non-scaling-stroke}
 path{stroke-opacity:.5;stroke-width:1.6;stroke-dasharray:1 1;stroke-dashoffset:-1;animation:d .5s cubic-bezier(.6,0,.3,1) forwards}
 rect{stroke-width:2;stroke-dasharray:1 1;stroke-dashoffset:1;animation:d .4s ease-out .3s forwards;filter:drop-shadow(0 0 8px ${accent})}
-.logo{position:fixed;top:50%;left:50%;width:12vmax;aspect-ratio:1;translate:-50% -50%;background:${ink};
--webkit-mask:url(${location.origin}/images/logo-mask.png) center/contain no-repeat;mask:url(${location.origin}/images/logo-mask.png) center/contain no-repeat;
+.logo{position:fixed;top:50%;left:50%;width:12vmax;aspect-ratio:1;transform:translate(-50%,-50%);background:${ink};
+-webkit-mask:url(/images/logo-mask.png) center/contain no-repeat;mask:url(/images/logo-mask.png) center/contain no-repeat;
 clip-path:inset(0 0 100% 0);animation:r .35s steps(10,end) .35s forwards;filter:drop-shadow(0 0 10px ${accent})}
 p{position:fixed;left:0;right:0;top:calc(50% + 9vmax + 1.5rem);text-align:center;margin:0}
 b{color:${accent};font-weight:600}
 @keyframes d{to{stroke-dashoffset:0}}@keyframes r{to{clip-path:inset(0)}}
-@media (prefers-reduced-motion:reduce){rect,.logo{filter:none}}
-</style></head><body>
-<svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">${traces}<rect x="410" y="410" width="180" height="180" rx="6" pathLength="1"/></svg>
-<div class="logo"></div><p>${local ? "opening" : "connecting to"} <b>${host}</b> ...</p>
-<script>${goScript(url, 800)}</script>
-</body></html>`;
+@media (prefers-reduced-motion:reduce){rect,.logo{filter:none}}`,
+    html: `<svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">${traces}<rect x="410" y="410" width="180" height="180" rx="6" pathLength="1"/></svg>
+<div class="logo"></div><p>${local ? "opening" : "connecting to"} <b>${host}</b> ...</p>`,
+  };
 }
-
-/** Move on after `ms`; a tap anywhere goes straight away. */
-const goScript = (url: URL, ms: number): string => {
-  const href = JSON.stringify(url.href).replace(/</g, "\\u003c");
-  return `var go=function(){location.replace(${href})};setTimeout(go,${ms});addEventListener("pointerdown",go)`;
-};
 
 /** The platform's icon as SVG markup, drawn with the same icon set as the site. */
 function iconMarkup(platform: string): string {
@@ -309,26 +312,30 @@ function iconMarkup(platform: string): string {
   return svg;
 }
 
-function socialPage(url: URL, platform: ScenePlatform, t: { bg: string; ink: string; dim: string }): string {
+function socialPage(url: URL, platform: ScenePlatform, t: { bg: string; ink: string; dim: string }): GoPage {
   const { css, html } = socialScene(platform, iconMarkup(platform));
   const name = esc(platformName(platform));
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Opening ${name}</title><style>
-:root{--bg:${t.bg};--ink:${t.ink}}
-html,body{margin:0;height:100%;background:${t.bg};color:${t.ink};overflow:hidden;font:13px/1.4 "JetBrains Mono",ui-monospace,monospace}
-body{display:grid;place-items:center}
+  return {
+    title: `Opening ${name}`,
+    to: url.href,
+    ms: 1000,
+    bg: t.bg,
+    css: `:root{--bg:${t.bg};--ink:${t.ink}}
+body{color:${t.ink};display:grid;place-items:center}
 .col{display:flex;flex-direction:column;align-items:center}
 p{margin:2.2rem 0 0;color:${t.dim};text-align:center;animation:fade .3s ease .2s both}
 b{color:${t.ink};font-weight:600}
 @keyframes fade{from{opacity:0}}
 ${css}
-@media (prefers-reduced-motion:reduce){.flash{display:none}*{filter:none!important}}
-</style></head><body><div class="col">${html}<p>opening <b>${name}</b> ...</p></div>
-<script>${goScript(url, 1000)}</script></body></html>`;
+@media (prefers-reduced-motion:reduce){.flash{display:none}*{filter:none!important}}`,
+    html: `<div class="col">${html}<p>opening <b>${name}</b> ...</p></div>`,
+  };
 }
 
-/** Links to other sites open a new tab that plays the board, then moves on.
-    Your page stays open behind it, and the new site gets no handle back to it. */
+/** Links to other sites open /go.html in a new tab: a real page, so phones size
+    it properly from the first frame. The scene travels in sessionStorage, which
+    the new tab inherits from this one, never in the URL, so /go.html can't be
+    used to send people anywhere else. The new site gets no handle back to us. */
 export function OutboundLinks() {
   useEffect(() => {
     const onClick = (e: MouseEvent): void => {
@@ -338,13 +345,15 @@ export function OutboundLinks() {
       const url = new URL(a.href);
       const sameSite = url.origin === location.origin;
       if (!/^https?:$/.test(url.protocol) || (sameSite && a.target !== "_blank")) return;
-      const w = window.open("", "_blank");
+      try {
+        sessionStorage.setItem("rk-go", JSON.stringify(outboundPage(url)));
+      } catch {
+        return; // no storage: let the link work normally
+      }
+      const w = window.open("/go.html", "_blank");
       if (!w) return; // blocked: let the link work normally
       e.preventDefault();
       w.opener = null;
-      w.document.open();
-      w.document.write(outboundPage(url));
-      w.document.close();
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);

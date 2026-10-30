@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Opening…</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #18181b;
+        font: 13px/1.4 "JetBrains Mono", ui-monospace, monospace;
+      }
+    </style>
+    <script>
+      /* The scene for this tab was written by the site into sessionStorage,
+         which a tab opened with window.open inherits. Nothing comes from the
+         URL, so this page can't be pointed at other sites. */
+      (function () {
+        var page;
+        try {
+          page = JSON.parse(sessionStorage.getItem("rk-go") || "null");
+          sessionStorage.removeItem("rk-go");
+        } catch (e) {}
+        var to = page && typeof page.to === "string" ? page.to : "";
+        if (!/^https?:\/\//.test(to)) {
+          location.replace("/");
+          return;
+        }
+        document.title = page.title || "Opening…";
+        document.documentElement.style.background = page.bg || "";
+        var style = document.createElement("style");
+        style.textContent = page.css || "";
+        document.head.appendChild(style);
+        var go = function () {
+          location.replace(to);
+        };
+        addEventListener("DOMContentLoaded", function () {
+          document.body.style.background = page.bg || "";
+          document.body.innerHTML = page.html || "";
+          setTimeout(go, page.ms || 900);
+          addEventListener("pointerdown", go);
+        });
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
