@@ -30,9 +30,9 @@ export function Layout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[90] focus:bg-accent focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:text-[#14150f]"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[90] focus:rounded-[3px] focus:bg-accent-fill focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-on-accent"
       >
-        skip to content
+        Skip to content
       </a>
       <Header />
       <main id="main" className="flex-1">

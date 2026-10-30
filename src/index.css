@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ------------------------------------------------------------------ */
-/*  Fonts (self-hosted - no third-party request on the critical path)  */
+/*  Fonts - self-hosted                                                 */
 /* ------------------------------------------------------------------ */
 @font-face {
   font-family: "Bricolage Grotesque";
@@ -39,40 +39,81 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  Semantic tokens - flip with .dark so utilities read the same names */
+/*  Ronit's own picks (made in the colour mixer): forest green #27681c */
+/*  on charcoal #18181b at night and off-white #fafafa by day. The RB  */
+/*  monogram stays black and white. Text shades were derived so every  */
+/*  text token is >= 4.5:1 on bg, surface and raised in both modes;    */
+/*  chart slots checked per mode with the dataviz validator.           */
+/*  Dark is the default; <html class="light"> swaps the tokens.        */
+/*  accent = text and lines; accent-fill + on-accent = filled buttons. */
+/*  Red (warn) is for errors only.                                     */
 /* ------------------------------------------------------------------ */
 :root {
-  --rk-bg: #f6f4ef;
-  --rk-surface: #fffefb;
-  --rk-raised: #f0ede5;
-  --rk-border: #e2ded2;
-  --rk-border-strong: #c9c3b4;
-  --rk-ink: #1a1b17;
-  --rk-ink-dim: #3b3c31;
-  --rk-ink-faint: #4f5045;
-  --rk-accent: #557000;
-  --rk-accent-ink: #2f3a00;
-  --rk-accent-soft: rgba(85, 112, 0, 0.08);
-  --rk-warn: #8a4f00;
-  --rk-warn-soft: rgba(138, 79, 0, 0.1);
-  --rk-shadow: rgba(26, 27, 23, 0.12);
+  color-scheme: dark;
+
+  --rk-bg: #18181b;
+  --rk-surface: #202023;
+  --rk-raised: #29292b;
+  --rk-border: #333335;
+  --rk-border-strong: #454547;
+  --rk-field: #838385; /* 3:1 for input borders */
+  --rk-ink: #f2f2f3;
+  --rk-ink-dim: #c4c4c5;
+  --rk-ink-faint: #9e9e9f;
+
+  --rk-accent: #60a256; /* the green, lifted to read on charcoal */
+  --rk-accent-ink: #84bd7b;
+  --rk-accent-fill: #27681c;
+  --rk-on-accent: #ffffff;
+  --rk-accent-soft: rgba(96, 162, 86, 0.14);
+  --rk-signal: #60a256;
+  --rk-warn: #ff6b6b;
+  --rk-warn-soft: rgba(255, 107, 107, 0.12);
+  --rk-shadow: rgba(0, 0, 0, 0.5);
+  --rk-dot: rgba(158, 158, 159, 0.12);
+
+  /* chart series - fixed order, validated (dark, surface #202023) */
+  --ch-1: #4a9a3f; /* green */
+  --ch-2: #4f86f0; /* blue */
+  --ch-3: #e06f1f; /* orange */
+  --ch-4: #9a70e7; /* violet */
+  --ch-5: #e2559f; /* pink */
+  --ch-other: #5c5c5f;
+  --ch-grid: #333335;
 }
 
-.dark {
-  --rk-bg: #0b0c0e;
-  --rk-surface: #131417;
-  --rk-raised: #1a1c1f;
-  --rk-border: #26282c;
-  --rk-border-strong: #3a3d42;
-  --rk-ink: #e8e6e1;
-  --rk-ink-dim: #b0aea7;
-  --rk-ink-faint: #8a8881;
-  --rk-accent: #c9f24b;
-  --rk-accent-ink: #e2ff8a;
-  --rk-accent-soft: rgba(201, 242, 75, 0.1);
-  --rk-warn: #ffb347;
-  --rk-warn-soft: rgba(255, 179, 71, 0.12);
-  --rk-shadow: rgba(0, 0, 0, 0.5);
+:root.light {
+  color-scheme: light;
+
+  --rk-bg: #fafafa;
+  --rk-surface: #fdfdfd;
+  --rk-raised: #f2f2f2;
+  --rk-border: #dcdcdc;
+  --rk-border-strong: #c6c6c6;
+  --rk-field: #707070;
+  --rk-ink: #161616;
+  --rk-ink-dim: #484848;
+  --rk-ink-faint: #696969;
+
+  --rk-accent: #27681c;
+  --rk-accent-ink: #1c4f14;
+  --rk-accent-fill: #27681c;
+  --rk-on-accent: #ffffff;
+  --rk-accent-soft: rgba(39, 104, 28, 0.1);
+  --rk-signal: #27681c;
+  --rk-warn: #c62828;
+  --rk-warn-soft: rgba(198, 40, 40, 0.08);
+  --rk-shadow: rgba(22, 22, 22, 0.1);
+  --rk-dot: rgba(105, 105, 105, 0.14);
+
+  /* validated (light, surface #fdfdfd) */
+  --ch-1: #2f7a24;
+  --ch-2: #2f63d6;
+  --ch-3: #d4620f;
+  --ch-4: #7c55cc;
+  --ch-5: #c63d8c;
+  --ch-other: #a3a3a3;
+  --ch-grid: #dcdcdc;
 }
 
 @theme inline {
@@ -81,12 +122,16 @@
   --color-raised: var(--rk-raised);
   --color-line: var(--rk-border);
   --color-line-strong: var(--rk-border-strong);
+  --color-field: var(--rk-field);
   --color-ink: var(--rk-ink);
   --color-ink-dim: var(--rk-ink-dim);
   --color-ink-faint: var(--rk-ink-faint);
   --color-accent: var(--rk-accent);
   --color-accent-ink: var(--rk-accent-ink);
   --color-accent-soft: var(--rk-accent-soft);
+  --color-accent-fill: var(--rk-accent-fill);
+  --color-on-accent: var(--rk-on-accent);
+  --color-signal: var(--rk-signal);
   --color-warn: var(--rk-warn);
   --color-warn-soft: var(--rk-warn-soft);
 
@@ -99,8 +144,15 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  Base                                                            */
+/*  Base                                                               */
 /* ------------------------------------------------------------------ */
+/* set for two frames while the theme flips - see ThemeContext */
+.rk-theme-switching *,
+.rk-theme-switching *::before,
+.rk-theme-switching *::after {
+  transition: none !important;
+}
+
 @layer base {
   *, *::before, *::after {
     box-sizing: border-box;
@@ -113,7 +165,7 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 4rem;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -122,36 +174,28 @@
     color: var(--rk-ink);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "ss03";
+    font-size: 1.0625rem;
     line-height: 1.6;
     overflow-x: hidden;
-    transition: background-color 0.35s ease, color 0.35s ease;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
   }
 
-  p,
-  li,
-  span,
-  a,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  label,
-  button,
-  input,
-  textarea,
-  select {
-    overflow-wrap: anywhere;
-    word-break: break-word;
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+
+  p, li, dd {
+    text-wrap: pretty;
+  }
+
+  p, li, a, h1, h2, h3, h4, dd, dt, label, button, input, textarea, select {
+    overflow-wrap: break-word;
   }
 
   ::selection {
-    background-color: var(--rk-accent);
-    color: #11120c;
+    background-color: var(--rk-accent-fill);
+    color: var(--rk-on-accent);
   }
 
   :focus-visible {
@@ -182,69 +226,94 @@
     border-radius: 8px;
     border: 2px solid var(--rk-bg);
   }
-
-  @media (max-width: 640px) {
-    body {
-      letter-spacing: -0.01em;
-    }
-
-    .text-hero {
-      font-size: clamp(2.3rem, 12vw, 3.2rem);
-      line-height: 0.96;
-    }
-
-    .text-display {
-      font-size: clamp(1.7rem, 8vw, 2.5rem);
-    }
-
-    .text-section {
-      font-size: clamp(1.5rem, 7.4vw, 2.15rem);
-    }
-
-    .container-rk {
-      padding-inline: 1rem;
-    }
-  }
 }
 
 @layer utilities {
-  /* editorial display sizes */
-  .text-hero {
-    font-size: clamp(2.75rem, 8vw, 5.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.03em;
+  /* Display type: Bricolage at its heaviest, pulled tight. */
+  .font-display {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
   }
-  .text-display {
-    font-size: clamp(2rem, 5vw, 3.4rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+  .t-hero {
+    font-size: clamp(2.6rem, 7.4vw, 5.5rem);
   }
-  .text-section {
-    font-size: clamp(1.5rem, 3.2vw, 2.25rem);
-    line-height: 1.12;
-    letter-spacing: -0.015em;
+  .t-h1 {
+    font-size: clamp(2.5rem, 6vw, 4.6rem);
+  }
+  .t-h2 {
+    font-size: clamp(2rem, 4.2vw, 3.3rem);
+  }
+  .t-h3 {
+    font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+    line-height: 1.02;
+  }
+  .t-lede {
+    font-size: clamp(1.12rem, 1.5vw, 1.3rem);
+    line-height: 1.55;
   }
 
-  /* serif italic accent - the human note */
+  /* serif italic accent - the human note in the hero */
   .accent-serif {
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
-    letter-spacing: 0;
-    color: var(--rk-accent-ink);
+    letter-spacing: -0.01em;
+    color: var(--rk-accent);
   }
 
-  .mono-label {
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
+  .label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
     color: var(--rk-ink-faint);
   }
 
-  /* readability floor - the site leans on tiny mono eyebrows/metadata that
-     fall below a comfortable reading size. Bump them so labels stay legible
-     without touching layout (they're still the smallest text on screen). */
+  /* Part numbers, protocols, instrument readouts. */
+  .part {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    letter-spacing: 0;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .container-rk {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 2.5rem);
+  }
+
+  .hairline {
+    border-top: 1px solid var(--rk-border);
+  }
+
+  .link {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-decoration-color: var(--rk-border-strong);
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+  }
+  .link:hover {
+    color: var(--rk-accent-ink);
+    text-decoration-color: currentColor;
+  }
+
+  /* Scope screen: dotted graticule. Also the perfboard diagrams sit on. */
+  .perfboard,
+  .graticule {
+    background-color: var(--rk-surface);
+    background-image: radial-gradient(var(--rk-dot) 1.1px, transparent 1.3px);
+    background-size: 18px 18px;
+    background-position: 9px 9px;
+  }
+
+  /* readability floor for legacy tiny utility sizes (admin, /connect) */
   .text-\[0\.6rem\] {
     font-size: 0.72rem;
   }
@@ -263,94 +332,6 @@
   .text-\[0\.72rem\] {
     font-size: 0.82rem;
   }
-  /* wide letter-spacing on small uppercase text slows reading - pull it in */
-  .tracking-\[0\.14em\] {
-    letter-spacing: 0.09em;
-  }
-  .tracking-\[0\.12em\] {
-    letter-spacing: 0.08em;
-  }
-
-
-  /* container - editorial measure */
-  .container-rk {
-    width: 100%;
-    max-width: 76rem;
-    margin-inline: auto;
-    padding-inline: clamp(1.25rem, 4vw, 2.5rem);
-  }
-
-  .hairline {
-    border-top: 1px solid var(--rk-border);
-  }
-
-  .hairline-b {
-    border-bottom: 1px solid var(--rk-border);
-  }
-
-  /* animated underline for text links */
-  .link-underline {
-    background-image: linear-gradient(var(--rk-accent), var(--rk-accent));
-    background-size: 0% 1.5px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size 0.28s ease, color 0.28s ease;
-  }
-  .link-underline:hover {
-    background-size: 100% 1.5px;
-    color: var(--rk-accent-ink);
-  }
-
-  .prose-rk p {
-    margin-bottom: 1rem;
-  }
-  .prose-rk strong {
-    font-weight: 700;
-  }
-
-  /* marquee */
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    min-width: 100%;
-    gap: 2.5rem;
-    overflow: hidden;
-    white-space: nowrap;
-    will-change: transform;
-    animation: rk-marquee 22s linear infinite;
-    transform: translate3d(0, 0, 0);
-  }
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-  .marquee-row,
-  .marquee-item {
-    flex-shrink: 0;
-  }
-  @keyframes rk-marquee {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .marquee-track {
-      gap: 0.8rem;
-      animation-duration: 18s;
-      min-width: max-content;
-    }
-    .marquee-row {
-      gap: 0.6rem;
-      padding-right: 0.7rem;
-    }
-    .marquee-item {
-      gap: 0.35rem;
-      font-size: 0.62rem;
-    }
-  }
 
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -361,19 +342,266 @@
   }
 }
 
+/* blinking cursor block after the hero headline */
+@keyframes rk-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.rk-cursor {
+  display: inline-block;
+  width: 0.5ch;
+  height: 0.82em;
+  margin-left: 0.08em;
+  vertical-align: baseline;
+  background: var(--rk-accent);
+  animation: rk-blink 1.1s steps(1, end) infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/*  System diagram - nodes joined by wires, one lane per signal path.  */
+/* ------------------------------------------------------------------ */
+.sd-chain {
+  display: flex;
+  align-items: stretch;
+}
+.sd-node {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 6.5rem;
+  border: 1.5px solid var(--rk-border-strong);
+  border-radius: 3px;
+  background: var(--rk-bg);
+  padding: 0.55rem 0.65rem;
+  transition: border-color 0.2s ease;
+}
+.sd-wire {
+  position: relative;
+  flex: 0 0 auto;
+  min-width: clamp(2.75rem, 4vw, 4rem);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0.15rem 0.6rem 0;
+}
+.sd-wire::before {
+  /* the trace */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 6px;
+  top: 50%;
+  height: 1.5px;
+  background: var(--rk-ink-faint);
+  transform-origin: left center;
+  transform: scaleX(var(--sd-draw, 1));
+  transition: transform 0.6s cubic-bezier(0.3, 0.7, 0.2, 1), background-color 0.2s ease;
+  transition-delay: calc(var(--sd-i, 0) * 140ms);
+}
+.sd-wire::after {
+  /* arrowhead */
+  content: "";
+  position: absolute;
+  right: 0;
+  top: calc(50% - 4px);
+  border-left: 7px solid var(--rk-ink-faint);
+  border-top: 4.5px solid transparent;
+  border-bottom: 4.5px solid transparent;
+  opacity: var(--sd-draw, 1);
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+  transition-delay: calc(var(--sd-i, 0) * 140ms + 450ms);
+}
+.sd-via {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--rk-ink-dim);
+  padding-bottom: 0.9rem;
+}
+.sd-lane:hover .sd-node {
+  border-color: var(--rk-accent);
+}
+.sd-lane:hover .sd-wire::before {
+  background: var(--rk-accent);
+}
+.sd-lane:hover .sd-wire::after {
+  border-left-color: var(--rk-accent);
+}
+
+/* armed state: wires collapsed until the figure is on screen */
+.sd-figure.is-armed {
+  --sd-draw: 0;
+}
+.sd-figure.is-armed.is-on {
+  --sd-draw: 1;
+}
+
+/* Stacked: set by SystemDiagram when its longest lane can't fit across. */
+.sd-figure[data-stack] .sd-chain {
+  flex-direction: column;
+}
+.sd-figure[data-stack] .sd-node {
+  min-width: 0;
+  max-width: 22rem;
+}
+.sd-figure[data-stack] .sd-wire {
+  min-width: 0;
+  min-height: 2.4rem;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 0 0 1.6rem;
+}
+.sd-figure[data-stack] .sd-wire::before {
+  left: 0.9rem;
+  right: auto;
+  top: 0;
+  bottom: 6px;
+  width: 1.5px;
+  height: auto;
+  transform-origin: center top;
+  transform: scaleY(var(--sd-draw, 1));
+}
+.sd-figure[data-stack] .sd-wire::after {
+  right: auto;
+  left: calc(0.9rem - 3.75px);
+  top: auto;
+  bottom: 0;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+  border-top: 7px solid var(--rk-ink-faint);
+  border-bottom: 0;
+}
+.sd-figure[data-stack] .sd-lane:hover .sd-wire::after {
+  border-left-color: transparent;
+  border-top-color: var(--rk-accent);
+}
+.sd-figure[data-stack] .sd-via {
+  padding: 0;
+}
+
+/* page-load: the hero is the only thing that animates on arrival */
+@keyframes rk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rk-rise {
+  animation: rk-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--d, 0) * 90ms);
+}
+
+@keyframes rk-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.rk-fade {
+  animation: rk-fade 0.18s ease-out both;
+}
+
+@keyframes rk-trace {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+.rk-loading-trace {
+  animation: rk-trace 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Charts. Entrances run only when the figure was armed (off-screen   */
+/*  at load); otherwise marks are simply drawn.                        */
+/* ------------------------------------------------------------------ */
+.ch-grow,
+.ch-grow-x,
+.ch-wipe,
+.ch-pop {
+  transform-box: fill-box;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.3s ease;
+}
+.ch-grow {
+  transform-origin: 50% 100%;
+}
+.ch-grow-x,
+.ch-wipe {
+  transform-origin: 0 50%;
+}
+.ch-wipe {
+  transition-duration: 0.9s;
+}
+.ch-pop {
+  transform-origin: 50% 50%;
+  transition-duration: 0.45s;
+}
+.ch-fade {
+  transition: opacity 0.4s ease 0.55s;
+}
+[data-armed]:not([data-on]) .ch-grow {
+  transform: scaleY(0);
+}
+[data-armed]:not([data-on]) .ch-grow-x,
+[data-armed]:not([data-on]) .ch-wipe {
+  transform: scaleX(0);
+}
+[data-armed]:not([data-on]) .ch-pop {
+  transform: scale(0);
+  opacity: 0;
+}
+[data-armed]:not([data-on]) .ch-fade {
+  opacity: 0;
+}
+
+/* hero trace: drawn once on load like a single-shot capture */
+@keyframes rk-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.rk-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: rk-draw 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.35s backwards;
+}
+.rk-late {
+  animation: rk-fade 0.5s ease 1.45s backwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  /* content must never wait on an entrance animation */
+  .rk-rise,
+  .rk-fade,
+  .rk-draw,
+  .rk-late,
+  .rk-cursor {
+    animation: none !important;
   }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
-  }
-  .marquee-track {
-    animation: none;
+    transition-delay: 0ms !important;
   }
 }
 

@@ -29,7 +29,7 @@ export interface ProfileRecord {
       source of truth, nothing else in the site needs to change. */
   social_links?: SocialLinkRecord[];
   badges: string[];
-  stats: { label: string; value: string }[];
+  stats: StatRecord[];
   focus: string[];
   tech: Record<string, string[]>;
   principles: { title: string; note: string }[];
@@ -56,6 +56,9 @@ export interface ProjectRecord {
   tagline: string;
   category: string;
   year: string;
+  /** "YYYY-MM" - set in /admin under Dates and credits. */
+  started?: string;
+  finished?: string;
   status: string;
   featured?: boolean;
   /** Manual display order - stamped from array position on save/seed. */
@@ -177,26 +180,47 @@ export function dedupeRowsById<T extends ContentRow>(rows: T[]): T[] {
   return [...keep.values()];
 }
 
+/** Where a hero stat's value comes from. "" = typed by hand; missing = saved
+    before sources existed, so the label decides (LEGACY_SOURCE). */
+export type StatSource = "projects" | "awards" | "placements" | "dan";
+export interface StatRecord {
+  label: string;
+  value: string;
+  source?: StatSource | "";
+}
+const STAT_SOURCES: readonly StatSource[] = ["projects", "awards", "placements", "dan"];
+
+/** Stats saved before `source` existed were matched by label. */
+const LEGACY_SOURCE: Record<string, StatSource> = {
+  "projects shipped": "projects",
+  "awards & wins": "awards",
+  "martial arts dan": "dan",
+};
+
+/** Same rule as placementRank() in src/lib/portfolio.ts (server can't import src/). */
+export function isPlacement(a: AchievementRecord): boolean {
+  if (a.rank && Number(a.rank) > 0) return true;
+  const s = a.result.toLowerCase().replace(/-/g, " ");
+  return /\b1st\b|\bwinner\b|\bfirst (place|position)\b|first runner|second runner|people's choice|public choice|consolation/.test(s);
+}
+
 /** Recompute count-driven hero stats from live content so the numbers can't
-    drift from the data. Labels without a countable source (dan, stubbornness)
-    keep their saved value. */
-export function deriveStats(
-  profile: ProfileRecord,
-  projects: ProjectRecord[],
-  achievements: AchievementRecord[],
-): { label: string; value: string }[] {
-  const byCount = {
-    "projects shipped": `${projects.length}+`,
-    "awards & wins": `${achievements.length}+`,
-  } as const;
-  const danBadge = profile.badges.find((b) => /^\d+(st|nd|rd|th) dan/i.test(b));
-  const mapped = profile.stats.map((s) => {
-    if (s.label in byCount) return { ...s, value: byCount[s.label as keyof typeof byCount] };
-    if (s.label === "martial arts dan" && danBadge) {
-      const dan = danBadge.match(/^\d+(st|nd|rd|th) dan/i)?.[0];
-      if (dan) return { ...s, value: dan };
-    }
-    return s;
+    drift from the data. Stats without a source keep their saved value. */
+export function deriveStats(profile: ProfileRecord, projects: ProjectRecord[], achievements: AchievementRecord[]): StatRecord[] {
+  const dan = profile.badges.map((b) => b.match(/^\d+(st|nd|rd|th) dan/i)?.[0]).find(Boolean);
+  const count: Record<StatSource, string | undefined> = {
+    projects: `${projects.length}+`,
+    awards: `${achievements.length}+`,
+    placements: `${achievements.filter(isPlacement).length}+`,
+    dan,
+  };
+  const mapped = profile.stats.map((s): StatRecord => {
+    const legacy = s.source === undefined;
+    const source = legacy ? LEGACY_SOURCE[s.label] : STAT_SOURCES.find((x) => x === s.source);
+    if (!source) return { label: s.label, value: s.value, source: "" };
+    // the awards count includes certificates and roles, so the old label overclaimed
+    const label = legacy && s.label === "awards & wins" ? "awards & recognitions" : s.label;
+    return { label, value: count[source] ?? s.value, source };
   });
   return dedupeBy(mapped, (s) => s.label);
 }
@@ -205,7 +229,8 @@ export function deriveStats(
     collection (same count the hero "awards & wins" stat reports). */
 export function deriveBadges(profile: ProfileRecord, achievements: AchievementRecord[]): string[] {
   const wins = achievements.length;
-  const mapped = profile.badges.map((b) => (/^\d+\+ innovation awards/i.test(b) ? `${wins}+ Innovation Awards` : b));
+  // counts every achievement entry, certificates included - worded to match
+  const mapped = profile.badges.map((b) => (/^\d+\+ (innovation awards|awards & recognitions)/i.test(b) ? `${wins}+ Awards & Recognitions` : b));
   return dedupeBy(mapped, (b) => b);
 }
 
@@ -223,9 +248,15 @@ function dedupeBy<T>(items: T[], key: (item: T) => string): T[] {
 
 /** Collapse duplicate stat labels / badge strings so additive seeding can't
     leave the DB with double entries (derived values + canonical ones). */
+/** Seed's additive merge doubled journey rows in the DB; identical rows collapse to one. */
+export function dedupeJourney(journey: ExperienceEntry[] = []): ExperienceEntry[] {
+  return dedupeBy(journey, (j) => `${j.year}|${j.title}|${j.note ?? ""}`);
+}
+
 export function normalizeProfile(profile: ProfileRecord): ProfileRecord {
   return {
     ...profile,
+    journey: dedupeJourney(profile.journey),
     stats: dedupeBy(profile.stats, (s) => s.label),
     badges: dedupeBy(profile.badges, (b) => b),
   };

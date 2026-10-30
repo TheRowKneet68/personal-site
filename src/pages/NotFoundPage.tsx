@@ -1,29 +1,27 @@
 import { useSeo } from "../hooks/useSeo";
+import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
 
 export function NotFoundPage() {
   useSeo({
-    title: "404 - this page doesn't exist | Ronit Baniya Gupta",
+    title: "Page not found | Ronit Baniya Gupta",
     description: "The page you're looking for doesn't exist.",
   });
 
   return (
-    <div className="container-rk flex min-h-[80vh] flex-col items-center justify-center py-32 text-center">
-      <p className="mono-label">error 404</p>
-      <h1 className="text-hero mt-6 max-w-2xl font-bold">
-        this route <em className="accent-serif">doesn't</em> exist.
-      </h1>
-      <p className="mt-6 max-w-md text-ink-dim">
-        Even my projects know better than to 404. Whatever you were after is either gone or
-        was never there.
+    <div className="container-rk flex min-h-[80vh] flex-col justify-center py-32">
+      <p className="label tabular">Error 404</p>
+      <h1 className="font-display t-h1 mt-3 max-w-[16ch]">This page doesn't exist</h1>
+      <p className="mt-5 max-w-[48ch] text-ink-dim">
+        The link may be old, or the page was moved. The projects are all on the home page.
       </p>
-      <div className="mt-10 flex flex-wrap justify-center gap-3">
-        <Button to="/" variant="solid" withArrow>
-          back home
+      <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <Button to="/" variant="solid">
+          Go to the home page
         </Button>
-        <Button to="/#work" variant="outline">
-          see the work
-        </Button>
+        <Link to="/#work" className="link font-semibold">
+          See the work
+        </Link>
       </div>
     </div>
   );

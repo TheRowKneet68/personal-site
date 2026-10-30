@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ronit Baniya Gupta - RowKneetLabs</title>
+    <title>Ronit Baniya Gupta, embedded systems and IoT engineer</title>
     <meta
       name="description"
-      content="Ronit Baniya Gupta (RowKneetLabs) - computer engineer from Pokhara, Nepal. I build embedded systems, IoT ecosystems, computer vision and web products. If it doesn't exist, I build it."
+      content="Computer engineering student in Pokhara, Nepal. I design circuits, write the firmware that runs them, and build the apps that control them. Suraksha360, SwiftIgnite, GRAVAS and more."
     />
     <meta name="author" content="Ronit Baniya Gupta" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -15,43 +15,40 @@
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
     <link rel="canonical" href="https://www.ronitbaniyagupta.com.np/" />
 
-    <meta name="theme-color" content="#0b0c0e" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#18181b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <script>
+      /* Pick the theme before first paint: saved choice, else the device setting. */
+      (function () {
+        var t;
+        try { t = localStorage.getItem("rk-theme"); } catch (e) {}
+        if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.classList.add(t);
+      })();
+    </script>
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="RowKneetLabs" />
-    <meta property="og:title" content="Ronit Baniya Gupta - RowKneetLabs · Hardware &amp; Software Engineer" />
+    <meta property="og:title" content="Ronit Baniya Gupta, embedded systems and IoT engineer" />
     <meta
       property="og:description"
-      content="Embedded systems, IoT ecosystems, computer vision and web products - built from a workbench in Pokhara, Nepal."
+      content="I design circuits, write the firmware that runs them, and build the apps that control them. From Pokhara, Nepal."
     />
     <meta property="og:url" content="https://www.ronitbaniyagupta.com.np/" />
     <meta property="og:image" content="https://www.ronitbaniyagupta.com.np/images/og-card.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Ronit Baniya Gupta (RowKneetLabs) - Hardware &amp; Software Engineer from Pokhara, Nepal" />
+    <meta property="og:image:alt" content="Ronit Baniya Gupta: circuits, firmware and the apps that control them. Pokhara, Nepal." />
     <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ronit Baniya Gupta - RowKneetLabs" />
+    <meta name="twitter:title" content="Ronit Baniya Gupta, embedded systems and IoT engineer" />
     <meta
       name="twitter:description"
-      content="I build embedded systems, IoT ecosystems and web products. If it doesn't exist, I build it."
+      content="I design circuits, write the firmware that runs them, and build the apps that control them."
     />
     <meta name="twitter:image" content="https://www.ronitbaniyagupta.com.np/images/og-card.jpg" />
 
-    <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem("rk-theme");
-          var theme = stored === "dark" || stored === "light" ? stored : "dark";
-          document.documentElement.classList.remove("light", "dark");
-          document.documentElement.classList.add(theme);
-        } catch (_) {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-    </script>
 
     <script type="application/ld+json">
       {
@@ -90,11 +87,12 @@
   <body>
     <div id="root"></div>
     <noscript>
-      <h1>Ronit Baniya Gupta - RowKneetLabs</h1>
+      <h1>Ronit Baniya Gupta</h1>
       <p>
-        Computer engineer from Pokhara, Nepal building embedded systems, IoT and web products.
-        Email me at ronitbaniya68@gmail.com.
+        Computer engineering student in Pokhara, Nepal. I design circuits, write the firmware
+        that runs them, and build the apps that control them.
       </p>
+      <p>Email: <a href="mailto:ronitbaniya68@gmail.com">ronitbaniya68@gmail.com</a></p>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

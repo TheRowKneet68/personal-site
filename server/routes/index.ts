@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { rateLimit } from "../middleware/rateLimit.js";
 import { bruteForce } from "../middleware/bruteForce.js";
-import { getExperience, getProfile, getProjects, getSkills } from "../controllers/content.controller.js";
+import { getExperience, getProfile, getProjects, getSkills, getResume } from "../controllers/content.controller.js";
 import { postContact, postNewsletter, postVisitor } from "../controllers/message.controller.js";
 import { getHealth, getStats } from "../controllers/stats.controller.js";
 import { changePassword, changeDeckPassword, deleteMessage, deleteSubscriber, getContent, listMessages, listSubscribers, login, loginDeck, updateContent, uploadImage } from "../controllers/admin.controller.js";
@@ -21,6 +21,7 @@ api.get("/skills", getSkills);
 api.get("/experience", getExperience);
 api.get("/profile", getProfile);
 api.get("/stats", getStats);
+api.get("/resume.pdf", getResume);
 
 api.post(
   "/admin/login",

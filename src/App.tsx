@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
 import { DataProvider, useData } from "./context/DataContext";
-import { ThemeProvider } from "./context/ThemeContext";
 import { CommandProvider } from "./context/CommandContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import { Layout } from "./components/Layout";
 import { LoadingScreen } from "./components/LoadingScreen";
 

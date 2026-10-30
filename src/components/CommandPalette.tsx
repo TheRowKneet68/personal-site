@@ -1,5 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { FileDown, Mail, Moon, Sun, CornerDownLeft, ExternalLink, FolderOpen, Hash } from "lucide-react";
+import { FileDown, Mail, CornerDownLeft, ExternalLink, FolderOpen, Hash, Moon, Sun } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCommandPalette } from "../context/CommandContext";
@@ -21,7 +20,6 @@ interface PaletteCommand {
 
 export function CommandPalette() {
   const { open, setOpen } = useCommandPalette();
-  const { theme, toggle } = useTheme();
   const { profile, projects } = useData();
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,6 +45,8 @@ export function CommandPalette() {
     close();
   };
 
+  const { theme, toggle: toggleTheme } = useTheme();
+
   const goProject = (p: Project): void => {
     navigate(`/projects/${p.id}`);
     close();
@@ -54,9 +54,10 @@ export function CommandPalette() {
 
   const commands = useMemo<PaletteCommand[]>(() => {
     const list: PaletteCommand[] = [
-      { id: "sec-about", label: "Go to About", hint: "section", keywords: "about who bio", icon: Hash, perform: () => goSection("#about") },
       { id: "sec-work", label: "Go to Work", hint: "section", keywords: "projects build case study", icon: Hash, perform: () => goSection("#work") },
-      { id: "sec-wins", label: "Go to Wins", hint: "section", keywords: "awards achievements hackathon", icon: Hash, perform: () => goSection("#wins") },
+      { id: "sec-numbers", label: "Go to Numbers", hint: "section", keywords: "stats charts data graphs parts", icon: Hash, perform: () => goSection("#numbers") },
+      { id: "sec-recognition", label: "Go to Recognition", hint: "section", keywords: "awards wins achievements competitions press", icon: Hash, perform: () => goSection("#recognition") },
+      { id: "sec-about", label: "Go to About", hint: "section", keywords: "about who bio journey", icon: Hash, perform: () => goSection("#about") },
       { id: "sec-contact", label: "Go to Contact", hint: "section", keywords: "email message reach", icon: Hash, perform: () => goSection("#contact") },
       ...(projects ?? []).map((p): PaletteCommand => ({
         id: `project-${p.id}`,
@@ -66,11 +67,11 @@ export function CommandPalette() {
         icon: FolderOpen,
         perform: () => goProject(p),
       })),
-      { id: "theme", label: theme === "dark" ? "Switch to light mode" : "Switch to dark mode", hint: "action", keywords: "theme dark light mode", icon: theme === "dark" ? Sun : Moon, perform: () => { toggle(); close(); } },
       { id: "copy-email", label: "Copy email address", hint: "action", keywords: "email copy contact", icon: Mail, perform: () => { void copy(); close(); } },
       { id: "resume", label: "Download resume", hint: "pdf", keywords: "resume cv pdf download", icon: FileDown, perform: () => { window.open(SITE.resume, "_blank"); close(); } },
       { id: "github", label: "Open GitHub", hint: "external", keywords: "github code repos", icon: ExternalLink, perform: () => { window.open(SITE.github, "_blank"); close(); } },
       { id: "linkedin", label: "Open LinkedIn", hint: "external", keywords: "linkedin job work", icon: ExternalLink, perform: () => { window.open(SITE.linkedin, "_blank"); close(); } },
+      { id: "theme", label: theme === "dark" ? "Switch to light mode" : "Switch to dark mode", hint: "action", keywords: "theme dark light mode colour color", icon: theme === "dark" ? Sun : Moon, perform: () => { toggleTheme(); close(); } },
     ];
     return list.filter((c) => !profile || c.keywords.length >= 0);
   }, [projects, theme]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -109,45 +110,36 @@ export function CommandPalette() {
   };
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-[80] flex items-start justify-center bg-black/50 p-4 pt-[12vh] backdrop-blur-sm"
+    open ? (
+        <div
+          className="rk-fade fixed inset-0 z-[80] flex items-start justify-center bg-black/50 p-4 pt-[12vh]"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) close();
           }}
         >
-          <motion.div
+          <div
             role="dialog"
             aria-modal="true"
-            aria-label="Command menu"
-            initial={{ opacity: 0, y: -8, scale: 0.99 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.99 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className="w-full max-w-lg overflow-hidden rounded-lg border border-line bg-surface shadow-card-lg"
+            aria-label="Search"
+            className="w-full max-w-lg overflow-hidden rounded-[4px] border border-line bg-surface shadow-card-lg"
             onKeyDown={onKeyDown}
           >
             <div className="flex items-center gap-3 border-b border-line px-4">
-              <span className="font-mono text-xs text-ink-faint">~</span>
+              <span className="text-ink-faint" aria-hidden>⌕</span>
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="search projects, sections, actions…"
+                placeholder="Search projects, sections, actions"
                 aria-label="Search commands"
-                className="w-full bg-transparent py-3.5 font-mono text-sm text-ink outline-none placeholder:text-ink-faint"
+                className="w-full bg-transparent py-3.5 text-[0.98rem] text-ink outline-none placeholder:text-ink-faint"
               />
               <kbd className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[0.6rem] text-ink-faint">esc</kbd>
             </div>
 
             <div ref={listRef} className="max-h-[50vh] overflow-y-auto py-2">
               {filtered.length === 0 && (
-                <p className="px-4 py-8 text-center font-mono text-xs text-ink-faint">no matches for “{query}”</p>
+                <p className="px-4 py-8 text-center text-sm text-ink-faint">Nothing matches “{query}”. Try a project name or a part like ESP32.</p>
               )}
               {filtered.map((c, i) => {
                 const Icon = c.icon;
@@ -165,21 +157,20 @@ export function CommandPalette() {
                   >
                     <Icon className={cn("size-4 shrink-0", i === index ? "text-accent-ink" : "text-ink-faint")} aria-hidden />
                     <span className="flex-1 text-sm">{c.label}</span>
-                    <span className="font-mono text-[0.65rem] uppercase tracking-wider text-ink-faint">{c.hint}</span>
+                    <span className="text-[0.8rem] text-ink-faint">{c.hint}</span>
                     {i === index && <CornerDownLeft className="size-3.5 shrink-0 text-ink-faint" aria-hidden />}
                   </button>
                 );
               })}
             </div>
 
-            <div className="flex items-center gap-4 border-t border-line px-4 py-2 font-mono text-[0.62rem] uppercase tracking-wider text-ink-faint">
+            <div className="flex items-center gap-4 border-t border-line px-4 py-2 text-[0.8rem] text-ink-faint">
               <span><kbd className="mr-1">↑↓</kbd> navigate</span>
               <span><kbd className="mr-1">↵</kbd> select</span>
-              <span className="ml-auto">rowkneetlabs://menu</span>
+              <span className="ml-auto">esc to close</span>
             </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </div>
+    ) : null
   );
 }

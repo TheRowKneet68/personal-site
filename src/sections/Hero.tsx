@@ -1,94 +1,115 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { useMemo } from "react";
 import { useData } from "../context/DataContext";
 import { Button } from "../components/Button";
+import { Trace } from "../components/charts/Trace";
+import { DEFAULT_HERO } from "../lib/constants";
+import { useCountUp } from "../hooks";
+import { parseStat, projectsByYear } from "../lib/stats";
+import { cn } from "../utils/format";
 
-const EASE = [0.21, 0.47, 0.32, 0.98] as const;
+/** "39+" counts up once; "3rd DAN" and "∞" are shown as they are. */
+function StatValue({ value }: { value: string }) {
+  const { num, suffix } = parseStat(value);
+  const n = useCountUp(num ?? 0, num !== null);
+  if (num === null) return <>{value}</>;
+  return (
+    <>
+      <span aria-hidden>
+        {n}
+        <span className="text-accent">{suffix}</span>
+      </span>
+      <span className="sr-only">{value}</span>
+    </>
+  );
+}
 
 export function Hero() {
-  const { profile, profileStats } = useData();
-  const reduce = useReducedMotion();
+  const { profile, profileStats, projects } = useData();
+  const rows = useMemo(() => projectsByYear(projects ?? []), [projects]);
   if (!profile) return null;
 
-  const fade = (delay: number) => ({
-    initial: { opacity: 0, y: reduce ? 0 : 18 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, delay, ease: EASE },
-  });
-
-  const portrait1 = (profile.portrait1 ?? "").trim();
-  const hasPortrait1 = Boolean(portrait1);
+  const stats = profileStats ?? profile.stats ?? [];
+  const portrait = (profile.portrait1 || profile.portrait || "/images/me.jpg").trim();
+  const hero = {
+    line1: profile.hero?.line1?.trim() || DEFAULT_HERO.line1,
+    accent: profile.hero?.accent?.trim() || DEFAULT_HERO.accent,
+    line2: profile.hero?.line2?.trim() || DEFAULT_HERO.line2,
+    lede: profile.hero?.lede?.trim() || DEFAULT_HERO.lede,
+  };
 
   return (
-    <section className="relative overflow-hidden">
-      <div
-        className="pointer-events-none absolute -top-40 right-[-20%] h-[38rem] w-[38rem] rounded-full opacity-60 dark:opacity-40"
-        style={{
-          background:
-            "radial-gradient(closest-side, var(--rk-accent-soft), transparent 70%)",
-        }}
-        aria-hidden
-      />
-      <div className="container-rk pt-32 pb-20 md:pt-44 md:pb-28">
-        <div className={hasPortrait1 ? "flex flex-col gap-8 md:flex-row md:items-center md:justify-between" : "max-w-4xl"}>
-          <div className={hasPortrait1 ? "min-w-0 flex-1" : "max-w-4xl"}>
-            <motion.p {...fade(0)} className="mono-label">
-              // {profile.role.toLowerCase()} · based in {profile.location}
-            </motion.p>
-
-            <motion.h1 {...fade(0.08)} className="text-hero mt-7 font-bold">
-              I build what
+    <section className="relative pt-28 md:pt-36" aria-labelledby="hero-title">
+      <div className="container-rk">
+        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-8">
+            <p className="rk-rise label" style={{ ["--d" as string]: 0 }}>
+              {profile.role}, based in {profile.location}
+            </p>
+            <h1 id="hero-title" className="rk-rise font-display t-hero mt-6" style={{ ["--d" as string]: 1 }}>
+              {hero.line1}
               <br />
-              <em className="accent-serif">doesn't</em> exist yet.
-              <span className="ml-1 inline-block h-[0.85em] w-[0.6ch] animate-pulse bg-accent align-baseline" aria-hidden />
-            </motion.h1>
-
-            <motion.p {...fade(0.16)} className="mt-7 max-w-xl text-lg leading-relaxed text-ink-dim">
-              I'm <span className="font-semibold text-ink">{profile.name}</span> - {profile.slogan}.
-              Hardware on the workbench, software in the terminal, and a habit of shipping
-              both before anyone asks.
-            </motion.p>
-
-            <motion.div {...fade(0.24)} className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-              <Button href="#work" variant="solid" withArrow className="w-full sm:w-auto">
+              <em className="accent-serif">{hero.accent}</em>{" "}
+              <span className="whitespace-nowrap">
+                {hero.line2}
+                <span className="rk-cursor" aria-hidden />
+              </span>
+            </h1>
+            <p className="rk-rise t-lede mt-7 max-w-[36rem] text-ink-dim" style={{ ["--d" as string]: 2 }}>
+              I'm <span className="font-semibold text-ink">{profile.name}</span> - {profile.slogan}. {hero.lede}
+            </p>
+            <div className="rk-rise mt-9 flex flex-wrap items-center gap-3" style={{ ["--d" as string]: 3 }}>
+              <Button href="#work" variant="solid">
                 see the work
               </Button>
-              <Button href="#contact" variant="outline" className="w-full sm:w-auto">
+              <Button href="#contact" variant="outline">
                 get in touch
               </Button>
-            </motion.div>
-
-            <motion.dl
-              {...fade(0.32)}
-              className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-line bg-line sm:grid-cols-4"
-            >
-              {(profileStats ?? profile.stats ?? []).map((s) => (
-                <div key={s.label} className="bg-bg px-5 py-5">
-                  <dd className="text-2xl font-bold tracking-tight text-accent-ink md:text-3xl">{s.value}</dd>
-                  <dt className="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
-                    {s.label}
-                  </dt>
-                </div>
-              ))}
-            </motion.dl>
+            </div>
           </div>
 
-          {hasPortrait1 && (
-            <motion.div
-              {...fade(0.12)}
-              className="relative hidden shrink-0 md:mx-0 md:mt-[-2.2rem] md:block md:max-w-[370px]"
-            >
-              <div className="overflow-hidden rounded-full border border-line bg-surface p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
-                <img
-                  src={portrait1}
-                  alt={`${profile.name} portrait`}
-                  width={640}
-                  height={640}
-                  fetchPriority="high"
-                  className="h-[19rem] w-[19rem] rounded-full object-cover md:h-[24rem] md:w-[24rem]"
-                />
+          <figure className="rk-rise mx-auto w-full max-w-[22rem] sm:max-w-[26rem] lg:col-span-4 lg:max-w-none" style={{ ["--d" as string]: 2 }}>
+            <img
+              src={portrait}
+              alt={`${profile.name} speaking at a podium`}
+              width={640}
+              height={800}
+              {...{ fetchpriority: "high" } /* React 18 only knows the lowercase attribute */}
+              className="aspect-[4/5] w-full rounded-[4px] border border-line object-cover object-top"
+            />
+          </figure>
+        </div>
+
+        <div className="rk-rise graticule relative z-10 mt-14 rounded-[4px] border border-line md:mt-20 lg:grid lg:grid-cols-12" style={{ ["--d" as string]: 4 }}>
+          <dl className="grid grid-cols-2 lg:col-span-6">
+            {stats.map((s, i) => (
+              <div
+                key={s.label}
+                className={cn(
+                  "flex flex-col-reverse justify-end border-line p-5 sm:p-6",
+                  i % 2 === 0 && "border-r",
+                  i < stats.length - 2 && "border-b",
+                )}
+              >
+                <dt className="label mt-2">{s.label}</dt>
+                <dd className="font-display text-[clamp(2.1rem,4.4vw,3.1rem)] leading-none">
+                  <StatValue value={s.value} />
+                </dd>
               </div>
-            </motion.div>
-          )}
+            ))}
+          </dl>
+          {rows.length > 1 ? (
+            <div className="border-t border-line p-5 sm:p-6 lg:col-span-6 lg:border-t-0 lg:border-l">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="label">Projects per year</p>
+                <a href="#numbers" className="link inline-flex min-h-8 items-center text-[0.88rem] text-ink-dim">
+                  All the numbers
+                </a>
+              </div>
+              <div className="mt-3">
+                <Trace rows={rows} />
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

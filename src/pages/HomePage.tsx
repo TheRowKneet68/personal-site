@@ -2,13 +2,10 @@ import { useEffect } from "react";
 import { useData } from "../context/DataContext";
 import { useSeo } from "../hooks/useSeo";
 import { Hero } from "../sections/Hero";
-import { Marquee } from "../components/Marquee";
+import { Work } from "../sections/Work";
+import { Recognition } from "../sections/Recognition";
+import { Numbers } from "../sections/Numbers";
 import { About } from "../sections/About";
-import { Projects } from "../sections/Projects";
-import { Achievements } from "../sections/Achievements";
-import { FeaturedIn } from "../sections/FeaturedIn";
-import { GitHubStats } from "../sections/GitHubStats";
-import { Testimonials } from "../sections/Testimonials";
 import { Contact } from "../sections/Contact";
 import { SITE } from "../lib/constants";
 import type { Profile } from "../types";
@@ -31,9 +28,9 @@ export function HomePage() {
   const { status, profile, reload } = useData();
 
   useSeo({
-    title: "Ronit Baniya Gupta - RowKneetLabs",
+    title: "Ronit Baniya Gupta, embedded systems and IoT engineer",
     description:
-      "Computer engineer from Pokhara, Nepal building embedded systems, IoT ecosystems, computer vision and web products. If it doesn't exist, I build it.",
+      "Computer engineering student in Pokhara, Nepal. I design circuits, write the firmware that runs them, and build the apps that control them. Suraksha360, SwiftIgnite, GRAVAS and more.",
     jsonLd: profile ? jsonLd(profile) : undefined,
   });
 
@@ -46,8 +43,15 @@ export function HomePage() {
 
   if (status === "error") {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center">
-        <p className="mono-label animate-pulse">// reconnecting</p>
+      <div className="container-rk flex min-h-[70vh] flex-col justify-center py-32">
+        <p className="font-display t-h3">Can't reach the content server</p>
+        <p className="mt-3 max-w-[50ch] text-ink-dim" role="status">
+          Retrying automatically. You can still email me at{" "}
+          <a href={`mailto:${SITE.email}`} className="link text-ink">
+            {SITE.email}
+          </a>
+          .
+        </p>
       </div>
     );
   }
@@ -57,13 +61,10 @@ export function HomePage() {
   return (
     <>
       <Hero />
-      <Marquee />
+      <Work />
+      <Numbers />
+      <Recognition />
       <About />
-      <Projects />
-      <Achievements />
-      <FeaturedIn />
-      <GitHubStats />
-      <Testimonials />
       <Contact />
     </>
   );

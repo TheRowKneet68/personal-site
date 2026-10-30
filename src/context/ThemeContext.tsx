@@ -1,44 +1,56 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
-type Theme = "dark" | "light";
+export type Theme = "dark" | "light";
 
-interface ThemeContextValue {
-  theme: Theme;
-  toggle: () => void;
-}
+const KEY = "rk-theme";
+const ThemeContext = createContext<{ theme: Theme; toggle: () => void } | null>(null);
 
-const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-const STORAGE_KEY = "rk-theme";
-
-function initialTheme(): Theme {
-  if (typeof document !== "undefined") {
-    return document.documentElement.classList.contains("light") ? "light" : "dark";
+const saved = (): string | null => {
+  try {
+    return localStorage.getItem(KEY);
+  } catch {
+    return null; // private mode
   }
-  return "dark";
-}
+};
 
+/** index.html picks the first theme before paint (saved choice, else the device). */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(initialTheme);
+  const [theme, setTheme] = useState<Theme>(() => (document.documentElement.classList.contains("light") ? "light" : "dark"));
 
   useEffect(() => {
-    document.documentElement.classList.remove("dark", "light");
-    document.documentElement.classList.add(theme);
-    try {
-      localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-      /* private mode */
-    }
+    const root = document.documentElement;
+    // no colour transitions mid-switch, or hover-transitioned text lags a frame behind its background
+    root.classList.add("rk-theme-switching");
+    root.classList.remove("dark", "light");
+    root.classList.add(theme);
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("rk-theme-switching")));
+    return () => cancelAnimationFrame(id);
   }, [theme]);
 
+  // follow the device setting until the visitor picks one
+  useEffect(() => {
+    const mq = matchMedia("(prefers-color-scheme: light)");
+    const onChange = () => {
+      if (!saved()) setTheme(mq.matches ? "light" : "dark");
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
-
-  const toggle = useCallback(() => setTheme((t) => (t === "dark" ? "light" : "dark")), []);
+  const toggle = useCallback(() => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    try {
+      localStorage.setItem(KEY, next);
+    } catch {
+      /* private mode: the choice lasts for this visit only */
+    }
+    setTheme(next);
+  }, [theme]);
 
   return <ThemeContext.Provider value={{ theme, toggle }}>{children}</ThemeContext.Provider>;
 }
 
-export function useTheme(): ThemeContextValue {
+export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
   return ctx;

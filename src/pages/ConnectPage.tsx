@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, QrCode as QrIcon, ShieldOff } from "lucide-react";
 import { useData } from "../context/DataContext";
 import { useSeo } from "../hooks/useSeo";
@@ -10,8 +9,6 @@ import type { Profile, SocialLink } from "../types";
 import { buildVCard, downloadVCard } from "../lib/vcard";
 import { Button } from "../components/Button";
 import { CopyButton } from "../components/CopyButton";
-
-const EASE = [0.21, 0.47, 0.32, 0.98] as const;
 
 /** The links shown on the card: enabled, opted into /connect and safe to open.
     `social_links` is always present (the server derives it from legacy
@@ -38,8 +35,6 @@ function cardLinks(profile: Profile): SocialLink[] {
 
 export function ConnectPage() {
   const { profile } = useData();
-  const reduce = useReducedMotion();
-  const rise = reduce ? 0 : 14;
 
   const links = useMemo(() => (profile ? cardLinks(profile) : []), [profile]);
 
@@ -76,62 +71,44 @@ export function ConnectPage() {
 
   return (
     <section className="container-rk flex justify-center py-14 sm:py-20">
-      <motion.div
-        initial={{ opacity: 0, y: reduce ? 0 : 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: EASE }}
-        className="w-full max-w-md rounded-xl border border-line bg-surface p-6 shadow-card sm:p-8"
+      <div
+        className="rk-rise w-full max-w-md rounded-[6px] border border-line bg-surface p-6 shadow-card sm:p-8"
       >
         {/* identity */}
         <div className="flex flex-col items-center text-center">
-          <motion.img
-            initial={{ opacity: 0, scale: reduce ? 1 : 0.94 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: EASE }}
+          <img
             src={avatar}
             alt={profile.name}
             width={96}
             height={96}
-            className="size-24 rounded-full border border-line object-cover shadow-card"
+            className="size-24 rounded-[4px] border border-line object-cover"
           />
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.45, delay: 0.16 }}
-            className="mono-label mt-5"
+          <p
+            className="label mt-5"
           >
             @{profile.handle}
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: reduce ? 0 : 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.22, ease: EASE }}
-            className="text-display mt-1 text-center"
+          </p>
+          <h1
+            className="font-display t-h3 mt-1 text-center"
           >
             {profile.name}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+          </h1>
+          <p
             className="mt-3 text-sm text-ink-dim"
           >
             {profile.role || "Computer Engineer • Builder • Founder"}
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.34 }}
+          </p>
+          <p
             className="mt-3 text-sm leading-relaxed text-ink-faint"
           >
             {profile.slogan}
-          </motion.p>
+          </p>
         </div>
 
         <div className="hairline my-7" />
 
         {/* links */}
-        <p className="mono-label mb-3 text-center">connect</p>
+        <p className="label mb-3 text-center">Find me on</p>
         {links.length === 0 ? (
           <p className="flex items-center justify-center gap-2 rounded-md border border-line bg-bg px-4 py-6 text-center text-sm text-ink-faint">
             <ShieldOff className="size-4 shrink-0" aria-hidden />
@@ -139,14 +116,11 @@ export function ConnectPage() {
           </p>
         ) : (
           <ul className="space-y-2.5">
-            {links.map((link, i) => {
+            {links.map((link) => {
               const Icon = platformIcon(link.iconOverride ?? link.platform);
               return (
                 <li key={link.id}>
-                  <motion.a
-                    initial={{ opacity: 0, y: reduce ? 0 : rise }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 0.4 + i * 0.05, ease: EASE }}
+                  <a
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -167,7 +141,7 @@ export function ConnectPage() {
                       className="size-4 shrink-0 text-ink-faint transition-transform duration-200 group-hover:translate-x-1"
                       aria-hidden
                     />
-                  </motion.a>
+                  </a>
                 </li>
               );
             })}
@@ -191,9 +165,9 @@ export function ConnectPage() {
 
         {/* share / QR */}
         <details className="group mt-6">
-          <summary className="flex cursor-pointer list-none items-center justify-center gap-2 rounded-md py-2 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint transition-colors hover:text-ink [&::-webkit-details-marker]:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-center gap-2 rounded-md py-2 text-[0.9rem] font-medium text-ink-dim transition-colors hover:text-ink [&::-webkit-details-marker]:hidden">
             <QrIcon className="size-3.5" aria-hidden />
-            share this card
+            Share this card
             <span aria-hidden>▾</span>
           </summary>
           <div className="mt-4 flex flex-col items-center gap-4 rounded-md border border-line bg-bg p-5">
@@ -206,14 +180,14 @@ export function ConnectPage() {
               href="/documents/ronit-visiting-card.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-center text-xs text-ink-faint transition-colors hover:text-ink"
+              className="inline-block py-2 text-center text-[0.85rem] text-ink-dim transition-colors hover:text-ink"
             >
-              Open the printable PDF ↗
+              Open the printable PDF
             </a>
             <CopyButton text={CONNECT_URL} label="copy share link" className="w-full justify-center" />
           </div>
         </details>
-      </motion.div>
+      </div>
     </section>
   );
 }

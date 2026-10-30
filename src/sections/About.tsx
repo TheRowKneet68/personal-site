@@ -1,165 +1,122 @@
-import { Fragment } from "react";
 import { useData } from "../context/DataContext";
-import { Container } from "../components/Container";
-import { SectionHeading } from "../components/SectionHeading";
-import { Reveal } from "../components/Reveal";
+import { SectionHead } from "../components/SectionHead";
+import { introOf } from "../lib/constants";
+import { clean, stripEmoji } from "../lib/portfolio";
 
-/** Timeline year bucket for older responses that lack the server's yearGroup. */
-function yearGroupOf(value: string): number {
-  const m = /\b(19|20)\d{2}\b/.exec(value ?? "");
-  if (m) return Number(m[0]);
-  return /present/i.test(value ?? "") ? 9999 : 0;
-}
+const LONG_NOTE = 280;
 
 export function About() {
   const { profile, experience } = useData();
   if (!profile) return null;
 
-  const about = profile.about ?? [
-    "Computer engineer from Pokhara, Nepal. I work with microcontrollers the way other people work with keyboards, and I'm building a company one stubborn project at a time.",
-  ];
-
-  const city = ((profile.location ?? "Pokhara, Nepal").split(",")[0] ?? "").trim().toLowerCase();
+  const about = (profile.about ?? []).map(clean).filter(Boolean);
+  const journey = (experience ?? []).filter((e) => e.type !== "achievement");
+  // Counted claims ("15+ awards") are left to the Recognition table, which shows the real list.
+  const credentials = (profile.badges ?? []).map(clean).filter((b) => b && !/\d+\+/.test(b));
+  const portrait = (profile.portrait || "/images/me.jpg").trim();
 
   return (
-    <section id="about" className="scroll-mt-24 border-t border-line py-24 md:py-32">
-      <Container>
-        <SectionHeading index="01" title={<>about <em className="accent-serif">me</em></>} />
+    <section id="about" aria-labelledby="about-title" className="border-t border-line py-20 md:py-28">
+      <div className="container-rk">
+        <SectionHead id="about" title="About">
+          {introOf(profile.intros, "about") ? <p>{introOf(profile.intros, "about")}</p> : null}
+        </SectionHead>
 
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-          <Reveal className="lg:sticky lg:top-28 lg:self-start">
-            <figure className="relative">
-              <img
-                src={profile.portrait || "/images/me.jpg"}
-                alt="Portrait of Ronit Baniya Gupta at his workbench"
-                width={640}
-                height={800}
-                fetchPriority="high"
-                decoding="async"
-                className="aspect-[4/5] w-full border border-line object-cover"
-              />
-              <figcaption className="mt-3 flex items-center justify-between font-mono text-[0.65rem] uppercase tracking-[0.12em] text-ink-faint">
-                <span>
-                  {profile.handle.toLowerCase()}@location ~/{city}
-                </span>
-                <span className="hidden sm:inline">est. {profile.est ?? "2005"}</span>
-              </figcaption>
-            </figure>
+        <div className="mt-12 grid gap-12 md:mt-16 md:grid-cols-12 md:gap-10">
+          <div className="md:col-span-5 lg:col-span-4">
+            <img
+              src={portrait}
+              alt={`Portrait of ${profile.name}`}
+              width={640}
+              height={800}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[4/5] w-full rounded-[3px] object-cover"
+            />
+            {credentials.length > 0 ? (
+              <div className="mt-8">
+                <h3 className="label">Credentials</h3>
+                <ul className="mt-2">
+                  {credentials.map((c) => (
+                    <li key={c} className="border-t border-line py-2.5 text-[0.95rem]">
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
 
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {(profile.badges ?? []).map((b) => (
-                <li
-                  key={b}
-                  className="rounded-full border border-line bg-surface px-3 py-1.5 font-mono text-[0.68rem] text-ink-dim"
-                >
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
+          <div className="md:col-span-7 lg:col-[6/13]">
+            {about.map((p, i) => (
+              <p key={i} className={i === 0 ? "t-lede max-w-[40ch] font-medium" : "mt-5 max-w-[62ch] text-ink-dim"}>
+                {p}
+              </p>
+            ))}
 
-          <div>
-            <Reveal>
-              {about.map((p, i) => (
-                <p key={i} className="mb-5 text-lg leading-relaxed text-ink-dim">
-                  {p}
-                </p>
-              ))}
-            </Reveal>
+            {(profile.principles ?? []).length > 0 ? (
+              <div className="mt-14">
+                <h3 className="font-display text-[1.75rem]">How I work</h3>
+                <dl className="mt-5 grid gap-x-10 gap-y-6 sm:grid-cols-2">
+                  {profile.principles.map((p) => (
+                    <div key={p.title} className="border-t-2 border-ink pt-3">
+                      <dt className="font-semibold">{clean(p.title)}</dt>
+                      <dd className="mt-1.5 text-[0.95rem] text-ink-dim">{clean(p.note)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ) : null}
 
-            <Reveal delay={0.08}>
-              <h3 className="mono-label mt-10 mb-4">how I work</h3>
-              <ul className="grid gap-px overflow-hidden rounded-sm border border-line bg-line sm:grid-cols-2">
-                {(profile.principles ?? []).map((p) => (
-                  <li key={p.title} className="bg-bg p-5">
-                    <p className="font-semibold text-ink">{p.title}</p>
-                    <p className="mt-1.5 text-sm leading-relaxed text-ink-dim">{p.note}</p>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-
-            <Reveal delay={0.12}>
-              <h3 className="mono-label mt-10 mb-4">what I'm into</h3>
-              <ul className="flex flex-wrap gap-2">
-                {(profile.focus ?? []).map((f) => (
-                  <li
-                    key={f}
-                    className="rounded-sm border border-line px-3 py-1.5 font-mono text-[0.72rem] text-ink-dim"
-                  >
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-
-            <Reveal delay={0.16}>
-              <h3 className="mono-label mt-10 mb-6">the journey so far</h3>
-              <ol className="relative space-y-6 border-l border-line pl-6">
-                {(experience ?? []).map((e, i, all) => {
-                  const isAchievement = e.type === "achievement";
-                  const group = e.yearGroup ?? yearGroupOf(e.year);
-                  const prev = i > 0 ? all[i - 1] : undefined;
-                  const prevGroup = prev ? (prev.yearGroup ?? yearGroupOf(prev.year)) : null;
-                  const isFirstInYear = prevGroup === null || prevGroup !== group;
-                  const groupLabel = group >= 9000 ? "present" : String(group);
-                  const showRowDate =
-                    isAchievement && e.year?.trim().toLowerCase() !== groupLabel.toLowerCase();
-                  return (
-                    <Fragment key={`${e.year}-${e.title}-${i}`}>
-                      {isFirstInYear && (
-                        <li className="relative">
-                          <span className="absolute -left-[29px] top-1 size-2 rounded-full bg-accent" aria-hidden />
-                          <p className="font-mono text-[0.7rem] tracking-[0.14em] text-accent-ink">{groupLabel}</p>
-                        </li>
-                      )}
-                      <li className="relative">
-                        <span
-                          className={`absolute -left-[29px] top-1.5 size-2 rounded-full border ${
-                            isAchievement ? "border-accent bg-accent" : "border-line-strong bg-bg"
-                          }`}
-                          aria-hidden
-                        />
-                        <div className="flex items-center gap-2">
-                          {isAchievement && (
-                            <>
-                              {showRowDate && (
-                                <p className="font-mono text-[0.7rem] tracking-[0.14em] text-ink-faint">{e.year}</p>
-                              )}
-                              <span className="rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[0.6rem] text-accent-ink">
-                                award
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <h4 className="mt-1 font-semibold text-ink">{e.title}</h4>
-                        <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-ink-dim">{e.note}</p>
-                      </li>
-                    </Fragment>
-                  );
-                })}
-              </ol>
-            </Reveal>
-
-            <Reveal delay={0.2}>
-              <h3 className="mono-label mt-12 mb-4">things you won't find on my resume</h3>
-              <ul className="space-y-3">
-                {(profile.fun_facts ?? []).map((f, i) => (
-                  <li key={i} className="flex gap-3 text-[0.95rem] leading-relaxed text-ink-dim">
-                    <span
-                      className="shrink-0 rounded-sm border border-line px-1.5 py-0.5 font-mono text-[0.65rem] text-accent-ink"
-                      aria-hidden
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
+            {(profile.fun_facts ?? []).length > 0 ? (
+              <div className="mt-14">
+                <h3 className="font-display text-[1.75rem]">Away from the bench</h3>
+                <ul className="mt-4 max-w-[62ch] space-y-3 text-ink-dim">
+                  {profile.fun_facts.map((f, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="mt-[0.6em] h-px w-4 shrink-0 bg-line-strong" aria-hidden />
+                      <span>{clean(f)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
         </div>
-      </Container>
+
+        {journey.length > 0 ? (
+          <div className="mt-20 border-t border-line pt-14">
+            <div className="grid gap-4 md:grid-cols-12 md:items-end md:gap-10">
+              <h3 className="font-display t-h3 md:col-span-6">The road so far</h3>
+              <p className="max-w-[58ch] text-ink-dim md:col-span-6">From a first Arduino during my diploma to the projects on this page.</p>
+            </div>
+            <ol className="mt-8">
+              {journey.map((e, i) => {
+                const note = stripEmoji(e.note ?? "");
+                return (
+                  <li key={`${e.year}-${i}`} className="grid gap-x-10 gap-y-1 border-t border-line py-5 md:grid-cols-12">
+                    <p className="tabular font-semibold text-ink-faint md:col-span-2">{e.year}</p>
+                    <div className="md:col-span-10 lg:col-span-8">
+                      <p className="font-semibold">{clean(e.title)}</p>
+                      {note.length > LONG_NOTE ? (
+                        <details className="group mt-1">
+                          <summary className="cursor-pointer text-[0.95rem] text-ink-dim marker:text-ink-faint hover:text-ink">
+                            {note.split("\n")[0]}
+                            <span className="text-ink-faint group-open:hidden">, and more</span>
+                          </summary>
+                          <p className="mt-2 whitespace-pre-line text-[0.95rem] text-ink-dim">{note.split("\n").slice(1).join("\n")}</p>
+                        </details>
+                      ) : (
+                        <p className="mt-1 max-w-[70ch] whitespace-pre-line text-[0.95rem] text-ink-dim">{note}</p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        ) : null}
+      </div>
     </section>
   );
 }

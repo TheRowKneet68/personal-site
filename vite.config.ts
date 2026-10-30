@@ -21,17 +21,17 @@ export default defineConfig({
       includeAssets: ["images/favicon.svg", "images/apple-touch-icon.png", "robots.txt"],
       manifest: {
         id: "/",
-        name: "Ronit Baniya Gupta - RowKneetLabs",
+        name: "Ronit Baniya Gupta",
         short_name: "RowKneetLabs",
         description:
-          "Computer engineer from Pokhara, Nepal building embedded systems, IoT ecosystems, computer vision and web products.",
+          "Computer engineering student in Pokhara, Nepal. Embedded systems, IoT and the software that controls them.",
         lang: "en",
         start_url: "/",
         scope: "/",
         display: "standalone",
         orientation: "portrait",
-        theme_color: "#0b0c0e",
-        background_color: "#0b0c0e",
+        theme_color: "#18181b",
+        background_color: "#18181b",
         categories: ["portfolio", "productivity"],
         icons: [
           { src: "/images/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -65,6 +65,11 @@ export default defineConfig({
         target: DEV_API_TARGET,
         changeOrigin: true,
       },
+      // built live by the API from the CMS content
+      "/resume.pdf": {
+        target: DEV_API_TARGET,
+        changeOrigin: true,
+      },
     },
   },
   build: {
@@ -74,7 +79,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           react: ["react", "react-dom", "react-router-dom"],
-          motion: ["framer-motion"],
           icons: ["lucide-react"],
         },
       },

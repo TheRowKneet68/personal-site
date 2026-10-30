@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 import { cn } from "../utils/format";
 
 type Variant = "solid" | "outline" | "ghost";
@@ -11,7 +10,7 @@ interface ButtonProps {
   href?: string;
   to?: string;
   external?: boolean;
-  withArrow?: boolean;
+  download?: boolean;
   className?: string;
   children: ReactNode;
   type?: "button" | "submit";
@@ -21,8 +20,8 @@ interface ButtonProps {
 }
 
 const VARIANTS: Record<Variant, string> = {
-  solid: "bg-accent text-[#14150f] hover:brightness-110 active:brightness-95",
-  outline: "border border-line-strong text-ink hover:border-accent hover:text-accent-ink",
+  solid: "bg-accent-fill text-on-accent hover:brightness-105 active:translate-y-px",
+  outline: "border border-line-strong text-ink hover:border-ink active:translate-y-px",
   ghost: "text-ink-dim hover:text-ink",
 };
 
@@ -32,7 +31,7 @@ export function Button({
   href,
   to,
   external,
-  withArrow,
+  download,
   className,
   children,
   type = "button",
@@ -41,29 +40,17 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const classes = cn(
-    "group inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm font-mono text-[0.8rem] uppercase tracking-[0.12em] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-    size === "sm" ? "px-3.5 py-2" : "px-5 py-3",
+    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-[3px] font-semibold transition-[filter,border-color,color,transform] duration-150",
+    size === "sm" ? "px-3.5 py-2 text-[0.9rem]" : "px-5 py-3 text-[0.98rem]",
     VARIANTS[variant],
     disabled && "pointer-events-none opacity-50",
     className,
   );
 
-  const inner = (
-    <>
-      {children}
-      {withArrow && (
-        <ArrowRight
-          aria-hidden
-          className="size-4 transition-transform duration-200 group-hover:translate-x-1"
-        />
-      )}
-    </>
-  );
-
   if (to) {
     return (
       <Link to={to} className={classes} aria-label={ariaLabel} onClick={onClick}>
-        {inner}
+        {children}
       </Link>
     );
   }
@@ -74,15 +61,16 @@ export function Button({
         className={classes}
         aria-label={ariaLabel}
         onClick={onClick}
+        download={download || undefined}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
-        {inner}
+        {children}
       </a>
     );
   }
   return (
     <button type={type} className={classes} disabled={disabled} aria-label={ariaLabel} onClick={onClick}>
-      {inner}
+      {children}
     </button>
   );
 }
