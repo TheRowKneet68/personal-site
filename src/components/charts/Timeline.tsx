@@ -22,7 +22,9 @@ const lengthText = (months: number): string => {
 const PLOT = "pointer-events-none absolute inset-y-0 left-0 right-0 sm:left-[14rem]";
 
 /** One bar on its year's own Jan-to-Dec axis. A project that carries on past the
-    year runs to the right edge and ends in an arrow instead of a rounded cap. */
+    year runs to the right edge and fades out there instead of ending in a cap. */
+const FADE = "linear-gradient(to right, #000 calc(100% - 72px), transparent)";
+
 function Bar({ s, from, to }: { s: ProjectSpan; from: number; to: number }) {
   const pct = (m: number): number => ((Math.min(Math.max(m, from), to) - from) / (to - from)) * 100;
   const clipped = s.end + 1 > to;
@@ -36,16 +38,9 @@ function Bar({ s, from, to }: { s: ProjectSpan; from: number; to: number }) {
         clipped ? "rounded-l-full" : "rounded-full",
         s.approx ? "border border-dashed border-accent bg-accent/15" : s.ongoing ? "bg-accent" : "bg-accent/55",
       )}
-      style={{ left: `${left}%`, width: `${width}%` }}
+      style={{ left: `${left}%`, width: `${width}%`, ...(clipped ? { maskImage: FADE, WebkitMaskImage: FADE } : {}) }}
     >
-      {clipped ? (
-        <span
-          className={cn(
-            "absolute top-1/2 -right-2 -translate-y-1/2 border-y-[9px] border-l-[9px] border-y-transparent",
-            s.approx ? "border-l-accent/50" : s.ongoing ? "border-l-accent" : "border-l-accent/55",
-          )}
-        />
-      ) : s.ongoing && !s.approx ? (
+      {!clipped && s.ongoing && !s.approx ? (
         <span className="absolute -right-1.5 top-1/2 size-3.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
       ) : null}
     </span>
@@ -115,9 +110,11 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
           Finished
         </li>
         <li className="flex items-center gap-2">
-          <span className="relative mr-2 h-3 w-6 rounded-l-full bg-accent/55" aria-hidden>
-            <span className="absolute top-1/2 -right-2 -translate-y-1/2 border-y-[9px] border-l-[9px] border-y-transparent border-l-accent/55" />
-          </span>
+          <span
+            className="h-3 w-8 rounded-l-full bg-accent/55"
+            style={{ maskImage: "linear-gradient(to right, #000 30%, transparent)", WebkitMaskImage: "linear-gradient(to right, #000 30%, transparent)" }}
+            aria-hidden
+          />
           Carries on into a later year
         </li>
         <li className="flex items-center gap-2">
