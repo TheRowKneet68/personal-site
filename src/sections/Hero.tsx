@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { EditLink } from "../components/EditLink";
 import { useData } from "../context/DataContext";
 import { Button } from "../components/Button";
 import { Trace } from "../components/charts/Trace";
@@ -43,12 +42,9 @@ export function Hero() {
       <div className="container-rk">
         <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-8">
-            <div className="rk-rise flex flex-wrap items-center gap-x-4 gap-y-2" style={{ ["--d" as string]: 0 }}>
-              <p className="label">
-                {profile.role}, based in {profile.location}
-              </p>
-              <EditLink to="copy" label="Edit hero" />
-            </div>
+            <p className="rk-rise label" style={{ ["--d" as string]: 0 }}>
+              {profile.role}, based in {profile.location}
+            </p>
             <h1 id="hero-title" className="rk-rise font-display t-hero mt-6" style={{ ["--d" as string]: 1 }}>
               {hero.line1}
               <br />

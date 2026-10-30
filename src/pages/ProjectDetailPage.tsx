@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { EditLink } from "../components/EditLink";
 import { useData } from "../context/DataContext";
 import { useSeo } from "../hooks/useSeo";
 import { Button } from "../components/Button";
@@ -170,12 +169,9 @@ export function ProjectDetailPage() {
     <article>
       <header className="pt-24 md:pt-32">
         <div className="container-rk">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <Link to="/#work" className="inline-flex items-center gap-2 text-[0.95rem] font-medium text-ink-dim transition-colors hover:text-ink">
-              <ArrowLeft className="size-4" aria-hidden /> All work
-            </Link>
-            <EditLink to={`project=${project.id}`} label="Edit this project" />
-          </div>
+          <Link to="/#work" className="inline-flex items-center gap-2 text-[0.95rem] font-medium text-ink-dim transition-colors hover:text-ink">
+            <ArrowLeft className="size-4" aria-hidden /> All work
+          </Link>
 
           <h1 className="font-display t-h1 mt-8 max-w-[14ch]">{project.title}</h1>
           <p className="t-lede mt-4 max-w-[46ch] font-medium">{clean(project.tagline)}</p>

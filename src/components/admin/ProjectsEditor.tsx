@@ -199,7 +199,7 @@ function ProjectForm({
             <CaseStudyFields value={project.caseStudy} onChange={(cs) => update({ caseStudy: cs })} />
           </Group>
 
-          <Group title="System diagram" hint="How the parts connect. Shown on the home page and the project page.">
+          <Group title="System diagram" hint="How it works: say what each part does (controller, sensor, cellular link), not the exact chip or module, so nobody can copy the build from the picture.">
             <DiagramEditor value={project.diagram} fallback={DIAGRAMS[project.id]} title={project.title} onChange={(d) => update({ diagram: d })} />
           </Group>
         </div>

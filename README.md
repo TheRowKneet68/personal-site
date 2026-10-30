@@ -34,14 +34,14 @@ cleanup helpers the homepage relies on).
 - `/resume.pdf` is built from the live CMS content on every request (`server/services/resume.ts`, A4, at
   most two pages). There is no static resume file any more; vercel.json rewrites the path to the API.
 - Admin: each project form opens with a live preview and the essentials; the rest sits under "More
-  details". `/admin#<section>` and `/admin#project=<id>` open a section or project directly, and the site
-  shows "Edit" links to them in a browser that is logged in to the admin.
+  details". `/admin#<section>` and `/admin#project=<id>` open a section or project directly.
 - Type: Bricolage Grotesque (display + body), Instrument Serif italic for the hero accent, JetBrains Mono
   only for part numbers and readouts.
 - Charts (`src/components/charts/`) are plain SVG, computed from the CMS data: the hero trace, projects per
   year by field, field mix, most-used parts and the competition timeline. Each has hover/focus tooltips and
   a "Show the numbers" table. Category -> field grouping lives in `src/lib/stats.ts`.
-- Project system diagrams live in `src/lib/diagrams.ts`, keyed by project id.
+- Project system diagrams live in `src/lib/diagrams.ts`, keyed by project id. They describe what each part does,
+  never the exact chip, module or library, so a build cannot be copied from the picture.
 - Share card source: `scripts/og-card.html` (regenerate `public/images/og-card.jpg` from it).
 
 ## env

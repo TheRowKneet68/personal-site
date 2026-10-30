@@ -32,7 +32,7 @@ export function Numbers() {
   return (
     <section id="numbers" aria-labelledby="numbers-title" className="border-t border-line py-20 md:py-28">
       <div className="container-rk">
-        <SectionHead id="numbers" title="By the numbers" edit="projects">
+        <SectionHead id="numbers" title="By the numbers">
           <p>{introOf(profile?.intros, "numbers")}</p>
         </SectionHead>
 

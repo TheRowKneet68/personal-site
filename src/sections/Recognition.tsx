@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useData } from "../context/DataContext";
 import { SectionHead } from "../components/SectionHead";
 import { introOf } from "../lib/constants";
-import { AwardTimeline } from "../components/charts/AwardTimeline";
-import { byPlacement, clean, dateKey, formatDate, isPlacement, placeLabel, placementRank } from "../lib/portfolio";
+import { Link } from "react-router-dom";
+import { byPlacement, clean, dateKey, formatDate, isPlacement, placeLabel, placementRank, shortEvent } from "../lib/portfolio";
 import { cn } from "../utils/format";
 import type { Achievement } from "../types";
 
@@ -17,8 +17,11 @@ function Certificate({ a }: { a: Achievement }) {
   );
 }
 
+/** Normalised for matching an award's title to a project ("Team Suraksha360" -> suraksha360). */
+const norm = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+
 export function Recognition() {
-  const { achievements, profile } = useData();
+  const { achievements, profile, projects } = useData();
   const placements = useMemo(() => (achievements ?? []).filter(isPlacement).sort(byPlacement), [achievements]);
   const others = useMemo(
     () => (achievements ?? []).filter((a) => !isPlacement(a)).sort((a, b) => dateKey(b).localeCompare(dateKey(a))),
@@ -28,68 +31,76 @@ export function Recognition() {
 
   if (!achievements || (placements.length === 0 && others.length === 0 && outlets.length === 0)) return null;
 
+  const firsts = placements.filter((a) => placementRank(a) === 1).length;
+  const projectOf = (a: Achievement) => {
+    const t = norm(clean(a.title));
+    return t ? (projects ?? []).find((p) => t.includes(norm(p.title))) : undefined;
+  };
+
   return (
     <section id="recognition" aria-labelledby="recognition-title" className="border-t border-line py-20 md:py-28">
       {/* old links pointed at #wins */}
       <span id="wins" className="block" aria-hidden />
       <div className="container-rk">
-        <SectionHead id="recognition" title="Recognition" edit="achievements">
+        <SectionHead id="recognition" title="Recognition">
           <p>{introOf(profile?.intros, "recognition")}</p>
         </SectionHead>
 
-        <AwardTimeline achievements={achievements} className="mt-12 md:mt-16" />
-
         {placements.length > 0 ? (
-          <table className="mt-12 w-full text-left">
-            <caption className="sr-only">Competition placements, best result first</caption>
-            <thead className="max-md:sr-only">
-              <tr className="label border-b border-line">
-                <th scope="col" className="w-48 py-3 font-medium">Result</th>
-                <th scope="col" className="py-3 font-medium">Competition</th>
-                <th scope="col" className="py-3 font-medium">Project</th>
-                <th scope="col" className="w-36 py-3 font-medium">Date</th>
-                <th scope="col" className="w-28 py-3 font-medium"><span className="sr-only">Certificate</span></th>
-              </tr>
-            </thead>
-            <tbody className="max-md:block">
+          <>
+            <p className="mt-12 text-[1.05rem] text-ink-dim md:mt-16">
+              <strong className="text-ink">{placements.length} awards</strong> at competitions and expos
+              {firsts ? (
+                <>
+                  , <strong className="text-signal">{firsts} of them first place</strong>
+                </>
+              ) : null}
+              . Best result first.
+            </p>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {placements.map((a) => {
                 const first = placementRank(a) === 1;
+                const project = projectOf(a);
+                const detail = a.detail ? clean(a.detail).replace(/^.{0,24}?\b\d{4}\s*[—–]\s+/, "") : "";
                 return (
-                  <tr key={a.id} className="border-b border-line max-md:grid max-md:grid-cols-[1fr_auto] max-md:gap-x-4 max-md:py-5">
-                    <th
-                      scope="row"
-                      className={cn(
-                        "py-5 pr-4 align-top font-display max-md:col-span-2 max-md:py-0",
-                        first ? "text-[1.7rem] text-signal" : "text-[1.35rem]",
+                  <li
+                    key={a.id}
+                    className={cn(
+                      "flex flex-col gap-3 rounded-[6px] border p-5",
+                      first ? "border-accent bg-accent-soft" : "border-line bg-surface",
+                    )}
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className={cn("font-display text-[1.55rem] leading-none", first && "text-signal")}>{placeLabel(a)}</span>
+                      <span className="shrink-0 tabular text-[0.88rem] text-ink-faint">{formatDate(a.date || a.year)}</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold">{shortEvent(a.event)}</p>
+                      <p className="text-[0.92rem] text-ink-dim">{clean(a.event)}</p>
+                      {detail ? <p className="mt-2 text-[0.92rem] text-ink-dim">{detail}</p> : null}
+                    </div>
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-3 text-[0.92rem]">
+                      {project ? (
+                        <Link to={`/projects/${project.id}`} className="link font-medium">
+                          {project.title}
+                        </Link>
+                      ) : (
+                        <span className="text-ink-dim">{clean(a.title)}</span>
                       )}
-                    >
-                      {placeLabel(a)}
-                    </th>
-                    <td className="py-5 pr-6 align-top max-md:col-span-2 max-md:pt-2 max-md:pb-0">
-                      <span className="font-semibold">{clean(a.event)}</span>
-                      {a.detail ? (
-                        <span className="mt-1 block max-w-[52ch] text-[0.92rem] text-ink-dim">
-                          {clean(a.detail).replace(/^.{0,24}?\b\d{4}\s*[—–]\s+/, "")}
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="py-5 pr-6 align-top text-ink-dim max-md:pt-2 max-md:pb-0">{clean(a.title)}</td>
-                    <td className="py-5 pr-4 align-top tabular text-ink-dim max-md:pt-2 max-md:pb-0 max-md:text-right">{formatDate(a.date || a.year)}</td>
-                    <td className="py-5 align-top max-md:col-start-1 max-md:row-start-4 max-md:pt-2 max-md:pb-0 md:text-right">
                       <Certificate a={a} />
-                    </td>
-                  </tr>
+                    </div>
+                  </li>
                 );
               })}
-            </tbody>
-          </table>
+            </ul>
+          </>
         ) : null}
 
         {others.length > 0 ? (
           <div className="mt-16 grid gap-8 md:grid-cols-12 md:gap-10">
             <div className="md:col-span-4">
-              <h3 className="font-display t-h3">Also on record</h3>
-              <p className="mt-3 max-w-[40ch] text-ink-dim">Participation, appointments and community work.</p>
+              <h3 className="font-display t-h3">Certificates and roles</h3>
+              <p className="mt-3 max-w-[40ch] text-ink-dim">Participation, appointments and community work, newest first.</p>
             </div>
             <ul className="md:col-span-8">
               {others.map((a) => {

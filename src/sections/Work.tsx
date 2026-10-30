@@ -154,14 +154,13 @@ function ProjectIndex({ projects }: { projects: Project[] }) {
           </tr>
         </thead>
         <tbody className="max-md:block">
-          {visible.map((p, i) => {
-            const repeatYear = i > 0 && visible[i - 1]?.year === p.year;
+          {visible.map((p) => {
             return (
               <tr
                 key={p.id}
                 className="group relative border-b border-line transition-colors hover:bg-surface max-md:grid max-md:grid-cols-[3.5rem_1fr] max-md:gap-x-3 max-md:py-4"
               >
-                <td className={cn("py-4 align-top tabular text-ink-faint max-md:row-span-3 max-md:py-0", repeatYear && "md:text-transparent")}>
+                <td className="py-4 align-top tabular text-ink-faint max-md:row-span-3 max-md:py-0">
                   {p.year}
                 </td>
                 <td className="py-4 pr-6 align-top max-md:py-0">
@@ -205,7 +204,7 @@ export function Work() {
   return (
     <section id="work" aria-labelledby="work-title" className="border-t border-line py-20 md:py-28">
       <div className="container-rk">
-        <SectionHead id="work" title="Selected work" edit="projects">
+        <SectionHead id="work" title="Selected work">
           <p>{introOf(profile?.intros, "work")}</p>
         </SectionHead>
 
