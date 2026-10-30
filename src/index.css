@@ -582,6 +582,162 @@
   animation: rk-fade 0.5s ease 1.45s backwards;
 }
 
+
+/* ------------------------------------------------------------------ */
+/*  Boot screen + page wipe (LoadingScreen.tsx). Traces converge on    */
+/*  the chip, the logo scans in, the board powers off into a line.     */
+/* ------------------------------------------------------------------ */
+.boot {
+  background-image:
+    radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--rk-accent) 14%, transparent), transparent 55%),
+    radial-gradient(color-mix(in oklab, var(--rk-ink) 9%, transparent) 1px, transparent 1.4px);
+  background-size: 100% 100%, 22px 22px;
+  cursor: pointer;
+}
+.boot-board path,
+.boot-chip {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+.boot-traces path {
+  stroke: var(--rk-accent);
+  stroke-opacity: 0.45;
+  stroke-width: 1.6;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: -1; /* drawn from the screen edge in towards the chip */
+  animation: boot-draw 0.85s cubic-bezier(0.6, 0, 0.3, 1) calc(var(--i) * 28ms) forwards;
+}
+.boot-pulses path {
+  stroke: var(--rk-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 0.07 1;
+  stroke-dashoffset: -1;
+  filter: drop-shadow(0 0 5px var(--rk-accent));
+  opacity: 0;
+  animation: boot-pulse 1.5s cubic-bezier(0.5, 0, 0.9, 0.6) calc(0.9s + var(--i) * 95ms) infinite;
+}
+.boot-vias circle {
+  fill: var(--rk-bg);
+  stroke: var(--rk-accent);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  animation: rk-fade 0.3s ease calc(0.45s + var(--i) * 28ms) forwards;
+}
+.boot-chip {
+  stroke: var(--rk-accent);
+  stroke-width: 2;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--rk-accent) 60%, transparent));
+  animation: boot-chip 0.6s ease-out 0.6s forwards;
+}
+.boot-logo {
+  width: 12vmax;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+}
+.boot-logo-art {
+  position: absolute;
+  inset: 0;
+  background: var(--rk-ink);
+  mask: url("/images/logo-mask.png") center / contain no-repeat;
+  filter: drop-shadow(0 0 10px color-mix(in oklab, var(--rk-accent) 70%, transparent));
+}
+.boot .boot-logo-art {
+  clip-path: inset(0 0 100% 0);
+  animation:
+    boot-reveal 0.65s steps(14, end) 0.95s forwards,
+    boot-glitch 0.32s linear 1.6s;
+}
+.boot-scan {
+  position: absolute;
+  inset-inline: -18%;
+  top: 0;
+  height: 2px;
+  background: var(--rk-accent);
+  box-shadow: 0 0 12px 2px var(--rk-accent);
+  opacity: 0;
+  animation: boot-scan 0.65s linear 0.95s;
+}
+.boot-readout {
+  top: calc(50% + 9vmax + 1.75rem);
+}
+.boot-step,
+.boot-pct {
+  opacity: 0;
+  animation: rk-fade 0.25s ease calc(0.3s + var(--i, 0) * 90ms) forwards;
+}
+.boot-wait {
+  animation: rk-blink 0.9s steps(2) infinite;
+}
+.boot.is-exit {
+  animation: boot-off 0.5s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+}
+.boot.is-exit .boot-logo-art {
+  clip-path: none;
+  animation: boot-flash 0.2s ease-out;
+}
+
+@keyframes boot-draw { to { stroke-dashoffset: 0; } }
+@keyframes boot-chip { to { stroke-dashoffset: 0; } }
+@keyframes boot-pulse {
+  0% { stroke-dashoffset: -1; opacity: 1; }
+  100% { stroke-dashoffset: 0.07; opacity: 1; }
+}
+@keyframes boot-reveal { to { clip-path: inset(0 0 0 0); } }
+@keyframes boot-scan {
+  0% { top: 0; opacity: 1; }
+  100% { top: 100%; opacity: 1; }
+}
+@keyframes boot-glitch {
+  0%, 100% { translate: 0 0; filter: drop-shadow(0 0 10px var(--rk-accent)); }
+  20% { translate: -4px 1px; filter: drop-shadow(3px 0 0 #ff2bd6) drop-shadow(-3px 0 0 #22e4ff); }
+  40% { translate: 3px -1px; clip-path: inset(30% 0 40% 0); }
+  60% { translate: -2px 0; filter: drop-shadow(-3px 0 0 #ff2bd6) drop-shadow(3px 0 0 #22e4ff); }
+  80% { translate: 1px 1px; clip-path: inset(0 0 0 0); }
+}
+@keyframes boot-flash {
+  from { filter: brightness(3) drop-shadow(0 0 30px var(--rk-accent)); }
+}
+/* CRT power-off: the board collapses into one bright line, then is gone */
+@keyframes boot-off {
+  0% { clip-path: inset(0 0 0 0); }
+  55% { clip-path: inset(calc(50% - 1px) 0 calc(50% - 1px) 0); filter: brightness(1.6); }
+  100% { clip-path: inset(50% 50% 50% 50%); filter: brightness(2.5); }
+}
+
+.wipe-panel {
+  background-image: radial-gradient(color-mix(in oklab, var(--rk-ink) 9%, transparent) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  animation: wipe-panel 0.6s cubic-bezier(0.7, 0, 0.25, 1) forwards;
+}
+.wipe-logo {
+  width: 7rem;
+  animation: wipe-logo 0.6s ease-out forwards;
+}
+.wipe-line {
+  top: 0;
+  box-shadow: 0 0 14px 3px var(--rk-accent);
+  animation: wipe-line 0.6s cubic-bezier(0.7, 0, 0.25, 1) forwards;
+}
+@keyframes wipe-panel {
+  0%, 20% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(100% 0 0 0); }
+}
+@keyframes wipe-line {
+  0%, 20% { top: 0; opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+@keyframes wipe-logo {
+  0% { opacity: 0; scale: 0.9; }
+  20% { opacity: 1; scale: 1; }
+  45% { opacity: 0; scale: 1.08; }
+  100% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -593,6 +749,11 @@
   .rk-late,
   .rk-cursor {
     animation: none !important;
+  }
+  .wipe,
+  .boot-pulses,
+  .boot-scan {
+    display: none;
   }
   *,
   *::before,

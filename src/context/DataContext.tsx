@@ -12,6 +12,7 @@ import type {
 } from "../types";
 
 type DataStatus = "loading" | "ready" | "error";
+export type LoadStep = "profile" | "projects" | "skills" | "experience" | "stats";
 
 interface DataContextValue {
   status: DataStatus;
@@ -24,6 +25,8 @@ interface DataContextValue {
   counts: Counts | null;
   github: GitHubStats | null;
   storage: "supabase" | "json" | null;
+  /** Which first-load requests have answered, for the boot screen. */
+  loaded: LoadStep[];
   reload: () => void;
 }
 
@@ -31,7 +34,7 @@ const DataContext = createContext<DataContextValue | null>(null);
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<DataStatus>("loading");
-  const [data, setData] = useState<Omit<DataContextValue, "status" | "reload">>({
+  const [data, setData] = useState<Omit<DataContextValue, "status" | "reload" | "loaded">>({
     profile: null,
     projects: null,
     achievements: null,
@@ -43,16 +46,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
     storage: null,
   });
   const mounted = useRef(true);
+  const [loaded, setLoaded] = useState<LoadStep[]>([]);
 
   const load = useCallback(async () => {
     setStatus("loading");
+    setLoaded([]);
+    const tick = <T,>(step: LoadStep, p: Promise<T>): Promise<T> =>
+      p.then((r) => {
+        if (mounted.current) setLoaded((l) => (l.includes(step) ? l : [...l, step]));
+        return r;
+      });
     try {
       const [profileRes, projectsRes, skillsRes, experienceRes, statsRes] = await Promise.all([
-        api.getProfile(),
-        api.getProjects(),
-        api.getSkills(),
-        api.getExperience(),
-        api.getStats(),
+        tick("profile", api.getProfile()),
+        tick("projects", api.getProjects()),
+        tick("skills", api.getSkills()),
+        tick("experience", api.getExperience()),
+        tick("stats", api.getStats()),
       ]);
       if (!mounted.current) return;
       setData({
@@ -166,7 +176,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [logoUrl]);
 
   return (
-    <DataContext.Provider value={{ ...data, status, reload: load }}>{children}</DataContext.Provider>
+    <DataContext.Provider value={{ ...data, status, loaded, reload: load }}>{children}</DataContext.Provider>
   );
 }
 

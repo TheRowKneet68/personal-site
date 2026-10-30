@@ -4,7 +4,7 @@ import { DataProvider, useData } from "./context/DataContext";
 import { CommandProvider } from "./context/CommandContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Layout } from "./components/Layout";
-import { LoadingScreen } from "./components/LoadingScreen";
+import { LoadingScreen, RouteWipe } from "./components/LoadingScreen";
 
 const HomePage = lazy(() => import("./pages/HomePage").then((m) => ({ default: m.HomePage })));
 const ProjectDetailPage = lazy(() =>
@@ -28,6 +28,7 @@ function RoutesShell() {
   return (
     <>
       <LoadingScreen show={status === "loading" && !offline} />
+      <RouteWipe />
       <Suspense fallback={null}>
         <Routes>
           <Route path="/admin" element={<AdminPage />} />
