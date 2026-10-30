@@ -51,27 +51,31 @@ function whenText(s: ProjectSpan, year: number): string {
   return dateRange(s.project.started, s.project.finished) || s.project.year;
 }
 
-const LETTERS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-
-/** The row's own little axis: the twelve months of its year, or its years when
-    it runs across several, with the bar marking when it ran. */
+/** The row's own little axis: its year from Jan to Dec, or its years when it
+    runs across several, with the bar marking when it ran. */
 function YearTrack({ s }: { s: ProjectSpan }) {
   const y0 = Math.floor(s.start / 12);
   const y1 = Math.floor(s.end / 12);
   const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
-  const labels = years.length > 1 ? years.map(String) : LETTERS;
   return (
     <div className="mt-2" aria-hidden>
-      <div className="grid text-[0.62rem] text-ink-faint tabular" style={{ gridTemplateColumns: `repeat(${labels.length}, 1fr)` }}>
-        {labels.map((l, i) => (
-          <span key={i} className={years.length > 1 ? "border-l border-line pl-1" : "text-center"}>
-            {l}
-          </span>
-        ))}
-      </div>
-      <div className="relative mt-1 h-3 rounded-full bg-raised">
+      <div className="relative h-3 rounded-full bg-raised">
         <Bar s={s} from={y0 * 12} to={(y1 + 1) * 12} />
       </div>
+      {years.length > 1 ? (
+        <div className="mt-1 grid text-[0.68rem] text-ink-faint tabular" style={{ gridTemplateColumns: `repeat(${years.length}, 1fr)` }}>
+          {years.map((y) => (
+            <span key={y} className="border-l border-line pl-1">
+              {y}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-1 flex justify-between text-[0.68rem] text-ink-faint">
+          <span>Jan</span>
+          <span>Dec</span>
+        </div>
+      )}
     </div>
   );
 }
