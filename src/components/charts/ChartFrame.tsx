@@ -15,7 +15,7 @@ export function Legend({ items, className }: { items: { label: string; color: st
   );
 }
 
-function Tip({ tip }: { tip: TipState }) {
+export function Tip({ tip }: { tip: TipState }) {
   return (
     <div
       className="pointer-events-none absolute z-10 w-max max-w-[220px] -translate-x-1/2 -translate-y-full rounded-[3px] border border-line-strong bg-raised px-3 py-2 shadow-card"

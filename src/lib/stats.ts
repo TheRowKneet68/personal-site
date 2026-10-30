@@ -81,3 +81,49 @@ export function niceScale(max: number, ticks = 4): { max: number; step: number }
   const step = [1, 2, 5, 10].map((m) => m * mag).find((s) => s >= raw) ?? 10 * mag;
   return { max: Math.ceil(max / step) * step, step };
 }
+
+/* ---- Project timeline (Gantt) ---- */
+
+/** A project's run on a month axis (index = year * 12 + month - 1). */
+export interface ProjectSpan {
+  project: Project;
+  start: number;
+  end: number;
+  /** only the year is known for one end, so the bar covers that whole year */
+  approx: boolean;
+  /** no finish date: still running today */
+  ongoing: boolean;
+}
+
+const STILL_GOING = /develop|progress|planned|concept|freelance/i;
+const monthIndex = (raw: string | undefined): { at: number; exact: boolean } | null => {
+  const m = /^(\d{4})(?:-(\d{2}))?/.exec(raw ?? "");
+  if (!m) return null;
+  return { at: Number(m[1]) * 12 + (m[2] ? Number(m[2]) - 1 : 0), exact: Boolean(m[2]) };
+};
+
+/** Start-to-finish spans, oldest first. Projects with no start date fall back to their year. */
+export function projectSpans(projects: Project[], now: Date = new Date()): ProjectSpan[] {
+  const today = now.getFullYear() * 12 + now.getMonth();
+  const out: ProjectSpan[] = [];
+  for (const project of projects) {
+    const s = monthIndex(project.started) ?? monthIndex(project.year);
+    if (!s) continue;
+    const f = monthIndex(project.finished);
+    let end: number;
+    let approx = !s.exact;
+    let ongoing = false;
+    if (f) {
+      end = f.exact ? f.at : f.at + 11;
+      approx ||= !f.exact;
+    } else if (!s.exact && !STILL_GOING.test(project.status ?? "")) {
+      end = s.at + 11; // a finished project known only by its year
+    } else {
+      end = today;
+      ongoing = true;
+    }
+    // a year-only span never runs past today
+    out.push({ project, start: s.at, end: Math.max(Math.min(end, today), s.at), approx, ongoing });
+  }
+  return out.sort((a, b) => a.start - b.start || a.end - b.end);
+}

@@ -101,3 +101,14 @@ import("../src/lib/stats").then(({ fieldOf, fieldOfProject, niceScale, parseStat
     console.log("portfolio helpers: all checks passed");
   });
 });
+
+// timeline spans: exact months, year-only projects, still-running projects
+import("../src/lib/stats").then(({ projectSpans }) => {
+  const now = new Date(2026, 9, 15); // Oct 2026
+  const p = (x: Partial<Project>): Project => ({ id: x.title ?? "x", title: "x", tagline: "", category: "", year: "2025", status: "built", tech: [], description: "", ...x });
+  const [a, b, c] = projectSpans([p({ title: "c", started: "2026-02" , status: "in development" }), p({ title: "a", started: "2023-07", finished: "2025-06" }), p({ title: "b", year: "2024" })], now);
+  assert.deepEqual([a!.project.title, a!.start, a!.end, a!.approx], ["a", 2023 * 12 + 6, 2025 * 12 + 5, false]);
+  assert.deepEqual([b!.project.title, b!.start, b!.end, b!.approx, b!.ongoing], ["b", 2024 * 12, 2024 * 12 + 11, true, false]);
+  assert.deepEqual([c!.project.title, c!.end, c!.ongoing], ["c", 2026 * 12 + 9, true]);
+  console.log("timeline spans: all checks passed");
+});

@@ -4,6 +4,7 @@ import { SectionHead } from "../components/SectionHead";
 import { YearChart } from "../components/charts/YearChart";
 import { MixBar } from "../components/charts/MixBar";
 import { PartsChart } from "../components/charts/PartsChart";
+import { Timeline } from "../components/charts/Timeline";
 import { SITE, introOf } from "../lib/constants";
 import { partsIndex } from "../lib/portfolio";
 import { ALL_FIELDS, fieldTotals, projectsByYear } from "../lib/stats";
@@ -62,6 +63,8 @@ export function Numbers() {
               </div>
             ) : null}
           </div>
+
+          <Timeline projects={projects} className="lg:col-span-12" />
 
           {parts.length > 0 ? <PartsChart parts={parts} className="lg:col-span-7" /> : null}
 
