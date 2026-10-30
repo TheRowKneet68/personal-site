@@ -1,6 +1,6 @@
-import { useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useElementWidth, useRevealOnce } from "../../hooks";
+import { useElementWidth, useMediaQuery, useRevealOnce } from "../../hooks";
 import { dateRange } from "../../lib/portfolio";
 import { fieldOfProject, projectSpans, type ProjectSpan } from "../../lib/stats";
 import { cn } from "../../utils/format";
@@ -44,6 +44,111 @@ function Bar({ s, from, to }: { s: ProjectSpan; from: number; to: number }) {
   );
 }
 
+/** What a row says about its dates, in words. */
+function whenText(s: ProjectSpan, year: number): string {
+  if (s.approx) return Math.floor(s.end / 12) > year ? `${year} to ${Math.floor(s.end / 12)}, months unknown` : `Sometime in ${year}`;
+  if (s.ongoing) return `Since ${monthLabel(s.start)}`;
+  return dateRange(s.project.started, s.project.finished) || s.project.year;
+}
+
+type Bind = ReturnType<typeof useChartTip>["bind"];
+const MONTH_PX = 44; // every month gets a readable label on phones
+const NAME_W = 132;
+
+/** Phones: the year's chart scrolls sideways under pinned project names, with
+    every month labelled. Older years start folded. */
+function PhoneGroup({ year, rows, from, to, toToday, open, hint, bind }: {
+  year: number;
+  rows: ProjectSpan[];
+  from: number;
+  to: number;
+  toToday: boolean;
+  open: boolean;
+  hint: boolean;
+  bind: Bind;
+}) {
+  const width = (to - from) * MONTH_PX;
+  const months = Array.from({ length: to - from }, (_, i) => from + i);
+  const scroller = useRef<HTMLDivElement>(null);
+  // this year's projects cluster near today, so its chart opens at the right end
+  const current = Math.floor(to / 12) === year && toToday;
+  const settle = (): void => {
+    const el = scroller.current;
+    if (el && current) el.scrollLeft = el.scrollWidth;
+  };
+  useLayoutEffect(settle, [current]);
+  return (
+    <details open={open} onToggle={settle} className="group/y border-t border-line-strong">
+      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+        <span className="font-semibold text-ink tabular">{year}</span>
+        <span className="text-[0.8rem] text-ink-faint">{plural(rows.length, "project")}</span>
+        {hint ? <span className="ml-auto hidden whitespace-nowrap text-[0.75rem] text-ink-faint group-open/y:inline">{current ? "← swipe" : "swipe →"}</span> : null}
+        <span className={cn("text-ink-faint transition-transform group-open/y:rotate-180", !hint && "ml-auto")} aria-hidden>▾</span>
+      </summary>
+      <div ref={scroller} className="overflow-x-auto overscroll-x-contain pb-3">
+        <div className="relative" style={{ width: NAME_W + width + 12 }}>
+          {/* month grid behind the rows */}
+          <div className="pointer-events-none absolute inset-y-0" style={{ left: NAME_W, width }} aria-hidden>
+            {months.map((m) => (
+              <div
+                key={m}
+                className={cn("absolute inset-y-0 border-l", m % 12 === 0 ? "border-line-strong" : "border-line", Math.floor(m / 12) % 2 === 1 && "bg-raised/50")}
+                style={{ left: (m - from) * MONTH_PX, width: MONTH_PX }}
+              />
+            ))}
+            {toToday ? <div className="absolute inset-y-0 right-0 border-r border-dashed border-accent" /> : null}
+          </div>
+
+          <div className="relative flex h-7 items-end" aria-hidden>
+            <span className="sticky left-0 z-10 h-full shrink-0 bg-surface" style={{ width: NAME_W }} />
+            {months.map((m) => (
+              // the current month's slot carries the "today" label instead
+              toToday && m === to - 1 ? null : <span
+                key={m}
+                className={cn("absolute bottom-1 text-[0.72rem] tabular", m % 12 === 0 && m !== from ? "font-semibold text-ink-dim" : "text-ink-faint")}
+                style={{ left: NAME_W + (m - from) * MONTH_PX + 5 }}
+              >
+                {m % 12 === 0 && m !== from ? m / 12 : MONTHS[m % 12]}
+              </span>
+            ))}
+            {toToday ? <span className="absolute right-4 bottom-1 text-[0.72rem] font-semibold text-accent">today</span> : null}
+          </div>
+
+          <ul>
+            {rows.map((s) => {
+              const months = s.end - s.start + 1;
+              const when = whenText(s, year);
+              return (
+                <li key={s.project.id}>
+                  <Link
+                    to={`/projects/${s.project.id}`}
+                    aria-label={`${s.project.title}: ${when}, ${lengthText(months)}. Opens the project.`}
+                    className="relative flex h-10 items-center outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    {...bind(s.project.title, [{ label: when, value: "" }, { label: `${lengthText(months)}${s.ongoing ? " so far" : ""}`, value: "" }], (el) =>
+                      el.querySelector("[data-bar]"),
+                    )}
+                  >
+                    {/* pinned name; the shadow says the chart slides under it */}
+                    <span
+                      className="sticky left-0 z-10 flex h-full shrink-0 items-center bg-surface pr-2 shadow-[6px_0_8px_-6px_var(--rk-shadow)]"
+                      style={{ width: NAME_W }}
+                    >
+                      <span className="line-clamp-2 text-[0.8rem] leading-tight text-ink-dim">{s.project.title}</span>
+                    </span>
+                    <span className="relative h-3" style={{ width }}>
+                      <Bar s={s} from={from} to={to} />
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </details>
+  );
+}
+
 /** Gantt grouped by the year each project started, newest first. Each year is
     zoomed to its own Jan-to-Dec axis so its bars use the full width. */
 export function Timeline({ projects, className }: { projects: Project[]; className?: string }) {
@@ -52,6 +157,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
   const { tip, bind, onBodyPointerDown } = useChartTip(bodyRef);
   const plotRef = useRef<HTMLDivElement>(null);
   const plotW = useElementWidth(plotRef);
+  const phone = useMediaQuery("(max-width: 639px)");
 
   const spans = useMemo(() => projectSpans(projects), [projects]);
   const today = useMemo(() => {
@@ -115,7 +221,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
       </ul>
 
       <div ref={plotRef} className="h-0 sm:ml-[14rem]" aria-hidden />
-      {groups.map(([year, rows]) => {
+      {groups.map(([year, rows], gi) => {
         const from = year * 12;
         // the axis starts in January of the group's year and runs to the latest end in
         // the group (at least a full year), so every bar shows where it really ends
@@ -127,6 +233,8 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
         const step = perMonth >= 34 ? 1 : perMonth >= 17 ? 2 : perMonth >= 11 ? 3 : 6;
         const ticks = Array.from({ length: to - from }, (_, i) => from + i).filter((m) => m % step === 0);
         const years = Array.from({ length: Math.ceil((to - from) / 12) }, (_, i) => year + i);
+        if (phone)
+          return <PhoneGroup key={year} year={year} rows={rows} from={from} to={to} toToday={toToday} open={gi === 0} hint={gi === 0} bind={bind} />;
         return (
           <section key={year} aria-label={`Started in ${year}`} className="relative">
             {/* this group's month grid, behind its rows */}
@@ -169,13 +277,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
               {rows.map((s) => {
                 const months = s.end - s.start + 1;
                 const f = fieldOfProject(s.project);
-                const when = s.approx
-                  ? Math.floor(s.end / 12) > year
-                    ? `${year} to ${Math.floor(s.end / 12)}, months unknown`
-                    : `Sometime in ${year}`
-                  : s.ongoing
-                    ? `Since ${monthLabel(s.start)}`
-                    : dateRange(s.project.started, s.project.finished) || s.project.year;
+                const when = whenText(s, year);
                 return (
                   <li key={s.project.id}>
                     <Link
