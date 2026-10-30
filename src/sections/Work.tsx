@@ -4,6 +4,8 @@ import { useData } from "../context/DataContext";
 import { SectionHead } from "../components/SectionHead";
 import { StatusBadge } from "../components/Badges";
 import { ProjectVisual } from "../components/ProjectVisual";
+import { useMediaQuery } from "../hooks";
+import { diagramFor } from "../lib/diagrams";
 import { byPlacement, clean, formatDate, hasCaseStudy, hasVisual, isPlacement, placeLabel, placementRank, recognitionFor, shortEvent } from "../lib/portfolio";
 import { cn } from "../utils/format";
 import { introOf } from "../lib/constants";
@@ -28,6 +30,7 @@ function ProjectSheet({
   const href = `/projects/${project.id}`;
   const visual = hasVisual(project, outlets);
   const best = placements[0];
+  const phone = useMediaQuery("(max-width: 767px)");
 
   return (
     <article className="grid gap-8 border-t border-line py-12 md:py-16 lg:grid-cols-12 lg:gap-10" aria-labelledby={`p-${project.id}`}>
@@ -88,7 +91,25 @@ function ProjectSheet({
 
       {visual ? (
         <div className="lg:col-span-7">
-          <ProjectVisual project={project} outlets={outlets} compact={!lead} />
+          {phone && diagramFor(project) ? (
+            // phones: a stacked diagram is ~900px tall, so it opens on tap instead
+            <details className="group rounded-[3px] border border-line bg-surface">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                How it works
+                <span className="flex items-center gap-2 text-[0.85rem] font-normal text-ink-dim">
+                  system diagram
+                  <svg viewBox="0 0 12 12" className="size-3 transition-transform group-open:rotate-180" aria-hidden>
+                    <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                  </svg>
+                </span>
+              </summary>
+              <div className="border-t border-line p-3">
+                <ProjectVisual project={project} outlets={outlets} compact />
+              </div>
+            </details>
+          ) : (
+            <ProjectVisual project={project} outlets={outlets} compact={!lead} />
+          )}
         </div>
       ) : null}
     </article>

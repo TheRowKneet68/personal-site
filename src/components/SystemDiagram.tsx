@@ -10,18 +10,30 @@ const laneWidth = (lane: Diagram["lanes"][number]): number =>
   lane.nodes.length * NODE_MIN +
   lane.links.slice(0, lane.nodes.length - 1).reduce((sum, via) => sum + Math.max(56, via ? via.length * 7.2 + 22 : 0), 0);
 
-/** Stack the whole figure vertically when its longest lane can't fit across. */
+/** Stack the whole figure vertically when its longest lane can't fit across.
+    Starts from an estimate, then learns from real overflow (long words can make
+    a node wider than the estimate) so a lane never spills off a phone screen. */
 function useStack(ref: RefObject<HTMLElement | null>, diagram: Diagram): boolean {
   const [stack, setStack] = useState(false);
+  const need = useRef(0);
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-    const need = Math.max(...diagram.lanes.map(laneWidth)) + 64; // + board padding
-    setStack(el.getBoundingClientRect().width < need); // don't wait for the first observer frame
-    const ro = new ResizeObserver(([entry]) => setStack((entry?.contentRect.width ?? need) < need));
+    need.current = Math.max(...diagram.lanes.map(laneWidth)) + 64; // + board padding
+    setStack(el.getBoundingClientRect().width < need.current); // don't wait for the first observer frame
+    const ro = new ResizeObserver(([entry]) => setStack((entry?.contentRect.width ?? need.current) < need.current));
     ro.observe(el);
     return () => ro.disconnect();
   }, [ref, diagram]);
+  useEffect(() => {
+    const el = ref.current;
+    if (stack || !el) return;
+    const spills = [...el.querySelectorAll(".sd-chain")].some((c) => c.scrollWidth > c.clientWidth + 1);
+    if (spills) {
+      need.current = Math.max(need.current, el.getBoundingClientRect().width + 1);
+      setStack(true);
+    }
+  });
   return stack;
 }
 

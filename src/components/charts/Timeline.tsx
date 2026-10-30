@@ -181,7 +181,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
                     <Link
                       to={`/projects/${s.project.id}`}
                       aria-label={`${s.project.title}: ${when}, ${lengthText(months)}. Opens the project.`}
-                      className="group relative grid items-center rounded-[3px] outline-none transition-colors hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent sm:h-9 sm:grid-cols-[14rem_1fr] max-sm:py-1.5"
+                      className="group relative grid items-center rounded-[3px] outline-none transition-colors hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent sm:h-9 sm:grid-cols-[14rem_1fr] max-sm:py-1"
                       {...bind(
                         s.project.title,
                         [
@@ -192,10 +192,10 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
                         (el) => el.querySelector("[data-bar]"),
                       )}
                     >
-                      <span className="truncate pr-4 text-[0.9rem] text-ink-dim transition-colors group-hover:text-accent-ink group-focus-visible:text-accent-ink">
+                      <span className="truncate pr-4 text-[0.85rem] sm:text-[0.9rem] text-ink-dim transition-colors group-hover:text-accent-ink group-focus-visible:text-accent-ink">
                         {s.project.title}
                       </span>
-                      <span className="relative h-4 max-sm:mt-1">
+                      <span className="relative h-3.5 max-sm:mt-0.5">
                         <Bar s={s} from={from} to={to} />
                       </span>
                     </Link>

@@ -11,7 +11,7 @@ function Certificate({ a }: { a: Achievement }) {
   const src = a.images?.[0];
   if (!src) return null;
   return (
-    <a href={src} target="_blank" rel="noopener noreferrer" className="link whitespace-nowrap text-ink-dim">
+    <a href={src} target="_blank" rel="noopener noreferrer" className="link inline-block py-2 whitespace-nowrap text-ink-dim">
       Certificate<span className="sr-only">: {a.result}, {clean(a.event)} (opens image)</span>
     </a>
   );
@@ -81,7 +81,7 @@ export function Recognition() {
                     </div>
                     <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-3 text-[0.92rem]">
                       {project ? (
-                        <Link to={`/projects/${project.id}`} className="link font-medium">
+                        <Link to={`/projects/${project.id}`} className="link inline-block py-2 font-medium">
                           {project.title}
                         </Link>
                       ) : (
