@@ -318,7 +318,7 @@ function socialPage(url: URL, platform: ScenePlatform, t: { bg: string; ink: str
   return {
     title: `Opening ${name}`,
     to: url.href,
-    ms: 1000,
+    ms: 900,
     bg: t.bg,
     css: `:root{--bg:${t.bg};--ink:${t.ink}}
 body{color:${t.ink};display:grid;place-items:center}
@@ -332,12 +332,22 @@ ${css}
   };
 }
 
-/** Links to other sites open /go.html in a new tab: a real page, so phones size
-    it properly from the first frame. The scene travels in sessionStorage, which
-    the new tab inherits from this one, never in the URL, so /go.html can't be
-    used to send people anywhere else. The new site gets no handle back to us. */
+/** The scene as a standalone document, shown in a full-screen iframe so its
+    styles can't touch the site's and it is sized by the screen, not a tab. */
+const goDoc = (g: GoPage): string => `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html,body{margin:0;height:100%;overflow:hidden;background:${g.bg};font:13px/1.4 "JetBrains Mono",ui-monospace,monospace}${g.css}</style>
+</head><body>${g.html}</body></html>`;
+
+/** Links to other sites (and same-site new-tab links like the PDF) play their
+    scene here on the page, then open. Opening right after the scene still
+    counts as the tap that started it; if a browser blocks it anyway, the link
+    opens in this tab instead. The new site gets no handle back to this page. */
 export function OutboundLinks() {
+  const [scene, setScene] = useState<{ doc: string; open: () => void; run: number } | null>(null);
+
   useEffect(() => {
+    let run = 0;
+    let timer = 0;
     const onClick = (e: MouseEvent): void => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || isNativeApp()) return;
       const a = (e.target as Element | null)?.closest?.("a[href]");
@@ -345,20 +355,36 @@ export function OutboundLinks() {
       const url = new URL(a.href);
       const sameSite = url.origin === location.origin;
       if (!/^https?:$/.test(url.protocol) || (sameSite && a.target !== "_blank")) return;
-      try {
-        sessionStorage.setItem("rk-go", JSON.stringify(outboundPage(url)));
-      } catch {
-        return; // no storage: let the link work normally
-      }
-      const w = window.open("/go.html", "_blank");
-      if (!w) return; // blocked: let the link work normally
       e.preventDefault();
-      w.opener = null;
+      const page = outboundPage(url);
+      let done = false;
+      const open = (): void => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        setScene(null);
+        const w = window.open(url.href, "_blank");
+        if (w) w.opener = null;
+        else location.assign(url.href); // popup blocked: open it here
+      };
+      setScene({ doc: goDoc(page), open, run: ++run });
+      timer = window.setTimeout(open, page.ms);
     };
     document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("click", onClick);
+    };
   }, []);
-  return null;
+
+  if (!scene) return null;
+  return (
+    <div key={scene.run} className="fixed inset-0 z-[100]" role="status" aria-live="polite">
+      <iframe title="Opening link" srcDoc={scene.doc} className="size-full border-0" />
+      {/* taps land here, not in the iframe: a tap opens the link straight away */}
+      <div className="absolute inset-0 cursor-pointer" onClick={scene.open} />
+    </div>
+  );
 }
 
 type Action = { title: string; working: string; done: string; state: "work" | "done" | "fail" };
