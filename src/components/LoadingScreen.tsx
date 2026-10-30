@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { useData, type LoadStep } from "../context/DataContext";
 import { SITE } from "../lib/constants";
+import { isNativeApp } from "../lib/native";
 
 /* Circuit-board boot. The SVG is a 1000-unit square centred on the screen
    (slice), the chip is 410..590, and 16 traces fan out from its pins to the
@@ -249,4 +250,60 @@ export function ResumeDownload() {
       <p className="sr-only">Résumé: {status}</p>
     </Board>
   );
+}
+
+const esc = (t: string): string => t.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+/** The new tab's own page: the board draws in, "connecting to host", then it
+    moves on to the real site. Self-contained, since it lives in about:blank. */
+function outboundPage(url: URL): string {
+  const css = getComputedStyle(document.documentElement);
+  const v = (n: string): string => css.getPropertyValue(n).trim();
+  const [bg, ink, dim, accent] = [v("--rk-bg"), v("--rk-ink"), v("--rk-ink-faint"), v("--rk-accent")];
+  const traces = TRACES.map((t, i) => `<path d="${t.d}" pathLength="1" style="animation-delay:${i * 18}ms"/>`).join("");
+  const host = esc(url.hostname.replace(/^www\./, ""));
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opening ${host}</title><style>
+html,body{margin:0;height:100%;background:${bg};overflow:hidden;font:13px/1.4 "JetBrains Mono",ui-monospace,monospace;color:${dim}}
+body{background-image:radial-gradient(color-mix(in oklab,${ink} 9%,transparent) 1px,transparent 1.4px);background-size:22px 22px}
+svg{position:fixed;inset:0;width:100%;height:100%}
+path,rect{fill:none;stroke:${accent};vector-effect:non-scaling-stroke}
+path{stroke-opacity:.5;stroke-width:1.6;stroke-dasharray:1 1;stroke-dashoffset:-1;animation:d .5s cubic-bezier(.6,0,.3,1) forwards}
+rect{stroke-width:2;stroke-dasharray:1 1;stroke-dashoffset:1;animation:d .4s ease-out .3s forwards;filter:drop-shadow(0 0 8px ${accent})}
+.logo{position:fixed;top:50%;left:50%;width:12vmax;aspect-ratio:1;translate:-50% -50%;background:${ink};
+-webkit-mask:url(${location.origin}/images/logo-mask.png) center/contain no-repeat;mask:url(${location.origin}/images/logo-mask.png) center/contain no-repeat;
+clip-path:inset(0 0 100% 0);animation:r .35s steps(10,end) .35s forwards;filter:drop-shadow(0 0 10px ${accent})}
+p{position:fixed;left:0;right:0;top:calc(50% + 9vmax + 1.5rem);text-align:center;margin:0}
+b{color:${accent};font-weight:600}
+@keyframes d{to{stroke-dashoffset:0}}@keyframes r{to{clip-path:inset(0)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;animation-delay:0s!important}}
+</style></head><body>
+<svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">${traces}<rect x="410" y="410" width="180" height="180" rx="6" pathLength="1"/></svg>
+<div class="logo"></div><p>connecting to <b>${host}</b> ...</p>
+<script>setTimeout(function(){location.replace(${JSON.stringify(url.href).replace(/</g, "\u003c")})},800)</script>
+</body></html>`;
+}
+
+/** Links to other sites open a new tab that plays the board, then moves on.
+    Your page stays open behind it, and the new site gets no handle back to it. */
+export function OutboundLinks() {
+  useEffect(() => {
+    const onClick = (e: MouseEvent): void => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || isNativeApp()) return;
+      const a = (e.target as Element | null)?.closest?.("a[href]");
+      if (!(a instanceof HTMLAnchorElement) || a.hasAttribute("download")) return;
+      const url = new URL(a.href);
+      if (!/^https?:$/.test(url.protocol) || url.origin === location.origin) return;
+      const w = window.open("", "_blank");
+      if (!w) return; // blocked: let the link work normally
+      e.preventDefault();
+      w.opener = null;
+      w.document.open();
+      w.document.write(outboundPage(url));
+      w.document.close();
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+  return null;
 }

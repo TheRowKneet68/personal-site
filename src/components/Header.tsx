@@ -77,6 +77,7 @@ export function Header() {
           >
             <Search className="size-[18px]" aria-hidden />
           </button>
+          <InstallApp icon className="grid size-10 cursor-pointer place-items-center rounded-[3px] text-ink-dim transition-colors hover:bg-raised hover:text-ink" />
           <ThemeToggle />
           <button
             type="button"
@@ -110,7 +111,6 @@ export function Header() {
           <a href={SITE.resume} download className="py-3.5 text-[1.1rem] font-medium text-ink-dim hover:text-ink">
             Résumé (PDF)
           </a>
-          <InstallApp className="cursor-pointer border-t border-line py-3.5 text-left text-[1.1rem] font-medium text-ink-dim hover:text-ink" />
         </div>
       </nav>
     </header>
