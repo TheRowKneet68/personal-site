@@ -51,38 +51,21 @@ function whenText(s: ProjectSpan, year: number): string {
   return dateRange(s.project.started, s.project.finished) || s.project.year;
 }
 
-/** The row's own little axis: its year from Jan to Dec, or its years when it
-    runs across several, with the bar marking when it ran. */
-function YearTrack({ s }: { s: ProjectSpan }) {
+/** Short dates for the phone list: just months inside the group's year,
+    'yy when it crosses years, only the year when that's all that's known. */
+function shortWhen(s: ProjectSpan, year: number): string {
   const y0 = Math.floor(s.start / 12);
   const y1 = Math.floor(s.end / 12);
-  const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
-  return (
-    <div className="mt-2" aria-hidden>
-      <div className="relative h-3 rounded-full bg-raised">
-        <Bar s={s} from={y0 * 12} to={(y1 + 1) * 12} />
-      </div>
-      {years.length > 1 ? (
-        <div className="mt-1 grid text-[0.68rem] text-ink-faint tabular" style={{ gridTemplateColumns: `repeat(${years.length}, 1fr)` }}>
-          {years.map((y) => (
-            <span key={y} className="border-l border-line pl-1">
-              {y}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <div className="mt-1 flex justify-between text-[0.68rem] text-ink-faint">
-          <span>Jan</span>
-          <span>Dec</span>
-        </div>
-      )}
-    </div>
-  );
+  if (s.approx) return y1 > y0 ? `${y0}–${y1}` : String(y0);
+  const m = (v: number, withYear: boolean): string => `${MONTHS[v % 12]}${withYear ? ` '${String(Math.floor(v / 12)).slice(2)}` : ""}`;
+  const across = y1 !== y0 || y0 !== year;
+  if (s.ongoing) return `${m(s.start, y0 !== year || across)} → now`;
+  if (s.start === s.end) return m(s.start, y0 !== year);
+  return across ? `${m(s.start, true)} – ${m(s.end, true)}` : `${m(s.start, false)}–${m(s.end, false)}`;
 }
 
-/** Phones: a vertical timeline. Each project hangs off a spine with its dates in
-    words and its own year bar, so nothing needs a sideways scroll. Older years
-    start folded. */
+/** Phones: a plain list per year, one line per project with short dates on
+    the right and a green dot while it runs. Older years start folded. */
 function PhoneGroup({ year, rows, open }: { year: number; rows: ProjectSpan[]; open: boolean }) {
   return (
     <details open={open} className="group/y border-t border-line-strong">
@@ -93,41 +76,26 @@ function PhoneGroup({ year, rows, open }: { year: number; rows: ProjectSpan[]; o
           ▾
         </span>
       </summary>
-      <ol className="relative ml-1.5 border-l border-line-strong pb-3">
+      <ul className="pb-2">
         {rows.map((s) => {
-          const months = s.end - s.start + 1;
-          const when = whenText(s, year);
+          const running = s.ongoing && !s.approx;
           return (
-            <li key={s.project.id} className="relative">
-              {/* the dot on the spine */}
-              <span className="absolute top-[1.15rem] -left-[0.4rem] grid size-3 place-items-center" aria-hidden>
-                {s.ongoing && !s.approx ? <span className="absolute inset-0 animate-ping rounded-full bg-accent/60" /> : null}
-                <span
-                  className={cn(
-                    "relative size-3 rounded-full border-2 border-surface",
-                    s.approx ? "border-dashed border-accent bg-surface" : s.ongoing ? "bg-accent" : "bg-accent/55",
-                  )}
-                />
-              </span>
+            <li key={s.project.id}>
               <Link
                 to={`/projects/${s.project.id}`}
-                aria-label={`${s.project.title}: ${when}, ${lengthText(months)}. Opens the project.`}
-                className="block rounded-[3px] py-3 pr-1 pl-5 outline-none transition-colors active:bg-raised focus-visible:ring-2 focus-visible:ring-accent"
+                aria-label={`${s.project.title}: ${whenText(s, year)}${running ? ", still running" : ""}. Opens the project.`}
+                className="flex min-h-11 items-center gap-2.5 border-b border-line py-2 outline-none transition-colors active:bg-raised focus-visible:ring-2 focus-visible:ring-accent"
               >
-                <span className="flex items-baseline justify-between gap-3">
-                  <span className="text-[0.95rem] font-semibold leading-snug text-ink">{s.project.title}</span>
-                  {s.ongoing && !s.approx ? <span className="shrink-0 text-[0.72rem] font-semibold text-accent">running</span> : null}
+                <span className={cn("size-2 shrink-0 rounded-full", running ? "bg-accent" : "bg-transparent")} aria-hidden />
+                <span className="min-w-0 flex-1 truncate text-[0.92rem] text-ink">{s.project.title}</span>
+                <span className={cn("shrink-0 text-[0.8rem] tabular", running ? "font-medium text-accent-ink" : "text-ink-dim")}>
+                  {shortWhen(s, year)}
                 </span>
-                <span className="mt-0.5 block text-[0.8rem] text-ink-dim">
-                  {/* year-only dates have no real length to state */}
-                  {s.approx ? when : `${when} · ${lengthText(months)}${s.ongoing ? " so far" : ""}`}
-                </span>
-                <YearTrack s={s} />
               </Link>
             </li>
           );
         })}
-      </ol>
+      </ul>
     </details>
   );
 }
@@ -165,7 +133,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
       title="Project timeline"
       summary={
         <>
-          Every project since {firstYear}, grouped by the year it started. {running} are still running. Hover for dates, click to open one.
+          Every project since {firstYear}, grouped by the year it started. {running} are still running. {phone ? "Tap one to open it." : "Hover for dates, click to open one."}
         </>
       }
       tip={tip}
@@ -186,7 +154,13 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
         />
       }
     >
-      <ul className="mb-5 flex flex-wrap gap-x-6 gap-y-1.5 text-[0.85rem] text-ink-dim">
+      {phone ? (
+        <p className="mb-3 flex items-center gap-2 text-[0.85rem] text-ink-dim">
+          <span className="size-2 rounded-full bg-accent" aria-hidden />
+          Still running
+        </p>
+      ) : null}
+      <ul className="mb-5 flex flex-wrap gap-x-6 gap-y-1.5 text-[0.85rem] text-ink-dim max-sm:hidden">
         <li className="flex items-center gap-2">
           <span className="relative h-3 w-6 rounded-full bg-accent" aria-hidden>
             <span className="absolute -right-1 top-1/2 size-2.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
