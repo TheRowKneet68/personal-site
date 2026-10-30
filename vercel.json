@@ -7,6 +7,7 @@
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/resume.pdf", "destination": "/api" },
     { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
   ],
   "headers": [
@@ -24,7 +25,7 @@
     },
     {
       "source": "/resume.pdf",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=300" }]
     },
     {
       "source": "/(.*)",

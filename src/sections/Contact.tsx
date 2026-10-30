@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { EditLink } from "../components/EditLink";
 import { useData } from "../context/DataContext";
 import { ContactForm } from "../components/ContactForm";
 import { CopyButton } from "../components/CopyButton";
@@ -12,9 +13,12 @@ export function Contact() {
     <section id="contact" aria-labelledby="contact-title" className="border-t border-line py-20 md:py-28">
       <div className="container-rk grid gap-14 md:grid-cols-12 md:gap-10">
         <div className="md:col-span-6">
-          <h2 id="contact-title" className="font-display t-h1">
-            Let's build it
-          </h2>
+          <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+            <h2 id="contact-title" className="font-display t-h1">
+              Let's build it
+            </h2>
+            <EditLink to="basics" />
+          </div>
           <p className="mt-5 max-w-[46ch] text-ink-dim">
             {introOf(profile?.intros, "contact")}
           </p>

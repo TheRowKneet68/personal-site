@@ -17,6 +17,9 @@ export const SITE = {
     string, so a change of social accounts never requires reprinting. */
 export const CONNECT_URL = "https://ronitbaniyagupta.com.np/connect";
 
+/** localStorage key for the admin session - also shows the site's Edit links. */
+export const ADMIN_TOKEN_KEY = "rk-admin-token";
+
 export const NAV_LINKS = [
   { label: "Work", href: "#work" },
   { label: "Numbers", href: "#numbers" },

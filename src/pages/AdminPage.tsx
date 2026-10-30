@@ -22,9 +22,9 @@ import { projectErrors } from "../components/admin/checks";
 import { ui } from "../components/admin/ui";
 import { QrCode } from "../components/QrCode";
 import { ThemeToggle } from "../components/ThemeToggle";
-import { CONNECT_URL } from "../lib/constants";
+import { ADMIN_TOKEN_KEY, CONNECT_URL } from "../lib/constants";
 
-const TOKEN_KEY = "rk-admin-token";
+const TOKEN_KEY = ADMIN_TOKEN_KEY;
 
 type Tab =
   | "copy"
@@ -78,6 +78,15 @@ const GROUPS: { title: string; tabs: { id: Tab; label: string }[] }[] = [
   },
   { title: "Settings", tabs: [{ id: "security", label: "Password" }] },
 ];
+
+const TAB_IDS: string[] = GROUPS.flatMap((g) => g.tabs.map((t) => t.id));
+
+/** /admin#about or /admin#project=suraksha360 - where the site's Edit links land. */
+function fromHash(): { tab: Tab; project?: string } {
+  const h = decodeURIComponent(window.location.hash.slice(1));
+  if (h.startsWith("project=")) return { tab: "projects", project: h.slice("project=".length) };
+  return { tab: TAB_IDS.includes(h) ? (h as Tab) : "projects" };
+}
 
 function Labelled({ id, label, children }: { id: string; label: string; children: ReactNode }) {
   return (
@@ -218,7 +227,10 @@ export function AdminPage() {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [content, setContent] = useState<AdminContent | null>(null);
   const [saved, setSaved] = useState("");
-  const [tab, setTab] = useState<Tab>("projects");
+  const [tab, setTab] = useState<Tab>(() => fromHash().tab);
+  const [editProject] = useState(() => fromHash().project);
+  // keep the address in step so a refresh or a shared link reopens the same section
+  useEffect(() => window.history.replaceState(null, "", `#${tab}`), [tab]);
   const [loadError, setLoadError] = useState("");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "error">("idle");
   const [saveError, setSaveError] = useState("");
@@ -526,7 +538,7 @@ export function AdminPage() {
                 )}
                 {tab === "projects" && (
                   <AdminCard title="Projects" kicker="Order here is the order on the site. Featured projects appear as large sheets on the home page.">
-                    <ProjectsEditor value={content.projects} onChange={(v) => setContent({ ...content, projects: v })} uploadImage={uploadImage} />
+                    <ProjectsEditor value={content.projects} onChange={(v) => setContent({ ...content, projects: v })} uploadImage={uploadImage} initialId={editProject} />
                   </AdminCard>
                 )}
                 {tab === "achievements" && (

@@ -33,7 +33,7 @@ export function Recognition() {
       {/* old links pointed at #wins */}
       <span id="wins" className="block" aria-hidden />
       <div className="container-rk">
-        <SectionHead id="recognition" title="Recognition">
+        <SectionHead id="recognition" title="Recognition" edit="achievements">
           <p>{introOf(profile?.intros, "recognition")}</p>
         </SectionHead>
 

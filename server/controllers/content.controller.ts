@@ -1,6 +1,16 @@
 import type { Request, Response } from "express";
 import { storage } from "../services/storage.js";
 import type { ExperienceEntry } from "../services/content.js";
+import { buildResumePdf } from "../services/resume.js";
+
+/** GET /resume.pdf - built from live content on every request, so it never goes stale. */
+export async function getResume(_req: Request, res: Response): Promise<void> {
+  const { pdf } = buildResumePdf(await storage.getContent());
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", 'inline; filename="Ronit-Baniya-Gupta-Resume.pdf"');
+  res.setHeader("Cache-Control", "public, max-age=300");
+  res.send(pdf);
+}
 
 /** GET /api/projects - all projects, featured first, newest first. */
 export async function getProjects(_req: Request, res: Response): Promise<void> {

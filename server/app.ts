@@ -1,4 +1,5 @@
 import express from "express";
+import { getResume } from "./controllers/content.controller.js";
 import { env } from "./config/env.js";
 import { api } from "./routes/index.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
@@ -64,6 +65,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// vercel.json rewrites /resume.pdf to the function with the original path intact
+app.get("/resume.pdf", getResume);
 app.use("/api", api);
 
 app.use(notFound);

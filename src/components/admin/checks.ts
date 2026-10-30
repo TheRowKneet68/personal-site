@@ -1,15 +1,13 @@
 import type { Project } from "../../types";
 import { DIAGRAMS } from "../../lib/diagrams";
 
-/** What a visitor would notice is missing on this project's page. */
+/** Gaps a visitor would actually notice. Nice-to-haves (dates, highlights,
+    parts) are left out so the list stays short enough to act on. */
 export function missingInfo(p: Project): string[] {
   const out: string[] = [];
-  if (!p.tagline?.trim()) out.push("tagline");
-  if (!p.description?.trim()) out.push("description");
-  if (!p.started?.trim()) out.push("start date");
-  if (!(p.highlights ?? []).some((h) => h.trim())) out.push("highlights");
-  if (!(p.images ?? []).length && !DIAGRAMS[p.id] && !p.diagram) out.push("image or diagram");
-  if (!(p.tech ?? []).length) out.push("tech");
+  if (!p.tagline?.trim()) out.push("summary");
+  if (!p.description?.trim()) out.push("story");
+  if (!(p.images ?? []).length && !DIAGRAMS[p.id] && !p.diagram) out.push("photo or diagram");
   if (p.featured && !(p.caseStudy?.problem?.length || p.caseStudy?.solution?.length)) out.push("case study");
   return out;
 }

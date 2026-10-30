@@ -30,8 +30,8 @@ export default defineConfig({
         scope: "/",
         display: "standalone",
         orientation: "portrait",
-        theme_color: "#18191b",
-        background_color: "#18191b",
+        theme_color: "#0b1220",
+        background_color: "#0b1220",
         categories: ["portfolio", "productivity"],
         icons: [
           { src: "/images/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -62,6 +62,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
+        target: DEV_API_TARGET,
+        changeOrigin: true,
+      },
+      // built live by the API from the CMS content
+      "/resume.pdf": {
         target: DEV_API_TARGET,
         changeOrigin: true,
       },

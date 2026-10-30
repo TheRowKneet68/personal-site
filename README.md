@@ -15,7 +15,7 @@ npm run dev
 ## build
 
 ```
-npm run build   # syncs data -> embedded snapshot, regenerates resume + sitemap, then tsc + vite build
+npm run build   # syncs data -> embedded snapshot, regenerates sitemap + favicon, then tsc + vite build
 ```
 
 Checks: `npm run lint`, `npm run typecheck`, and `npx tsx scripts/check-portfolio.ts` (date, placement and
@@ -23,14 +23,19 @@ cleanup helpers the homepage relies on).
 
 ## design notes
 
-- Palette "Bench meter" (`src/index.css` tokens): test-gear yellow on graphite, probe red only for errors.
-  Dark by default; `<html class="light">` swaps the tokens. The first theme is picked before paint in
-  `index.html` (saved choice, else the device setting); the header toggle saves the choice. Yellow can't
-  carry text on a light page, so `accent` (text, lines) is deep amber in light mode, while filled buttons
-  use `accent-fill` + `on-accent`. Scales come from the UI Color Palette plugin (OKLCH, Tailwind stops);
-  chart series `--ch-1..5` are validated per mode with the dataviz palette checker against `--rk-surface`.
+- Palette "Nova" (`src/index.css` tokens): deep navy with one warm orange, taken from the colours Ronit
+  picks in his own projects (Hackathon Nova, the Cyber-Deck). Red is for errors only. Dark by default;
+  `<html class="light">` swaps the tokens. The first theme is picked before paint in `index.html` (saved
+  choice, else the device setting); the header toggle saves the choice. `accent` is for text and lines,
+  `accent-fill` + `on-accent` for filled buttons. Text tokens are >= 4.5:1 in both modes; chart series
+  `--ch-1..5` are validated per mode with the dataviz palette checker against `--rk-surface`.
 - Hero stats are recounted by the server on every request (`deriveStats` in `server/services/content.ts`).
   Each stat has a `source` set in /admin: projects, achievements, placements, dan badge, or typed by hand.
+- `/resume.pdf` is built from the live CMS content on every request (`server/services/resume.ts`, A4, at
+  most two pages). There is no static resume file any more; vercel.json rewrites the path to the API.
+- Admin: each project form opens with a live preview and the essentials; the rest sits under "More
+  details". `/admin#<section>` and `/admin#project=<id>` open a section or project directly, and the site
+  shows "Edit" links to them in a browser that is logged in to the admin.
 - Type: Bricolage Grotesque (display + body), Instrument Serif italic for the hero accent, JetBrains Mono
   only for part numbers and readouts.
 - Charts (`src/components/charts/`) are plain SVG, computed from the CMS data: the hero trace, projects per
@@ -69,8 +74,8 @@ src/                 React frontend (Vite)
 server/              Express API (routes, controllers, services, middleware)
 api/index.ts         Vercel serverless entry
 supabase/schema.sql  Tables + RLS policies
-public/              Static assets (images, fonts, resume, robots, sitemap)
-scripts/             build-time generators (sitemap, resume PDF, data snapshot)
+public/              Static assets (images, fonts, robots, sitemap)
+scripts/             build-time generators (sitemap, favicon, data snapshot)
 data.json            Content source of truth
 ```
 

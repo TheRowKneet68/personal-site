@@ -1,10 +1,11 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { ArrowDown, ArrowLeft, ArrowUp, Copy, ExternalLink, Plus, Search, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUp, ChevronDown, Copy, ExternalLink, Plus, Search, Trash2 } from "lucide-react";
 import type { CaseStudy, Project } from "../../types";
 import { DIAGRAMS } from "../../lib/diagrams";
 import { STATUS_META } from "../../lib/constants";
 import { ALL_FIELDS, fieldOf } from "../../lib/stats";
 import { cn } from "../../utils/format";
+import { StatusBadge } from "../Badges";
 import { DiagramEditor } from "./DiagramEditor";
 import { Field, ImageList, PairList, Select, StringList, TextArea, TextInput, Toggle } from "./fields";
 import { move, ui } from "./ui";
@@ -50,6 +51,39 @@ function CaseStudyFields({ value, onChange }: { value: CaseStudy | undefined; on
   );
 }
 
+/** The project as visitors meet it on the home page, updated as you type. */
+function Preview({ project }: { project: Project }) {
+  const img = project.images?.[0];
+  return (
+    <section className={cn(ui.card, "overflow-hidden")} aria-label="Preview">
+      <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-2.5">
+        <span className="text-[0.85rem] font-semibold text-ink-dim">Preview</span>
+        {project.id ? (
+          <a href={`/projects/${project.id}`} target="_blank" rel="noopener noreferrer" className={cn(ui.small, "shrink-0")} title="Shows the saved version">
+            <ExternalLink className="size-3.5" aria-hidden /> Open page
+          </a>
+        ) : null}
+      </div>
+      <div className="grid gap-5 p-5 sm:grid-cols-[minmax(0,1fr)_11rem]">
+        <div className="min-w-0">
+          <p className="text-[0.85rem] text-ink-faint">{[project.year, project.category].filter(Boolean).join(", ")}</p>
+          <h3 className="font-display mt-1 text-[1.75rem] leading-none">{project.title || "Untitled project"}</h3>
+          <p className={cn("mt-2 font-semibold", !project.tagline && "font-normal text-ink-faint")}>{project.tagline || "Add a one-line summary"}</p>
+          <p className="mt-2 line-clamp-4 text-[0.95rem] text-ink-dim">{project.description || "Add the story: two to four sentences."}</p>
+          <StatusBadge status={project.status} className="mt-3" />
+        </div>
+        {img ? (
+          <img src={img} alt="" className="aspect-[4/3] w-full rounded-[4px] border border-line object-cover" />
+        ) : (
+          <div className="grid aspect-[4/3] place-items-center rounded-[4px] border border-dashed border-line-strong px-3 text-center text-[0.85rem] text-ink-faint">
+            No photo yet
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function ProjectForm({
   project,
   update,
@@ -65,110 +99,111 @@ function ProjectForm({
   const idBad = !ID_RE.test(project.id ?? "") || idTaken;
   return (
     <div className="space-y-5">
-      <Group title="Basics">
+      <Preview project={project} />
+
+      <Group title="Essentials" hint="What visitors see first. With these filled in, the project is ready to show.">
         <div className="grid gap-5 md:grid-cols-2">
           <Field label="Title">
             <TextInput value={project.title} invalid={!project.title.trim()} onChange={(v) => update({ title: v })} />
           </Field>
-          <Field label="Tagline" hint="One line under the title.">
+          <Field label="One-line summary" hint="Shown under the title.">
             <TextInput value={project.tagline} onChange={(v) => update({ tagline: v })} />
           </Field>
-          <Field label="Category" hint="Free text shown on the page, e.g. IoT & Security.">
-            <TextInput value={project.category} onChange={(v) => update({ category: v })} />
+          <Field label="Year" hint="Used in lists and the per-year chart.">
+            <TextInput value={project.year} invalid={!/^\d{4}$/.test(project.year)} onChange={(v) => update({ year: v })} />
           </Field>
-          <Field label="Field for the charts" hint={`Leave on automatic to use the category. Automatic picks: ${guess.label}.`}>
-            <Select
-              value={project.field ?? ""}
-              onChange={(v) => update({ field: v || undefined })}
-              options={[{ value: "", label: `Automatic (${guess.label})` }, ...ALL_FIELDS.map((f) => ({ value: f.key, label: f.label }))]}
-            />
-          </Field>
-          <Field label="Status">
-            <input
-              className={ui.input}
-              list="rk-status-list"
-              value={project.status}
-              onChange={(e) => update({ status: e.target.value })}
-            />
+          <Field label="Status" hint="Pick one or type your own.">
+            <input className={ui.input} list="rk-status-list" value={project.status} onChange={(e) => update({ status: e.target.value })} />
             <datalist id="rk-status-list">
               {Object.keys(STATUS_META).map((k) => (
                 <option key={k} value={k} />
               ))}
             </datalist>
           </Field>
-          <Field label="Year" hint="Shown in lists and used for the per-year chart.">
-            <TextInput value={project.year} invalid={!/^\d{4}$/.test(project.year)} onChange={(v) => update({ year: v })} />
-          </Field>
-          <Field label="ID" hint={idTaken ? "Another project already uses this ID." : "The page address: /projects/your-id. Lowercase letters, numbers and dashes."}>
-            <TextInput value={project.id} invalid={idBad} onChange={(v) => update({ id: v.trim() })} />
-          </Field>
-          <div className="flex items-end pb-2">
-            <Toggle label="Featured on the home page" checked={Boolean(project.featured)} onChange={(v) => update({ featured: v })} />
-          </div>
         </div>
-      </Group>
-
-      <Group title="Dates and credits" hint="Shown on the project page when filled in.">
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Started">
-            <input
-              type="month"
-              className={cn(ui.input, "[color-scheme:dark]")}
-              value={(project.started ?? "").slice(0, 7)}
-              onChange={(e) => update({ started: e.target.value || undefined })}
-            />
-          </Field>
-          <Field label="Finished" hint="Leave empty if it's still going.">
-            <input
-              type="month"
-              className={cn(ui.input, "[color-scheme:dark]")}
-              value={(project.finished ?? "").slice(0, 7)}
-              onChange={(e) => update({ finished: e.target.value || undefined })}
-            />
-          </Field>
-          <Field label="Context" hint="Course, hackathon or client, e.g. Diploma major project, CTEVT.">
-            <TextInput value={project.context ?? ""} onChange={(v) => update({ context: v || undefined })} />
-          </Field>
-          <Field label="Supervisor">
-            <TextInput value={project.supervisor ?? ""} onChange={(v) => update({ supervisor: v || undefined })} />
-          </Field>
-        </div>
-        <Field label="Team" hint="Everyone else who built it.">
-          <StringList value={project.team ?? []} itemLabel="person" onChange={(v) => update({ team: v.length ? v : undefined })} />
-        </Field>
-      </Group>
-
-      <Group title="Story">
-        <Field label="Description" hint="Two to four sentences. Shown on the home page and at the top of the project page.">
+        <Field label="Story" hint="Two to four sentences: what it is, why it exists, what it does.">
           <TextArea value={project.description} rows={5} onChange={(v) => update({ description: v })} />
         </Field>
-        <Field label="Highlights" hint="Short facts. Shown when the project has no case study.">
-          <StringList value={project.highlights ?? []} itemLabel="highlight" onChange={(v) => update({ highlights: v })} />
-        </Field>
-        <Field label="Parts and tools">
-          <StringList value={project.tech ?? []} itemLabel="part or tool" onChange={(v) => update({ tech: v })} />
-        </Field>
+        <ImageList label="Photos" hint="The first photo leads. You can pick several files at once." value={project.images ?? []} onChange={(v) => update({ images: v })} uploadImage={uploadImage} />
+        <Toggle label="Feature on the home page (large sheet with diagram)" checked={Boolean(project.featured)} onChange={(v) => update({ featured: v })} />
       </Group>
 
-      <Group title="Media and links">
-        <ImageList label="Images" value={project.images ?? []} onChange={(v) => update({ images: v })} uploadImage={uploadImage} />
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Source code" hint="A repository link. A profile link is labelled as a profile on the site.">
-            <TextInput value={project.links?.github ?? ""} placeholder="https://github.com/…" onChange={(v) => update({ links: { ...(project.links ?? {}), github: v } })} />
-          </Field>
-          <Field label="Live demo">
-            <TextInput value={project.links?.demo ?? ""} placeholder="https://…" onChange={(v) => update({ links: { ...(project.links ?? {}), demo: v } })} />
-          </Field>
+      <details className="group/more" open={idBad ? true : undefined}>
+        <summary className={cn(ui.card, "flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden")}>
+          <span className="min-w-0">
+            <span className="block font-bold">More details</span>
+            <span className="block text-[0.88rem] text-ink-faint">Category, page address, dates and team, highlights, parts, links, case study and diagram</span>
+          </span>
+          <ChevronDown className="size-4 shrink-0 text-ink-faint transition-transform group-open/more:rotate-180" aria-hidden />
+        </summary>
+        <div className="mt-5 space-y-5">
+          <Group title="Category and page address">
+            <div className="grid gap-5 md:grid-cols-2">
+              <Field label="Category" hint="Free text shown on the page, e.g. IoT & Security.">
+                <TextInput value={project.category} onChange={(v) => update({ category: v })} />
+              </Field>
+              <Field label="Field for the charts" hint={`Automatic picks: ${guess.label}.`}>
+                <Select
+                  value={project.field ?? ""}
+                  onChange={(v) => update({ field: v || undefined })}
+                  options={[{ value: "", label: `Automatic (${guess.label})` }, ...ALL_FIELDS.map((f) => ({ value: f.key, label: f.label }))]}
+                />
+              </Field>
+              <Field label="Page address" hint={idTaken ? "Another project already uses this address." : "/projects/your-address. Lowercase letters, numbers and dashes."}>
+                <TextInput value={project.id} invalid={idBad} onChange={(v) => update({ id: v.trim() })} />
+              </Field>
+            </div>
+          </Group>
+
+          <Group title="Dates and team" hint="Shown on the project page when filled in.">
+            <div className="grid gap-5 md:grid-cols-2">
+              <Field label="Started">
+                <input type="month" className={ui.input} value={(project.started ?? "").slice(0, 7)} onChange={(e) => update({ started: e.target.value || undefined })} />
+              </Field>
+              <Field label="Finished" hint="Leave empty if it is still going.">
+                <input type="month" className={ui.input} value={(project.finished ?? "").slice(0, 7)} onChange={(e) => update({ finished: e.target.value || undefined })} />
+              </Field>
+              <Field label="Context" hint="Course, hackathon or client, e.g. Diploma major project, CTEVT.">
+                <TextInput value={project.context ?? ""} onChange={(v) => update({ context: v || undefined })} />
+              </Field>
+              <Field label="Supervisor">
+                <TextInput value={project.supervisor ?? ""} onChange={(v) => update({ supervisor: v || undefined })} />
+              </Field>
+            </div>
+            <Field label="Team" hint="Everyone else who built it.">
+              <StringList value={project.team ?? []} itemLabel="person" onChange={(v) => update({ team: v.length ? v : undefined })} />
+            </Field>
+          </Group>
+
+          <Group title="Highlights and parts">
+            <Field label="Highlights" hint="Short facts. Shown when the project has no case study.">
+              <StringList value={project.highlights ?? []} itemLabel="highlight" onChange={(v) => update({ highlights: v })} />
+            </Field>
+            <Field label="Parts and tools" hint="These also count toward the parts chart.">
+              <StringList value={project.tech ?? []} itemLabel="part or tool" onChange={(v) => update({ tech: v })} />
+            </Field>
+          </Group>
+
+          <Group title="Links">
+            <div className="grid gap-5 md:grid-cols-2">
+              <Field label="Source code" hint="A repository link. A profile link is labelled as a profile on the site.">
+                <TextInput value={project.links?.github ?? ""} placeholder="https://github.com/…" onChange={(v) => update({ links: { ...(project.links ?? {}), github: v } })} />
+              </Field>
+              <Field label="Live demo">
+                <TextInput value={project.links?.demo ?? ""} placeholder="https://…" onChange={(v) => update({ links: { ...(project.links ?? {}), demo: v } })} />
+              </Field>
+            </div>
+          </Group>
+
+          <Group title="Case study" hint="Featured projects should have one. Leave everything empty to show the story instead.">
+            <CaseStudyFields value={project.caseStudy} onChange={(cs) => update({ caseStudy: cs })} />
+          </Group>
+
+          <Group title="System diagram" hint="How the parts connect. Shown on the home page and the project page.">
+            <DiagramEditor value={project.diagram} fallback={DIAGRAMS[project.id]} title={project.title} onChange={(d) => update({ diagram: d })} />
+          </Group>
         </div>
-      </Group>
-
-      <Group title="Case study" hint="Featured projects should have one. Leave everything empty to show the description instead.">
-        <CaseStudyFields value={project.caseStudy} onChange={(cs) => update({ caseStudy: cs })} />
-      </Group>
-
-      <Group title="System diagram" hint="How the parts connect. Shown on the home page and the project page.">
-        <DiagramEditor value={project.diagram} fallback={DIAGRAMS[project.id]} title={project.title} onChange={(d) => update({ diagram: d })} />
-      </Group>
+      </details>
     </div>
   );
 }
@@ -179,12 +214,18 @@ export function ProjectsEditor({
   value,
   onChange,
   uploadImage,
+  initialId,
 }: {
   value: Project[];
   onChange: (v: Project[]) => void;
   uploadImage?: (file: File) => Promise<string>;
+  /** Opens this project straight away (the site's "Edit this project" link). */
+  initialId?: string;
 }) {
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(() => {
+    const i = initialId ? value.findIndex((p) => p.id === initialId) : -1;
+    return i >= 0 ? i : null;
+  });
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
 

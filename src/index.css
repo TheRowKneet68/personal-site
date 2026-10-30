@@ -39,80 +39,81 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  "Bench meter" palette - test-gear yellow on graphite, probe red    */
-/*  for errors. Ramps from the UI Color Palette plugin (OKLCH,         */
-/*  Tailwind stops); chart slots checked with the dataviz validator    */
-/*  per mode; text tokens >= 4.5:1 on bg, surface and raised.          */
-/*  Dark is the default; <html class="light"> swaps the tokens.        */
-/*  accent = text and lines; accent-fill + on-accent = filled buttons  */
-/*  (yellow can't carry text on a light page).                         */
+/*  "Nova" palette - deep navy with one warm orange, the pairing Ronit */
+/*  keeps choosing in his own work (Hackathon Nova, the Cyber-Deck's    */
+/*  amber on navy). The RB monogram stays black and white.              */
+/*  Text tokens >= 4.5:1 on bg, surface and raised in both modes; chart */
+/*  slots checked per mode with the dataviz validator.                  */
+/*  Dark is the default; <html class="light"> swaps the tokens.         */
+/*  accent = text and lines; accent-fill + on-accent = filled buttons.  */
+/*  Red (warn) is for errors only.                                      */
 /* ------------------------------------------------------------------ */
 :root {
   color-scheme: dark;
 
-  --rk-bg: #18191b;
-  --rk-surface: #1e1f21; /* graphite-900 */
-  --rk-raised: #27282b;
-  --rk-border: #2e2f32;
-  --rk-border-strong: #3d3e41;
-  --rk-field: #737477; /* graphite-500, 3:1 for input borders */
-  --rk-ink: #f1f2f4; /* graphite-50 */
-  --rk-ink-dim: #bcbec0; /* graphite-200 */
-  --rk-ink-faint: #8f9093;
+  --rk-bg: #0b1220;
+  --rk-surface: #111a2b;
+  --rk-raised: #172338;
+  --rk-border: #1f2c42;
+  --rk-border-strong: #2c3b55;
+  --rk-field: #6b7a92; /* 3:1 for input borders */
+  --rk-ink: #e8edf5;
+  --rk-ink-dim: #b4bfcf;
+  --rk-ink-faint: #8a97ab;
 
-  --rk-accent: #ffc72c; /* meter yellow - links, focus, first places */
-  --rk-accent-ink: #ffd969; /* hover text */
-  --rk-accent-fill: #ffc72c;
-  --rk-on-accent: #1b1c1e;
-  --rk-accent-soft: rgba(255, 199, 44, 0.12);
-  --rk-signal: #ffc72c;
-  --rk-warn: #ff6c5e; /* probe-300 - errors */
-  --rk-warn-soft: rgba(255, 108, 94, 0.12);
-  --rk-shadow: rgba(0, 0, 0, 0.5);
-  --rk-dot: rgba(143, 144, 147, 0.14);
+  --rk-accent: #ff8a3d; /* links, focus, first places */
+  --rk-accent-ink: #ffb27a; /* hover text */
+  --rk-accent-fill: #f97316;
+  --rk-on-accent: #0b1220;
+  --rk-accent-soft: rgba(249, 115, 22, 0.14);
+  --rk-signal: #ff8a3d;
+  --rk-warn: #ff6b6b;
+  --rk-warn-soft: rgba(255, 107, 107, 0.12);
+  --rk-shadow: rgba(2, 6, 14, 0.55);
+  --rk-dot: rgba(138, 151, 171, 0.14);
 
-  /* chart series - fixed order, validated (dark, surface #1e1f21) */
-  --ch-1: #b88600; /* meter */
-  --ch-2: #5687ef; /* lead blue */
-  --ch-3: #3aa270; /* pass green */
-  --ch-4: #9a70e7; /* cap violet */
-  --ch-5: #e2559f; /* magenta */
-  --ch-other: #5c5e60;
-  --ch-grid: #2e2f32;
+  /* chart series - fixed order, validated (dark, surface #111a2b) */
+  --ch-1: #e06f1f; /* orange */
+  --ch-2: #4f86f0; /* blue */
+  --ch-3: #2fa36b; /* green */
+  --ch-4: #9a70e7; /* violet */
+  --ch-5: #e2559f; /* pink */
+  --ch-other: #56647c;
+  --ch-grid: #1f2c42;
 }
 
 :root.light {
   color-scheme: light;
 
-  --rk-bg: #ecedef; /* grey faceplate */
-  --rk-surface: #f6f7f8;
-  --rk-raised: #ffffff;
-  --rk-border: #d6d7da; /* graphite-100 */
-  --rk-border-strong: #bcbec0;
-  --rk-field: #737477;
-  --rk-ink: #18191b;
-  --rk-ink-dim: #47484a; /* graphite-700 */
-  --rk-ink-faint: #5c5e60; /* graphite-600 */
+  --rk-bg: #f5f7fa;
+  --rk-surface: #ffffff;
+  --rk-raised: #eef1f5;
+  --rk-border: #dde3ea;
+  --rk-border-strong: #c3ccd7;
+  --rk-field: #6b7a8c;
+  --rk-ink: #0f1b2d;
+  --rk-ink-dim: #3a4757;
+  --rk-ink-faint: #566375;
 
-  --rk-accent: #855200; /* meter-600 */
-  --rk-accent-ink: #6c3c00; /* meter-700 */
-  --rk-accent-fill: #ffc72c;
-  --rk-on-accent: #1b1c1e;
-  --rk-accent-soft: rgba(255, 199, 44, 0.22);
-  --rk-signal: #855200;
-  --rk-warn: #b2000a; /* probe-600 */
-  --rk-warn-soft: rgba(178, 0, 10, 0.08);
-  --rk-shadow: rgba(24, 25, 27, 0.12);
-  --rk-dot: rgba(92, 94, 96, 0.16);
+  --rk-accent: #b33a0b;
+  --rk-accent-ink: #8f2f08;
+  --rk-accent-fill: #f97316;
+  --rk-on-accent: #0f1b2d;
+  --rk-accent-soft: rgba(249, 115, 22, 0.12);
+  --rk-signal: #b33a0b;
+  --rk-warn: #b42318;
+  --rk-warn-soft: rgba(180, 35, 24, 0.08);
+  --rk-shadow: rgba(15, 27, 45, 0.12);
+  --rk-dot: rgba(86, 99, 117, 0.14);
 
-  /* validated (light, surface #f6f7f8) */
-  --ch-1: #b68300;
-  --ch-2: #3e6ed5;
-  --ch-3: #128a58;
-  --ch-4: #8356cd;
+  /* validated (light, surface #ffffff) */
+  --ch-1: #d4620f;
+  --ch-2: #2f63d6;
+  --ch-3: #138a58;
+  --ch-4: #7c55cc;
   --ch-5: #c63d8c;
-  --ch-other: #a3a4a7;
-  --ch-grid: #d6d7da;
+  --ch-other: #a3adba;
+  --ch-grid: #dde3ea;
 }
 
 @theme inline {

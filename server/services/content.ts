@@ -56,6 +56,9 @@ export interface ProjectRecord {
   tagline: string;
   category: string;
   year: string;
+  /** "YYYY-MM" - set in /admin under Dates and credits. */
+  started?: string;
+  finished?: string;
   status: string;
   featured?: boolean;
   /** Manual display order - stamped from array position on save/seed. */
@@ -195,7 +198,7 @@ const LEGACY_SOURCE: Record<string, StatSource> = {
 };
 
 /** Same rule as placementRank() in src/lib/portfolio.ts (server can't import src/). */
-function isPlacement(a: AchievementRecord): boolean {
+export function isPlacement(a: AchievementRecord): boolean {
   if (a.rank && Number(a.rank) > 0) return true;
   const s = a.result.toLowerCase().replace(/-/g, " ");
   return /\b1st\b|\bwinner\b|\bfirst (place|position)\b|first runner|second runner|people's choice|public choice|consolation/.test(s);
@@ -245,9 +248,15 @@ function dedupeBy<T>(items: T[], key: (item: T) => string): T[] {
 
 /** Collapse duplicate stat labels / badge strings so additive seeding can't
     leave the DB with double entries (derived values + canonical ones). */
+/** Seed's additive merge doubled journey rows in the DB; identical rows collapse to one. */
+export function dedupeJourney(journey: ExperienceEntry[] = []): ExperienceEntry[] {
+  return dedupeBy(journey, (j) => `${j.year}|${j.title}|${j.note ?? ""}`);
+}
+
 export function normalizeProfile(profile: ProfileRecord): ProfileRecord {
   return {
     ...profile,
+    journey: dedupeJourney(profile.journey),
     stats: dedupeBy(profile.stats, (s) => s.label),
     badges: dedupeBy(profile.badges, (b) => b),
   };

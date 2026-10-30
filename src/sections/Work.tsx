@@ -205,7 +205,7 @@ export function Work() {
   return (
     <section id="work" aria-labelledby="work-title" className="border-t border-line py-20 md:py-28">
       <div className="container-rk">
-        <SectionHead id="work" title="Selected work">
+        <SectionHead id="work" title="Selected work" edit="projects">
           <p>{introOf(profile?.intros, "work")}</p>
         </SectionHead>
 

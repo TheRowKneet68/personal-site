@@ -26,7 +26,8 @@ export function Trace({ rows }: { rows: YearRow[] }) {
       {width > 0 && n > 1 ? (
         <svg width={width} height={H} className="block overflow-visible" role="img" aria-label={`Projects per year. ${summary}`}>
           <line x1={0} x2={width} y1={base} y2={base} stroke="var(--rk-border-strong)" strokeWidth={1} />
-          <path d={area} fill="var(--rk-accent)" opacity={0.07} className="rk-late" />
+          {/* fillOpacity, not opacity: the fade-in animates opacity and would flash the area solid */}
+          <path d={area} fill="var(--rk-accent)" fillOpacity={0.08} className="rk-late" />
           <path
             d={line}
             fill="none"

@@ -3,7 +3,7 @@ import { app } from "../app.js";
 import type { AddressInfo } from "node:net";
 import { hashPassword, verifyPassword } from "../middleware/auth.js";
 import { deepMerge } from "../services/storage.js";
-import { deriveStats } from "../services/content.js";
+import { dedupeJourney, deriveStats } from "../services/content.js";
 
 let failures = 0;
 
@@ -191,6 +191,12 @@ try {
     JSON.stringify(derived.map((s) => [s.label, s.value])) ===
       JSON.stringify([["things built", "3+"], ["awards & recognitions", "3+"], ["podiums", "2+"], ["martial arts dan", "3rd DAN"], ["projects shipped", "7"]]),
   );
+  const j = { year: "2022", title: "GRAVAS", note: "n" };
+  check("dedupeJourney: identical rows collapse, distinct ones stay", dedupeJourney([j, { ...j }, { ...j, year: "2023" }]).length === 2);
+  const resume = await fetch(`http://127.0.0.1:${port}/resume.pdf`);
+  const pdf = Buffer.from(await resume.arrayBuffer());
+  const pageCount = (pdf.toString("latin1").match(/\/Type \/Page[^s]/g) ?? []).length;
+  check("GET /resume.pdf -> live PDF, 1-2 A4 pages", resume.status === 200 && pdf.subarray(0, 5).toString() === "%PDF-" && pageCount >= 1 && pageCount <= 2);
 } finally {
   server.close();
 }
