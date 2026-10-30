@@ -23,8 +23,8 @@ cleanup helpers the homepage relies on).
 
 ## design notes
 
-- Palette "Nova" (`src/index.css` tokens): deep navy with one warm orange, taken from the colours Ronit
-  picks in his own projects (Hackathon Nova, the Cyber-Deck). Red is for errors only. Dark by default;
+- Palette (`src/index.css` tokens): Ronit's own picks from the colour mixer, forest green #27681c on
+  charcoal #18181b (dark) and off-white #fafafa (light). Red is for errors only. Dark by default;
   `<html class="light">` swaps the tokens. The first theme is picked before paint in `index.html` (saved
   choice, else the device setting); the header toggle saves the choice. `accent` is for text and lines,
   `accent-fill` + `on-accent` for filled buttons. Text tokens are >= 4.5:1 in both modes; chart series

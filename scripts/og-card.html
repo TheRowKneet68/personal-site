@@ -10,18 +10,18 @@
   @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../public/fonts/instrument-serif-italic.woff2") format("woff2"); }
   @font-face { font-family: "JetBrains Mono"; font-weight: 400 700; src: url("../public/fonts/jetbrains-mono.woff2") format("woff2"); }
   * { box-sizing: border-box; margin: 0; }
-  body { width: 1200px; height: 630px; background: #0b1220; color: #e8edf5; font-family: "Bricolage Grotesque", sans-serif; overflow: hidden; }
+  body { width: 1200px; height: 630px; background: #18181b; color: #f2f2f3; font-family: "Bricolage Grotesque", sans-serif; overflow: hidden; }
   .card { position: relative; width: 1200px; height: 630px; padding: 70px 76px; }
-  .grat { position: absolute; inset: 0; background-image: radial-gradient(rgba(138,151,171,.14) 1.2px, transparent 1.4px); background-size: 22px 22px; }
-  .who { position: relative; font-size: 24px; color: #b4bfcf; font-weight: 500; }
-  .who b { color: #e8edf5; font-weight: 700; }
+  .grat { position: absolute; inset: 0; background-image: radial-gradient(rgba(158,158,159,.12) 1.2px, transparent 1.4px); background-size: 22px 22px; }
+  .who { position: relative; font-size: 24px; color: #c4c4c5; font-weight: 500; }
+  .who b { color: #f2f2f3; font-weight: 700; }
   h1 { position: relative; margin-top: 26px; font-weight: 800; font-size: 104px; line-height: .95; letter-spacing: -0.035em; }
-  h1 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: #ff8a3d; letter-spacing: -0.01em; }
-  .cur { display: inline-block; width: .5ch; height: .8em; margin-left: .08em; background: #ff8a3d; vertical-align: baseline; }
+  h1 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: #60a256; letter-spacing: -0.01em; }
+  .cur { display: inline-block; width: .5ch; height: .8em; margin-left: .08em; background: #60a256; vertical-align: baseline; }
   .trace { position: absolute; right: 76px; bottom: 118px; width: 420px; height: 120px; }
-  .meta { position: absolute; left: 76px; bottom: 70px; font-size: 22px; color: #b4bfcf; display: flex; gap: 26px; align-items: center; }
-  .meta b { color: #e8edf5; font-weight: 700; }
-  .lab { position: absolute; right: 76px; bottom: 246px; width: 420px; font-size: 16px; color: #8a97ab; display: flex; justify-content: space-between; }
+  .meta { position: absolute; left: 76px; bottom: 70px; font-size: 22px; color: #c4c4c5; display: flex; gap: 26px; align-items: center; }
+  .meta b { color: #f2f2f3; font-weight: 700; }
+  .lab { position: absolute; right: 76px; bottom: 246px; width: 420px; font-size: 16px; color: #9e9e9f; display: flex; justify-content: space-between; }
 </style>
 </head>
 <body>
@@ -31,10 +31,10 @@
     <h1>I build what<br /><em>doesn't</em> exist yet.<span class="cur"></span></h1>
     <p class="lab"><span>Projects per year, 2022 to 2026</span></p>
     <svg class="trace" viewBox="0 0 420 150" preserveAspectRatio="none">
-      <line x1="0" x2="420" y1="128" y2="128" stroke="#2c3b55" />
-      <path d="M10,122.2L110,105.9L210,65.3L310,92.4L410,10L410,128L10,128Z" fill="#ff8a3d" opacity=".08" />
-      <path d="M10,122.2L110,105.9L210,65.3L310,92.4L410,10" fill="none" stroke="#ff8a3d" stroke-width="2.5" stroke-linejoin="round" />
-      <g fill="#ff8a3d" stroke="#0b1220" stroke-width="2.5">
+      <line x1="0" x2="420" y1="128" y2="128" stroke="#454547" />
+      <path d="M10,122.2L110,105.9L210,65.3L310,92.4L410,10L410,128L10,128Z" fill="#60a256" opacity=".08" />
+      <path d="M10,122.2L110,105.9L210,65.3L310,92.4L410,10" fill="none" stroke="#60a256" stroke-width="2.5" stroke-linejoin="round" />
+      <g fill="#60a256" stroke="#18181b" stroke-width="2.5">
         <circle cx="10" cy="122.2" r="5" /><circle cx="110" cy="105.9" r="5" /><circle cx="210" cy="65.3" r="5" /><circle cx="310" cy="92.4" r="5" /><circle cx="410" cy="10" r="5" />
       </g>
     </svg>

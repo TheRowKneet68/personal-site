@@ -16,10 +16,10 @@ const BOTTOM = 46;
 const MAX_PAGES = 2;
 const SITE = "ronitbaniyagupta.com.np";
 
-// PDF fill colours: navy ink, slate for secondary text, the site's orange (light-mode accent)
-const INK = "0.059 0.106 0.176";
-const DIM = "0.227 0.278 0.341";
-const ACCENT = "0.702 0.227 0.043";
+// PDF fill colours: the site's light-mode ink, secondary text and green accent
+const INK = "0.086 0.086 0.086";
+const DIM = "0.282 0.282 0.282";
+const ACCENT = "0.153 0.408 0.11";
 
 type Font = "F1" | "F2";
 interface Op { x: number; y: number; font: Font; size: number; color: string; text: string }

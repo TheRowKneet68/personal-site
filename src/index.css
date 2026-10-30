@@ -39,81 +39,81 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  "Nova" palette - deep navy with one warm orange, the pairing Ronit */
-/*  keeps choosing in his own work (Hackathon Nova, the Cyber-Deck's    */
-/*  amber on navy). The RB monogram stays black and white.              */
-/*  Text tokens >= 4.5:1 on bg, surface and raised in both modes; chart */
-/*  slots checked per mode with the dataviz validator.                  */
-/*  Dark is the default; <html class="light"> swaps the tokens.         */
-/*  accent = text and lines; accent-fill + on-accent = filled buttons.  */
-/*  Red (warn) is for errors only.                                      */
+/*  Ronit's own picks (made in the colour mixer): forest green #27681c */
+/*  on charcoal #18181b at night and off-white #fafafa by day. The RB  */
+/*  monogram stays black and white. Text shades were derived so every  */
+/*  text token is >= 4.5:1 on bg, surface and raised in both modes;    */
+/*  chart slots checked per mode with the dataviz validator.           */
+/*  Dark is the default; <html class="light"> swaps the tokens.        */
+/*  accent = text and lines; accent-fill + on-accent = filled buttons. */
+/*  Red (warn) is for errors only.                                     */
 /* ------------------------------------------------------------------ */
 :root {
   color-scheme: dark;
 
-  --rk-bg: #0b1220;
-  --rk-surface: #111a2b;
-  --rk-raised: #172338;
-  --rk-border: #1f2c42;
-  --rk-border-strong: #2c3b55;
-  --rk-field: #6b7a92; /* 3:1 for input borders */
-  --rk-ink: #e8edf5;
-  --rk-ink-dim: #b4bfcf;
-  --rk-ink-faint: #8a97ab;
+  --rk-bg: #18181b;
+  --rk-surface: #202023;
+  --rk-raised: #29292b;
+  --rk-border: #333335;
+  --rk-border-strong: #454547;
+  --rk-field: #838385; /* 3:1 for input borders */
+  --rk-ink: #f2f2f3;
+  --rk-ink-dim: #c4c4c5;
+  --rk-ink-faint: #9e9e9f;
 
-  --rk-accent: #ff8a3d; /* links, focus, first places */
-  --rk-accent-ink: #ffb27a; /* hover text */
-  --rk-accent-fill: #f97316;
-  --rk-on-accent: #0b1220;
-  --rk-accent-soft: rgba(249, 115, 22, 0.14);
-  --rk-signal: #ff8a3d;
+  --rk-accent: #60a256; /* the green, lifted to read on charcoal */
+  --rk-accent-ink: #84bd7b;
+  --rk-accent-fill: #27681c;
+  --rk-on-accent: #ffffff;
+  --rk-accent-soft: rgba(96, 162, 86, 0.14);
+  --rk-signal: #60a256;
   --rk-warn: #ff6b6b;
   --rk-warn-soft: rgba(255, 107, 107, 0.12);
-  --rk-shadow: rgba(2, 6, 14, 0.55);
-  --rk-dot: rgba(138, 151, 171, 0.14);
+  --rk-shadow: rgba(0, 0, 0, 0.5);
+  --rk-dot: rgba(158, 158, 159, 0.12);
 
-  /* chart series - fixed order, validated (dark, surface #111a2b) */
-  --ch-1: #e06f1f; /* orange */
+  /* chart series - fixed order, validated (dark, surface #202023) */
+  --ch-1: #4a9a3f; /* green */
   --ch-2: #4f86f0; /* blue */
-  --ch-3: #2fa36b; /* green */
+  --ch-3: #e06f1f; /* orange */
   --ch-4: #9a70e7; /* violet */
   --ch-5: #e2559f; /* pink */
-  --ch-other: #56647c;
-  --ch-grid: #1f2c42;
+  --ch-other: #5c5c5f;
+  --ch-grid: #333335;
 }
 
 :root.light {
   color-scheme: light;
 
-  --rk-bg: #f5f7fa;
-  --rk-surface: #ffffff;
-  --rk-raised: #eef1f5;
-  --rk-border: #dde3ea;
-  --rk-border-strong: #c3ccd7;
-  --rk-field: #6b7a8c;
-  --rk-ink: #0f1b2d;
-  --rk-ink-dim: #3a4757;
-  --rk-ink-faint: #566375;
+  --rk-bg: #fafafa;
+  --rk-surface: #fdfdfd;
+  --rk-raised: #f2f2f2;
+  --rk-border: #dcdcdc;
+  --rk-border-strong: #c6c6c6;
+  --rk-field: #707070;
+  --rk-ink: #161616;
+  --rk-ink-dim: #484848;
+  --rk-ink-faint: #696969;
 
-  --rk-accent: #b33a0b;
-  --rk-accent-ink: #8f2f08;
-  --rk-accent-fill: #f97316;
-  --rk-on-accent: #0f1b2d;
-  --rk-accent-soft: rgba(249, 115, 22, 0.12);
-  --rk-signal: #b33a0b;
-  --rk-warn: #b42318;
-  --rk-warn-soft: rgba(180, 35, 24, 0.08);
-  --rk-shadow: rgba(15, 27, 45, 0.12);
-  --rk-dot: rgba(86, 99, 117, 0.14);
+  --rk-accent: #27681c;
+  --rk-accent-ink: #1c4f14;
+  --rk-accent-fill: #27681c;
+  --rk-on-accent: #ffffff;
+  --rk-accent-soft: rgba(39, 104, 28, 0.1);
+  --rk-signal: #27681c;
+  --rk-warn: #c62828;
+  --rk-warn-soft: rgba(198, 40, 40, 0.08);
+  --rk-shadow: rgba(22, 22, 22, 0.1);
+  --rk-dot: rgba(105, 105, 105, 0.14);
 
-  /* validated (light, surface #ffffff) */
-  --ch-1: #d4620f;
+  /* validated (light, surface #fdfdfd) */
+  --ch-1: #2f7a24;
   --ch-2: #2f63d6;
-  --ch-3: #138a58;
+  --ch-3: #d4620f;
   --ch-4: #7c55cc;
   --ch-5: #c63d8c;
-  --ch-other: #a3adba;
-  --ch-grid: #dde3ea;
+  --ch-other: #a3a3a3;
+  --ch-grid: #dcdcdc;
 }
 
 @theme inline {
