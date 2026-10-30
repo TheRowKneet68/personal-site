@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { runBoard } from "./LoadingScreen";
+import { runBird } from "./Scenes";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { api, ApiClientError } from "../services/api";
 import { Button } from "./Button";
@@ -48,7 +48,7 @@ export function ContactForm() {
     setState("submitting");
     setServerError("");
     try {
-      await runBoard("message", "transmitting message", "delivered", () =>
+      await runBird(() =>
         api.postContact({
           name: form.name,
           email: form.email,

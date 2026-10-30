@@ -4,6 +4,7 @@ import { DataProvider, useData } from "./context/DataContext";
 import { CommandProvider } from "./context/CommandContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Layout } from "./components/Layout";
+import { SceneLayer } from "./components/Scenes";
 import { ActionBoard, LoadingScreen, OutboundLinks, ResumeDownload, RouteWipe } from "./components/LoadingScreen";
 
 const HomePage = lazy(() => import("./pages/HomePage").then((m) => ({ default: m.HomePage })));
@@ -32,6 +33,7 @@ function RoutesShell() {
       <ResumeDownload />
       <OutboundLinks />
       <ActionBoard />
+      <SceneLayer />
       <Suspense fallback={null}>
         <Routes>
           <Route path="/admin" element={<AdminPage />} />
