@@ -22,7 +22,7 @@ export async function postContact(req: Request, res: Response): Promise<void> {
   if (!requiredLength(name, 2, 80)) throw new HttpError(400, "a real name helps me reply to the right person.");
   if (!isEmail(email) || email.length > 120) throw new HttpError(400, "that email doesn't look right.");
   if (subject.length > 200) throw new HttpError(400, "keep the subject under 200 characters.");
-  if (!requiredLength(message, 10, 4000)) throw new HttpError(400, "tell me a bit more - at least 10 characters.");
+  if (!requiredLength(message, 1, 4000)) throw new HttpError(400, "write a message first (up to 4000 characters).");
 
   await storage.addMessage({ name, email, subject, message, ip: clientIp(req) });
   res.json({ ok: true });

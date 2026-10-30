@@ -7,6 +7,7 @@ import { CONNECT_URL } from "../lib/constants";
 import { isValidHttpUrl, platformIcon, platformName } from "../lib/platforms";
 import type { Profile, SocialLink } from "../types";
 import { buildVCard, downloadVCard } from "../lib/vcard";
+import { runBoard } from "../components/LoadingScreen";
 import { Button } from "../components/Button";
 import { CopyButton } from "../components/CopyButton";
 
@@ -64,9 +65,12 @@ export function ConnectPage() {
 
   const avatar = profile.portrait1 || profile.portrait || profile.logo || "/images/logo.svg";
 
+  const canShare = typeof navigator.share === "function";
+
   const saveContact = async () => {
     track("save_contact_click");
-    downloadVCard("ronit-baniya-gupta.vcf", await buildVCard(links));
+    const card = await runBoard("contact card", "packing contact card", "saved to downloads", () => buildVCard(links));
+    downloadVCard("ronit-baniya-gupta.vcf", card);
   };
 
   return (
@@ -171,11 +175,17 @@ export function ConnectPage() {
             <span aria-hidden>▾</span>
           </summary>
           <div className="mt-4 flex flex-col items-center gap-4 rounded-md border border-line bg-bg p-5">
-            <img
-              src="/images/visiting-card.png"
-              alt="Ronit Baniya Gupta visiting card"
-              className="w-full max-w-[340px] rounded-md border border-line bg-surface shadow-card"
-            />
+            <div className="card-scan relative w-full max-w-[340px]">
+              <img
+                src="/images/visiting-card.png"
+                alt="Ronit Baniya Gupta visiting card"
+                className="card-scan-img w-full rounded-md border border-line bg-surface shadow-card"
+              />
+              <span className="card-scan-line" aria-hidden />
+              <svg className="card-scan-frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
+                <rect x="0" y="0" width="100" height="100" rx="2" pathLength={1} />
+              </svg>
+            </div>
             <a
               href="/documents/ronit-visiting-card.pdf"
               target="_blank"
@@ -184,6 +194,18 @@ export function ConnectPage() {
             >
               Open the printable PDF
             </a>
+            {canShare ? (
+              <Button
+                variant="solid"
+                className="w-full"
+                onClick={() => {
+                  track("share_card_click");
+                  void navigator.share({ title: profile.name, text: `${profile.name}, ${profile.role}`, url: CONNECT_URL }).catch(() => undefined);
+                }}
+              >
+                Share
+              </Button>
+            ) : null}
             <CopyButton text={CONNECT_URL} label="copy share link" className="w-full justify-center" />
           </div>
         </details>

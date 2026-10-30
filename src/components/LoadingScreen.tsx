@@ -261,7 +261,8 @@ function outboundPage(url: URL): string {
   const v = (n: string): string => css.getPropertyValue(n).trim();
   const [bg, ink, dim, accent] = [v("--rk-bg"), v("--rk-ink"), v("--rk-ink-faint"), v("--rk-accent")];
   const traces = TRACES.map((t, i) => `<path d="${t.d}" pathLength="1" style="animation-delay:${i * 18}ms"/>`).join("");
-  const host = esc(url.hostname.replace(/^www\./, ""));
+  const local = url.origin === location.origin;
+  const host = esc(local ? (url.pathname.split("/").pop() || url.pathname) : url.hostname.replace(/^www\./, ""));
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Opening ${host}</title><style>
 html,body{margin:0;height:100%;background:${bg};overflow:hidden;font:13px/1.4 "JetBrains Mono",ui-monospace,monospace;color:${dim}}
@@ -279,7 +280,7 @@ b{color:${accent};font-weight:600}
 @media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;animation-delay:0s!important}}
 </style></head><body>
 <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">${traces}<rect x="410" y="410" width="180" height="180" rx="6" pathLength="1"/></svg>
-<div class="logo"></div><p>connecting to <b>${host}</b> ...</p>
+<div class="logo"></div><p>${local ? "opening" : "connecting to"} <b>${host}</b> ...</p>
 <script>setTimeout(function(){location.replace(${JSON.stringify(url.href).replace(/</g, "\u003c")})},800)</script>
 </body></html>`;
 }
@@ -293,7 +294,8 @@ export function OutboundLinks() {
       const a = (e.target as Element | null)?.closest?.("a[href]");
       if (!(a instanceof HTMLAnchorElement) || a.hasAttribute("download")) return;
       const url = new URL(a.href);
-      if (!/^https?:$/.test(url.protocol) || url.origin === location.origin) return;
+      const sameSite = url.origin === location.origin;
+      if (!/^https?:$/.test(url.protocol) || (sameSite && a.target !== "_blank")) return;
       const w = window.open("", "_blank");
       if (!w) return; // blocked: let the link work normally
       e.preventDefault();
@@ -306,4 +308,76 @@ export function OutboundLinks() {
     return () => document.removeEventListener("click", onClick);
   }, []);
   return null;
+}
+
+type Action = { title: string; working: string; done: string; state: "work" | "done" | "fail" };
+let showAction: ((a: Action | "exit") => void) | null = null;
+const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
+
+/** Run a real task behind the board: "working" while it runs, then "done" (or
+    "failed", and the error is rethrown for the caller to show), then power off. */
+export async function runBoard<T>(title: string, working: string, done: string, task: () => Promise<T>, minMs = 1300): Promise<T> {
+  const show = showAction;
+  if (!show) return task();
+  const quick = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const started = performance.now();
+  show({ title, working, done, state: "work" });
+  try {
+    const result = await task();
+    await sleep(quick ? 0 : Math.max(0, minMs - (performance.now() - started)));
+    show({ title, working, done, state: "done" });
+    await sleep(quick ? 300 : 550);
+    return result;
+  } catch (err) {
+    show({ title, working, done, state: "fail" });
+    await sleep(1200);
+    throw err;
+  } finally {
+    show("exit");
+  }
+}
+
+/** Mounted once; runBoard() drives it. */
+export function ActionBoard() {
+  const [action, setAction] = useState<Action | null>(null);
+  const [exit, setExit] = useState(false);
+  useEffect(() => {
+    let t = 0;
+    showAction = (a) => {
+      clearTimeout(t);
+      if (a === "exit") {
+        setExit(true);
+        t = window.setTimeout(() => setAction(null), 520);
+      } else {
+        setExit(false);
+        setAction(a);
+      }
+    };
+    return () => {
+      showAction = null;
+      clearTimeout(t);
+    };
+  }, []);
+
+  if (!action) return null;
+  const line = action.state === "work" ? action.working : action.state === "done" ? action.done : "failed";
+  return (
+    <Board exit={exit}>
+      <div className="boot-readout absolute left-1/2 w-[16rem] -translate-x-1/2 rounded-[3px] border border-line bg-bg/90 px-4 py-3 font-mono text-[0.78rem] backdrop-blur-sm">
+        <p className="boot-pct flex items-baseline justify-between border-b border-line pb-1.5">
+          <span className="text-ink-faint">{action.title}</span>
+          <span className={`text-[1.05rem] font-semibold ${action.state === "fail" ? "text-warn" : "text-accent"}`}>
+            {action.state === "done" ? "ok" : action.state === "fail" ? "x" : ""}
+          </span>
+        </p>
+        <p className={`boot-step mt-2 ${action.state === "done" ? "text-accent" : action.state === "fail" ? "text-warn" : "text-ink-dim"}`}>
+          {line}
+          {action.state === "work" ? <span className="boot-wait"> ...</span> : null}
+        </p>
+      </div>
+      <p className="sr-only">
+        {action.title}: {line}
+      </p>
+    </Board>
+  );
 }

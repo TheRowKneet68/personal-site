@@ -708,6 +708,41 @@
   100% { clip-path: inset(50% 50% 50% 50%); filter: brightness(2.5); }
 }
 
+/* "Share this card": replays each time the fold-out opens (display:none restarts it) */
+.card-scan-img {
+  clip-path: inset(0 0 100% 0);
+  animation: boot-reveal 0.7s steps(16, end) 0.35s forwards;
+}
+.card-scan-line {
+  position: absolute;
+  inset-inline: -4%;
+  top: 0;
+  height: 2px;
+  background: var(--rk-accent);
+  box-shadow: 0 0 12px 2px var(--rk-accent);
+  opacity: 0;
+  animation: boot-scan 0.7s linear 0.35s;
+}
+.card-scan-frame {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  overflow: visible;
+  pointer-events: none;
+}
+.card-scan-frame rect {
+  fill: none;
+  stroke: var(--rk-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 6px var(--rk-accent));
+  animation: boot-chip 0.45s ease-out forwards, card-frame-out 0.6s ease 1.2s forwards;
+}
+@keyframes card-frame-out { to { opacity: 0.35; filter: none; } }
+
 .wipe-panel {
   background-image: radial-gradient(color-mix(in oklab, var(--rk-ink) 9%, transparent) 1px, transparent 1.4px);
   background-size: 22px 22px;
