@@ -115,7 +115,8 @@ export interface Content {
 interface RawDataFile {
   profile: ProfileRecord;
   projects: ProjectRecord[];
-  achievements: AchievementRecord[];
+  /** older entries may lack an event; normalizeFromFile fills it in */
+  achievements: (Omit<AchievementRecord, "event"> & { event?: string })[];
 }
 
 /** Normalize the raw JSON file into the shared Content shape. */
@@ -124,7 +125,7 @@ export function normalizeFromFile(raw: RawDataFile): Content {
   return {
     profile,
     projects: raw.projects,
-    achievements: raw.achievements,
+    achievements: raw.achievements.map((a) => ({ ...a, event: a.event ?? "" })),
     skills: { categories: profile.tech || {}, focus: profile.focus || [] },
     experience: profile.journey || [],
   };
