@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useElementWidth, useMediaQuery, useRevealOnce } from "../../hooks";
 import { dateRange } from "../../lib/portfolio";
@@ -51,100 +51,79 @@ function whenText(s: ProjectSpan, year: number): string {
   return dateRange(s.project.started, s.project.finished) || s.project.year;
 }
 
-type Bind = ReturnType<typeof useChartTip>["bind"];
-const MONTH_PX = 44; // every month gets a readable label on phones
-const NAME_W = 132;
+const LETTERS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 
-/** Phones: the year's chart scrolls sideways under pinned project names, with
-    every month labelled. Older years start folded. */
-function PhoneGroup({ year, rows, from, to, toToday, open, hint, bind }: {
-  year: number;
-  rows: ProjectSpan[];
-  from: number;
-  to: number;
-  toToday: boolean;
-  open: boolean;
-  hint: boolean;
-  bind: Bind;
-}) {
-  const width = (to - from) * MONTH_PX;
-  const months = Array.from({ length: to - from }, (_, i) => from + i);
-  const scroller = useRef<HTMLDivElement>(null);
-  // this year's projects cluster near today, so its chart opens at the right end
-  const current = Math.floor(to / 12) === year && toToday;
-  const settle = (): void => {
-    const el = scroller.current;
-    if (el && current) el.scrollLeft = el.scrollWidth;
-  };
-  useLayoutEffect(settle, [current]);
+/** The row's own little axis: the twelve months of its year, or its years when
+    it runs across several, with the bar marking when it ran. */
+function YearTrack({ s }: { s: ProjectSpan }) {
+  const y0 = Math.floor(s.start / 12);
+  const y1 = Math.floor(s.end / 12);
+  const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
+  const labels = years.length > 1 ? years.map(String) : LETTERS;
   return (
-    <details open={open} onToggle={settle} className="group/y border-t border-line-strong">
+    <div className="mt-2" aria-hidden>
+      <div className="grid text-[0.62rem] text-ink-faint tabular" style={{ gridTemplateColumns: `repeat(${labels.length}, 1fr)` }}>
+        {labels.map((l, i) => (
+          <span key={i} className={years.length > 1 ? "border-l border-line pl-1" : "text-center"}>
+            {l}
+          </span>
+        ))}
+      </div>
+      <div className="relative mt-1 h-3 rounded-full bg-raised">
+        <Bar s={s} from={y0 * 12} to={(y1 + 1) * 12} />
+      </div>
+    </div>
+  );
+}
+
+/** Phones: a vertical timeline. Each project hangs off a spine with its dates in
+    words and its own year bar, so nothing needs a sideways scroll. Older years
+    start folded. */
+function PhoneGroup({ year, rows, open }: { year: number; rows: ProjectSpan[]; open: boolean }) {
+  return (
+    <details open={open} className="group/y border-t border-line-strong">
       <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
         <span className="font-semibold text-ink tabular">{year}</span>
         <span className="text-[0.8rem] text-ink-faint">{plural(rows.length, "project")}</span>
-        {hint ? <span className="ml-auto hidden whitespace-nowrap text-[0.75rem] text-ink-faint group-open/y:inline">{current ? "← swipe" : "swipe →"}</span> : null}
-        <span className={cn("text-ink-faint transition-transform group-open/y:rotate-180", !hint && "ml-auto")} aria-hidden>▾</span>
+        <span className="ml-auto text-ink-faint transition-transform group-open/y:rotate-180" aria-hidden>
+          ▾
+        </span>
       </summary>
-      <div ref={scroller} className="overflow-x-auto overscroll-x-contain pb-3">
-        <div className="relative" style={{ width: NAME_W + width + 12 }}>
-          {/* month grid behind the rows */}
-          <div className="pointer-events-none absolute inset-y-0" style={{ left: NAME_W, width }} aria-hidden>
-            {months.map((m) => (
-              <div
-                key={m}
-                className={cn("absolute inset-y-0 border-l", m % 12 === 0 ? "border-line-strong" : "border-line", Math.floor(m / 12) % 2 === 1 && "bg-raised/50")}
-                style={{ left: (m - from) * MONTH_PX, width: MONTH_PX }}
-              />
-            ))}
-            {toToday ? <div className="absolute inset-y-0 right-0 border-r border-dashed border-accent" /> : null}
-          </div>
-
-          <div className="relative flex h-7 items-end" aria-hidden>
-            <span className="sticky left-0 z-10 h-full shrink-0 bg-surface" style={{ width: NAME_W }} />
-            {months.map((m) => (
-              // the current month's slot carries the "today" label instead
-              toToday && m === to - 1 ? null : <span
-                key={m}
-                className={cn("absolute bottom-1 text-[0.72rem] tabular", m % 12 === 0 && m !== from ? "font-semibold text-ink-dim" : "text-ink-faint")}
-                style={{ left: NAME_W + (m - from) * MONTH_PX + 5 }}
-              >
-                {m % 12 === 0 && m !== from ? m / 12 : MONTHS[m % 12]}
+      <ol className="relative ml-1.5 border-l border-line-strong pb-3">
+        {rows.map((s) => {
+          const months = s.end - s.start + 1;
+          const when = whenText(s, year);
+          return (
+            <li key={s.project.id} className="relative">
+              {/* the dot on the spine */}
+              <span className="absolute top-[1.15rem] -left-[0.4rem] grid size-3 place-items-center" aria-hidden>
+                {s.ongoing && !s.approx ? <span className="absolute inset-0 animate-ping rounded-full bg-accent/60" /> : null}
+                <span
+                  className={cn(
+                    "relative size-3 rounded-full border-2 border-surface",
+                    s.approx ? "border-dashed border-accent bg-surface" : s.ongoing ? "bg-accent" : "bg-accent/55",
+                  )}
+                />
               </span>
-            ))}
-            {toToday ? <span className="absolute right-4 bottom-1 text-[0.72rem] font-semibold text-accent">today</span> : null}
-          </div>
-
-          <ul>
-            {rows.map((s) => {
-              const months = s.end - s.start + 1;
-              const when = whenText(s, year);
-              return (
-                <li key={s.project.id}>
-                  <Link
-                    to={`/projects/${s.project.id}`}
-                    aria-label={`${s.project.title}: ${when}, ${lengthText(months)}. Opens the project.`}
-                    className="relative flex h-10 items-center outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                    {...bind(s.project.title, [{ label: when, value: "" }, { label: `${lengthText(months)}${s.ongoing ? " so far" : ""}`, value: "" }], (el) =>
-                      el.querySelector("[data-bar]"),
-                    )}
-                  >
-                    {/* pinned name; the shadow says the chart slides under it */}
-                    <span
-                      className="sticky left-0 z-10 flex h-full shrink-0 items-center bg-surface pr-2 shadow-[6px_0_8px_-6px_var(--rk-shadow)]"
-                      style={{ width: NAME_W }}
-                    >
-                      <span className="line-clamp-2 text-[0.8rem] leading-tight text-ink-dim">{s.project.title}</span>
-                    </span>
-                    <span className="relative h-3" style={{ width }}>
-                      <Bar s={s} from={from} to={to} />
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+              <Link
+                to={`/projects/${s.project.id}`}
+                aria-label={`${s.project.title}: ${when}, ${lengthText(months)}. Opens the project.`}
+                className="block rounded-[3px] py-3 pr-1 pl-5 outline-none transition-colors active:bg-raised focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                <span className="flex items-baseline justify-between gap-3">
+                  <span className="text-[0.95rem] font-semibold leading-snug text-ink">{s.project.title}</span>
+                  {s.ongoing && !s.approx ? <span className="shrink-0 text-[0.72rem] font-semibold text-accent">running</span> : null}
+                </span>
+                <span className="mt-0.5 block text-[0.8rem] text-ink-dim">
+                  {/* year-only dates have no real length to state */}
+                  {s.approx ? when : `${when} · ${lengthText(months)}${s.ongoing ? " so far" : ""}`}
+                </span>
+                <YearTrack s={s} />
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
     </details>
   );
 }
@@ -234,7 +213,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
         const ticks = Array.from({ length: to - from }, (_, i) => from + i).filter((m) => m % step === 0);
         const years = Array.from({ length: Math.ceil((to - from) / 12) }, (_, i) => year + i);
         if (phone)
-          return <PhoneGroup key={year} year={year} rows={rows} from={from} to={to} toToday={toToday} open={gi === 0} hint={gi === 0} bind={bind} />;
+          return <PhoneGroup key={year} year={year} rows={rows} open={gi === 0} />;
         return (
           <section key={year} aria-label={`Started in ${year}`} className="relative">
             {/* this group's month grid, behind its rows */}
