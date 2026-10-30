@@ -7,6 +7,7 @@ import { useCommandPalette } from "../context/CommandContext";
 import { useData } from "../context/DataContext";
 import { useScrolled } from "../hooks";
 import { ThemeToggle } from "./ThemeToggle";
+import { InstallApp } from "./InstallApp";
 
 function NavLink({ label, href, onNavigate, className }: { label: string; href: string; onNavigate?: () => void; className?: string }) {
   const { pathname, hash } = useLocation();
@@ -76,6 +77,7 @@ export function Header() {
           >
             <Search className="size-[18px]" aria-hidden />
           </button>
+          <InstallApp icon className="grid size-10 cursor-pointer place-items-center rounded-[3px] text-ink-dim transition-colors hover:bg-raised hover:text-ink" />
           <ThemeToggle />
           <button
             type="button"
