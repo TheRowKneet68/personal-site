@@ -743,25 +743,35 @@
 }
 @keyframes card-frame-out { to { opacity: 0.35; filter: none; } }
 
-/* Theme switch: the new theme pours down behind a glowing line (ThemeContext) */
-::view-transition-old(root) {
-  animation: none;
+/* Theme switch: the new theme pours down behind a glowing line (ThemeContext).
+   Both halves animate, so the pour still shows on browsers that drop one of them. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1);
+  animation-fill-mode: both;
 }
 ::view-transition-new(root) {
-  animation: theme-pour 0.45s cubic-bezier(0.7, 0, 0.25, 1) both;
+  animation-name: theme-pour;
+}
+::view-transition-old(root) {
+  z-index: 1; /* on top, cut away from the top down to uncover the new theme */
+  animation-name: theme-drain;
 }
 .theme-line {
   position: fixed;
   inset-inline: 0;
   top: 0;
-  height: 2px;
+  height: 3px;
   background: var(--rk-accent);
-  box-shadow: 0 0 14px 3px var(--rk-accent);
+  box-shadow: 0 0 16px 4px var(--rk-accent);
   pointer-events: none;
   view-transition-name: theme-line;
 }
 ::view-transition-group(theme-line) {
-  animation: theme-line 0.45s cubic-bezier(0.7, 0, 0.25, 1) both;
+  z-index: 2;
+  animation: theme-line 0.65s cubic-bezier(0.45, 0, 0.35, 1) both;
 }
 ::view-transition-new(theme-line) {
   animation: none;
@@ -770,9 +780,13 @@
   from { clip-path: inset(0 0 100% 0); }
   to { clip-path: inset(0 0 0 0); }
 }
+@keyframes theme-drain {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(100% 0 0 0); }
+}
 @keyframes theme-line {
   from { transform: translateY(0); }
-  to { transform: translateY(100vh); }
+  to { transform: translateY(100vh); transform: translateY(100lvh); } /* phones: match the snapshot under the address bar */
 }
 
 .wipe-panel {
