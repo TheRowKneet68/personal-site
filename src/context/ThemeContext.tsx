@@ -51,8 +51,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       root.classList.add(next);
       setTheme(next);
     };
-    // the new theme pours down from the top behind a glowing line; instant where unsupported
-    if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) return apply();
+    // the new theme pours down from the top behind a glowing line (no glow with reduced motion); instant where unsupported
+    if (!document.startViewTransition) return apply();
     const line = Object.assign(document.createElement("div"), { className: "theme-line" });
     document
       .startViewTransition(() => {
