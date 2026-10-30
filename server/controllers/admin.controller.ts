@@ -175,6 +175,19 @@ export async function updateContent(req: Request, res: Response): Promise<void> 
   const socialError = validateSocialLinks(body.profile.social_links);
   if (socialError) throw new HttpError(400, socialError);
   const profile = migrateSocialLinks(body.profile as Content["profile"]);
+  // colours end up inside a <style> on every visitor's page: keep only strict hex values
+  const hex = /^#[0-9a-f]{6}$/i;
+  const c = profile.colors as unknown as Record<string, unknown> | undefined;
+  if (c && typeof c === "object" && typeof c.accent === "string" && hex.test(c.accent)) {
+    const amount = Number(c.tintAmount);
+    profile.colors = {
+      accent: c.accent,
+      ...(typeof c.tint === "string" && hex.test(c.tint) ? { tint: c.tint } : {}),
+      ...(Number.isFinite(amount) ? { tintAmount: Math.min(100, Math.max(0, Math.round(amount))) } : {}),
+    };
+  } else {
+    delete profile.colors;
+  }
   const content = normalizeFromFile({
     profile: { ...profile, social_links: normalizeSocialLinks(profile.social_links ?? []) },
     projects: Array.isArray(body.projects) ? body.projects : [],

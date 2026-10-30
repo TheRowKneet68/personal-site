@@ -37,6 +37,8 @@ export interface ProfileRecord {
   fun_facts: string[];
   testimonials?: { quote: string; source: string }[];
   featured_in?: { name: string; url: string; images?: string[] }[];
+  /** Admin-picked site colours; absent = the built-in palette. */
+  colors?: { accent: string; tint?: string; tintAmount?: number };
 }
 
 export interface CaseStudy {

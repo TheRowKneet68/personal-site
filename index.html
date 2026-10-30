@@ -24,6 +24,16 @@
         try { t = localStorage.getItem("rk-theme"); } catch (e) {}
         if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
         document.documentElement.classList.add(t);
+        /* the admin's colours from the last visit, so they paint without waiting on the server */
+        try {
+          var css = localStorage.getItem("rk-colors");
+          if (css) {
+            var s = document.createElement("style");
+            s.id = "rk-colors";
+            s.textContent = css;
+            document.head.appendChild(s);
+          }
+        } catch (e) {}
       })();
     </script>
 

@@ -743,6 +743,38 @@
 }
 @keyframes card-frame-out { to { opacity: 0.35; filter: none; } }
 
+/* Theme switch: the new theme pours down behind a glowing line (ThemeContext) */
+::view-transition-old(root) {
+  animation: none;
+}
+::view-transition-new(root) {
+  animation: theme-pour 0.45s cubic-bezier(0.7, 0, 0.25, 1) both;
+}
+.theme-line {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: var(--rk-accent);
+  box-shadow: 0 0 14px 3px var(--rk-accent);
+  pointer-events: none;
+  view-transition-name: theme-line;
+}
+::view-transition-group(theme-line) {
+  animation: theme-line 0.45s cubic-bezier(0.7, 0, 0.25, 1) both;
+}
+::view-transition-new(theme-line) {
+  animation: none;
+}
+@keyframes theme-pour {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes theme-line {
+  from { transform: translateY(0); }
+  to { transform: translateY(100vh); }
+}
+
 .wipe-panel {
   background-image: radial-gradient(color-mix(in oklab, var(--rk-ink) 9%, transparent) 1px, transparent 1.4px);
   background-size: 22px 22px;
