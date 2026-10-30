@@ -3,6 +3,10 @@ import { useLocation } from "react-router-dom";
 import { useData, type LoadStep } from "../context/DataContext";
 import { SITE } from "../lib/constants";
 import { isNativeApp } from "../lib/native";
+import { detectPlatform, platformIcon, platformName } from "../lib/platforms";
+import { hasScene, socialScene, type ScenePlatform } from "../lib/outboundScenes";
+import { createRoot } from "react-dom/client";
+import { flushSync } from "react-dom";
 
 /* Circuit-board boot. The SVG is a 1000-unit square centred on the screen
    (slice), the chip is 410..590, and 16 traces fan out from its pins to the
@@ -263,6 +267,8 @@ function outboundPage(url: URL): string {
   const [bg, ink, dim, accent] = [v("--rk-bg"), v("--rk-ink"), v("--rk-ink-faint"), v("--rk-accent")];
   const traces = TRACES.map((t, i) => `<path d="${t.d}" pathLength="1" style="animation-delay:${i * 18}ms"/>`).join("");
   const local = url.origin === location.origin;
+  const platform = local ? null : detectPlatform(url.href);
+  if (hasScene(platform)) return socialPage(url, platform, { bg, ink, dim });
   const host = esc(local ? (url.pathname.split("/").pop() || url.pathname) : url.hostname.replace(/^www\./, ""));
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Opening ${host}</title><style>
@@ -282,8 +288,43 @@ b{color:${accent};font-weight:600}
 </style></head><body>
 <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">${traces}<rect x="410" y="410" width="180" height="180" rx="6" pathLength="1"/></svg>
 <div class="logo"></div><p>${local ? "opening" : "connecting to"} <b>${host}</b> ...</p>
-<script>setTimeout(function(){location.replace(${JSON.stringify(url.href).replace(/</g, "\u003c")})},800)</script>
+<script>${goScript(url, 800)}</script>
 </body></html>`;
+}
+
+/** Move on after `ms`; a tap anywhere goes straight away. */
+const goScript = (url: URL, ms: number): string => {
+  const href = JSON.stringify(url.href).replace(/</g, "\\u003c");
+  return `var go=function(){location.replace(${href})};setTimeout(go,${ms});addEventListener("pointerdown",go)`;
+};
+
+/** The platform's icon as SVG markup, drawn with the same icon set as the site. */
+function iconMarkup(platform: string): string {
+  const el = document.createElement("div");
+  const root = createRoot(el);
+  const Icon = platformIcon(platform);
+  flushSync(() => root.render(<Icon />));
+  const svg = el.innerHTML;
+  root.unmount();
+  return svg;
+}
+
+function socialPage(url: URL, platform: ScenePlatform, t: { bg: string; ink: string; dim: string }): string {
+  const { css, html } = socialScene(platform, iconMarkup(platform));
+  const name = esc(platformName(platform));
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opening ${name}</title><style>
+:root{--bg:${t.bg};--ink:${t.ink}}
+html,body{margin:0;height:100%;background:${t.bg};color:${t.ink};overflow:hidden;font:13px/1.4 "JetBrains Mono",ui-monospace,monospace}
+body{display:grid;place-items:center}
+.col{display:flex;flex-direction:column;align-items:center}
+p{margin:2.2rem 0 0;color:${t.dim};text-align:center;animation:fade .3s ease .2s both}
+b{color:${t.ink};font-weight:600}
+@keyframes fade{from{opacity:0}}
+${css}
+@media (prefers-reduced-motion:reduce){.flash{display:none}*{filter:none!important}}
+</style></head><body><div class="col">${html}<p>opening <b>${name}</b> ...</p></div>
+<script>${goScript(url, 1000)}</script></body></html>`;
 }
 
 /** Links to other sites open a new tab that plays the board, then moves on.
