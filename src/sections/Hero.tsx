@@ -79,7 +79,7 @@ export function Hero() {
           </figure>
         </div>
 
-        <div className="rk-rise graticule mt-14 overflow-hidden rounded-[4px] border border-line md:mt-20 lg:grid lg:grid-cols-12" style={{ ["--d" as string]: 4 }}>
+        <div className="rk-rise graticule relative z-10 mt-14 rounded-[4px] border border-line md:mt-20 lg:grid lg:grid-cols-12" style={{ ["--d" as string]: 4 }}>
           <dl className="grid grid-cols-2 lg:col-span-6">
             {stats.map((s, i) => (
               <div

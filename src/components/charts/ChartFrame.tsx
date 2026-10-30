@@ -18,8 +18,11 @@ export function Legend({ items, className }: { items: { label: string; color: st
 export function Tip({ tip }: { tip: TipState }) {
   return (
     <div
-      className="pointer-events-none absolute z-10 w-max max-w-[220px] -translate-x-1/2 -translate-y-full rounded-[3px] border border-line-strong bg-raised px-3 py-2 shadow-card"
-      style={{ left: tip.x, top: tip.y - 8 }}
+      className={cn(
+        "pointer-events-none absolute z-20 w-max max-w-[230px] -translate-x-1/2 rounded-[4px] border border-line-strong bg-raised px-3 py-2 shadow-card",
+        tip.below === undefined && "-translate-y-full",
+      )}
+      style={{ left: tip.x, top: tip.below === undefined ? tip.y - 8 : tip.below + 8 }}
       aria-hidden
     >
       <p className="text-[0.8rem] text-ink-faint">{tip.title}</p>

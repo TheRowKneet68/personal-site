@@ -54,7 +54,7 @@ export function Trace({ rows }: { rows: YearRow[] }) {
           ) : null}
           {rows.map((r, i) => (
             <g key={r.year} className="rk-late">
-              <circle cx={x(i)} cy={y(r.total)} r={active === i ? 6 : 4} fill="var(--rk-accent)" stroke="var(--rk-surface)" strokeWidth={2} />
+              <circle data-point={i} cx={x(i)} cy={y(r.total)} r={active === i ? 6 : 4} fill="var(--rk-accent)" stroke="var(--rk-surface)" strokeWidth={2} />
               <text x={x(i)} y={H - 6} textAnchor="middle" className={active === i ? "fill-ink text-[11px] font-semibold tabular" : "fill-ink-faint text-[11px] tabular"}>
                 {r.year}
               </text>
@@ -67,10 +67,14 @@ export function Trace({ rows }: { rows: YearRow[] }) {
           ) : null}
           {rows.map((r, i) => {
             const fields = ALL_FIELDS.filter((f) => (r.counts[f.key] ?? 0) > 0);
-            const hit = bind(String(r.year), [
-              { label: r.total === 1 ? "project" : "projects", value: String(r.total) },
-              ...fields.map((f) => ({ label: f.label, value: String(r.counts[f.key]), color: f.color })),
-            ]);
+            const hit = bind(
+              String(r.year),
+              [
+                { label: r.total === 1 ? "project" : "projects", value: String(r.total) },
+                ...fields.map((f) => ({ label: f.label, value: String(r.counts[f.key]), color: f.color })),
+              ],
+              (el) => el.ownerSVGElement?.querySelector(`[data-point="${i}"]`) ?? null,
+            );
             return (
               <rect
                 key={r.year}
