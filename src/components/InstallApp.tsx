@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Share, SquarePlus } from "lucide-react";
+import { EllipsisVertical, Share, SquarePlus } from "lucide-react";
 import { useMediaQuery } from "../hooks";
 import { isNativeApp } from "../lib/native";
 
@@ -22,8 +22,8 @@ window.addEventListener("appinstalled", () => {
 const isIos = (): boolean =>
   /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-/** "prompt": the browser can install it. "ios": Safari, show the steps. null: nothing to offer. */
-function useInstall(): "prompt" | "ios" | null {
+/** "prompt": the browser can install it. "ios"/"menu": show the steps for that browser. null: nothing to offer. */
+function useInstall(): "prompt" | "ios" | "menu" | null {
   const [, rerender] = useState(0);
   const touch = useMediaQuery("(pointer: coarse)"); // phones and tablets only
   const standalone = useMediaQuery("(display-mode: standalone)") || (navigator as { standalone?: boolean }).standalone === true;
@@ -34,7 +34,7 @@ function useInstall(): "prompt" | "ios" | null {
   }, []);
   if (!touch || standalone || isNativeApp()) return null;
   if (deferred) return "prompt";
-  return isIos() ? "ios" : null;
+  return isIos() ? "ios" : "menu"; // no prompt yet (or never): the browser menu still works
 }
 
 /** "Install app" link; renders nothing where installing isn't possible. */
@@ -44,9 +44,8 @@ export function InstallApp({ className }: { className?: string }) {
   if (!mode) return null;
 
   const onClick = async (): Promise<void> => {
-    if (mode === "ios") return dialog.current?.showModal();
     const e = deferred;
-    if (!e) return;
+    if (mode !== "prompt" || !e) return dialog.current?.showModal();
     await e.prompt();
     await e.userChoice; // the event is single-use either way
     deferred = null;
@@ -58,7 +57,7 @@ export function InstallApp({ className }: { className?: string }) {
       <button type="button" onClick={() => void onClick()} className={className}>
         Install app
       </button>
-      {mode === "ios" ? (
+      {mode !== "prompt" ? (
         <dialog
           ref={dialog}
           aria-labelledby="ios-install-title"
@@ -70,15 +69,19 @@ export function InstallApp({ className }: { className?: string }) {
           </h2>
           <ol className="mt-4 grid gap-3 text-[0.95rem] text-ink-dim">
             <li className="flex items-center gap-3">
-              <Share className="size-5 shrink-0 text-accent" aria-hidden />
+              {mode === "ios" ? (
+                <Share className="size-5 shrink-0 text-accent" aria-hidden />
+              ) : (
+                <EllipsisVertical className="size-5 shrink-0 text-accent" aria-hidden />
+              )}
               <span>
-                Tap <span className="font-semibold text-ink">Share</span> in the browser bar.
+                Tap <span className="font-semibold text-ink">{mode === "ios" ? "Share" : "the ⋮ menu"}</span> in the browser bar.
               </span>
             </li>
             <li className="flex items-center gap-3">
               <SquarePlus className="size-5 shrink-0 text-accent" aria-hidden />
               <span>
-                Choose <span className="font-semibold text-ink">Add to Home Screen</span>.
+                Choose <span className="font-semibold text-ink">{mode === "ios" ? "Add to Home Screen" : "Install app or Add to Home screen"}</span>.
               </span>
             </li>
           </ol>
