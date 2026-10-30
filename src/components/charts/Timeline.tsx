@@ -18,58 +18,42 @@ const lengthText = (months: number): string => {
   return m ? `${plural(y, "year")} ${plural(m, "month")}` : plural(y, "year");
 };
 
-/** The plot sits beside a fixed name column (stacked under the name on phones),
-    so grid lines and the today marker share one coordinate box with the bars. */
-const PLOT = "absolute inset-y-0 left-0 right-0 sm:left-[14rem]";
+/** The plot sits beside a fixed name column (stacked under the name on phones). */
+const PLOT = "pointer-events-none absolute inset-y-0 left-0 right-0 sm:left-[14rem]";
 
-const shortLength = (months: number): string => {
-  const y = Math.floor(months / 12);
-  const m = months % 12;
-  return [y ? `${y} yr` : "", m ? `${m} mo` : ""].filter(Boolean).join(" ");
-};
-
-function Bar({ s, pct }: { s: ProjectSpan; pct: (m: number) => number }) {
+/** One bar on its year's own Jan-to-Dec axis. A project that carries on past the
+    year runs to the right edge and ends in an arrow instead of a rounded cap. */
+function Bar({ s, from, to }: { s: ProjectSpan; from: number; to: number }) {
+  const pct = (m: number): number => ((Math.min(Math.max(m, from), to) - from) / (to - from)) * 100;
+  const clipped = s.end + 1 > to;
   const left = pct(s.start);
-  const end = pct(s.end + 1);
-  const width = Math.max(end - left, 0.8);
-  const [sy, ey] = [Math.floor(s.start / 12), Math.floor(s.end / 12)];
-  const label = s.approx
-    ? sy === ey
-      ? `${sy}, month unknown`
-      : `${sy} to ${ey}, months unknown` : `${shortLength(s.end - s.start + 1)}${s.ongoing ? " so far" : ""}`;
-  // the label sits before the bar on a dotted leader from the name; bars that start
-  // near the left edge have no room there, so their label follows the bar instead
-  const before = left > 14;
+  const width = Math.max(pct(s.end + 1) - left, 1.5);
   return (
-    <>
-      {before ? (
-        <span className="absolute inset-y-0 left-0 flex items-center gap-2 pr-2 max-sm:hidden" style={{ width: `${left}%` }} aria-hidden>
-          <span className="h-px min-w-2 flex-1 border-b border-dotted border-line-strong" />
-          <span className="whitespace-nowrap text-[0.75rem] text-ink-faint tabular group-hover:text-ink-dim">{label}</span>
-        </span>
-      ) : (
-        <span className="absolute top-1/2 -translate-y-1/2 pl-2 whitespace-nowrap text-[0.75rem] text-ink-faint tabular group-hover:text-ink-dim max-sm:hidden" style={{ left: `${end}%` }} aria-hidden>
-          {label}
-        </span>
+    <span
+      data-bar
+      className={cn(
+        "ch-grow-x absolute top-1/2 h-3 -translate-y-1/2",
+        clipped ? "rounded-l-full" : "rounded-full",
+        s.approx ? "border border-dashed border-accent bg-accent/15" : s.ongoing ? "bg-accent" : "bg-accent/55",
       )}
-      <span
-        data-bar
-        className={cn(
-          "ch-grow-x absolute top-1/2 h-3 -translate-y-1/2 rounded-full",
-          s.approx ? "border border-dashed border-accent bg-accent/15" : s.ongoing ? "bg-accent" : "bg-accent/55",
-        )}
-        style={{ left: `${left}%`, width: `${width}%` }}
-      >
-        {s.ongoing && !s.approx ? (
-          <span className="absolute -right-1.5 top-1/2 size-3.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
-        ) : null}
-      </span>
-    </>
+      style={{ left: `${left}%`, width: `${width}%` }}
+    >
+      {clipped ? (
+        <span
+          className={cn(
+            "absolute top-1/2 -right-2 -translate-y-1/2 border-y-[9px] border-l-[9px] border-y-transparent",
+            s.approx ? "border-l-accent/50" : s.ongoing ? "border-l-accent" : "border-l-accent/55",
+          )}
+        />
+      ) : s.ongoing && !s.approx ? (
+        <span className="absolute -right-1.5 top-1/2 size-3.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
+      ) : null}
+    </span>
   );
 }
 
-/** Gantt: every project on one 2022-to-today axis, grouped by the year it started,
-    newest first. Solid = still running, soft = finished, dotted = only the year is known. */
+/** Gantt grouped by the year each project started, newest first. Each year is
+    zoomed to its own Jan-to-Dec axis so its bars use the full width. */
 export function Timeline({ projects, className }: { projects: Project[]; className?: string }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const { armed, on } = useRevealOnce(bodyRef);
@@ -90,17 +74,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
   }, [spans]);
   if (spans.length === 0) return null;
 
-  const first = Math.floor(Math.min(...spans.map((s) => s.start)) / 12) * 12;
-  const last = today + 1; // the axis ends today
-  const years = Array.from({ length: Math.ceil((last - first) / 12) }, (_, i) => first / 12 + i);
-  // Uneven axis: a year's width follows how many projects ran in it (floor of 3),
-  // so busy recent years get room and quiet early years stay visible but narrow.
-  const active = (y: number): number => spans.filter((s) => s.start < (y + 1) * 12 && s.end >= y * 12).length;
-  const weight = new Map(years.map((y) => [y, Math.max(3, active(y))]));
-  const cum = [0];
-  for (let m = first; m < last; m++) cum.push((cum.at(-1) ?? 0) + (weight.get(Math.floor(m / 12)) ?? 3) / 12);
-  const total = cum.at(-1) || 1;
-  const pct = (m: number): number => ((cum[Math.min(Math.max(m, first), last) - first] ?? 0) / total) * 100;
+  const firstYear = Math.floor(Math.min(...spans.map((s) => s.start)) / 12);
   const running = spans.filter((s) => s.ongoing).length;
 
   return (
@@ -108,7 +82,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
       title="Project timeline"
       summary={
         <>
-          Every project since {first / 12}, by when it started and how long it ran. {running} are still running. Busier years get more width. Hover for dates, click to open one.
+          Every project since {firstYear}, grouped by the year it started. {running} are still running. Hover for dates, click to open one.
         </>
       }
       tip={tip}
@@ -141,50 +115,55 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
           Finished
         </li>
         <li className="flex items-center gap-2">
+          <span className="relative mr-2 h-3 w-6 rounded-l-full bg-accent/55" aria-hidden>
+            <span className="absolute top-1/2 -right-2 -translate-y-1/2 border-y-[9px] border-l-[9px] border-y-transparent border-l-accent/55" />
+          </span>
+          Carries on into a later year
+        </li>
+        <li className="flex items-center gap-2">
           <span className="h-3 w-6 rounded-full border border-dashed border-accent bg-accent/15" aria-hidden />
           Only the year is known
         </li>
       </ul>
 
-      <div className="relative">
-        {/* year grid + today marker, behind every row */}
-        <div className={PLOT} aria-hidden>
-          {years.map((y, i) => (
-            <div
-              key={y}
-              className={cn("absolute inset-y-0 border-l border-line", i % 2 === 0 && "bg-raised/50")}
-              style={{ left: `${pct(y * 12)}%`, width: `${pct(Math.min((y + 1) * 12, last)) - pct(y * 12)}%` }}
-            >
-              <span className="absolute top-1.5 left-2 text-[0.75rem] font-semibold text-ink-faint tabular">{y}</span>
+      {groups.map(([year, rows]) => {
+        const from = year * 12;
+        const current = from <= today && today < from + 12;
+        const to = current ? today + 1 : from + 12; // this year's axis ends today
+        const pos = (m: number): number => ((m - from) / (to - from)) * 100;
+        const quarters = [0, 3, 6, 9].map((q) => from + q).filter((m) => m < to);
+        return (
+          <section key={year} aria-label={`Started in ${year}`} className="relative">
+            {/* this year's month grid, behind its rows */}
+            <div className={PLOT} aria-hidden>
+              {quarters.map((m, i) => (
+                <div
+                  key={m}
+                  className={cn("absolute inset-y-0 border-l border-line", i % 2 === 1 && "bg-raised/50")}
+                  style={{ left: `${pos(m)}%`, width: `${pos(Math.min(m + 3, to)) - pos(m)}%` }}
+                >
+                  <span className="absolute top-4 left-2 text-[0.72rem] text-ink-faint max-sm:hidden">{MONTHS[m % 12]}</span>
+                </div>
+              ))}
+              {current ? (
+                <div className="absolute inset-y-0 right-0 border-r border-dashed border-accent">
+                  <span className="absolute top-4 right-1.5 text-[0.72rem] font-semibold text-accent max-sm:hidden">today</span>
+                </div>
+              ) : null}
             </div>
-          ))}
-          <div className="absolute inset-y-0 border-l border-dashed border-accent" style={{ left: `calc(${pct(last)}% - 1px)` }}>
-            <span className="absolute top-1.5 right-1.5 text-[0.75rem] font-semibold text-accent">today</span>
-          </div>
-        </div>
 
-        <div className="relative h-8" aria-hidden />
-
-        {groups.map(([year, rows], gi) => (
-          <section key={year} aria-label={`Started in ${year}`}>
-            <h4 className="relative flex items-baseline gap-2 border-t border-line-strong pt-3 pb-1.5">
+            <h4 className="relative flex items-baseline gap-2 border-t border-line-strong pt-3 pb-2">
               <span className="font-semibold text-ink tabular">{year}</span>
               <span className="text-[0.8rem] text-ink-faint">{plural(rows.length, "project")}</span>
-              {/* repeat the year scale on every group so a tall chart stays readable */}
-              <span className={cn(PLOT, "max-sm:hidden", gi === 0 && "hidden")} aria-hidden>
-                {years.map((y) => (
-                  <span key={y} className="absolute top-3.5 pl-2 text-[0.72rem] font-normal text-ink-faint tabular" style={{ left: `${pct(y * 12)}%` }}>
-                    {y}
-                  </span>
-                ))}
-              </span>
             </h4>
-            <ul>
+            <ul className="pb-3">
               {rows.map((s) => {
                 const months = s.end - s.start + 1;
                 const f = fieldOfProject(s.project);
                 const when = s.approx
-                  ? `Sometime in ${s.project.year}`
+                  ? Math.floor(s.end / 12) > year
+                    ? `${year} to ${Math.floor(s.end / 12)}, months unknown`
+                    : `Sometime in ${year}`
                   : s.ongoing
                     ? `Since ${monthLabel(s.start)}`
                     : dateRange(s.project.started, s.project.finished) || s.project.year;
@@ -208,7 +187,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
                         {s.project.title}
                       </span>
                       <span className="relative h-4 max-sm:mt-1">
-                        <Bar s={s} pct={pct} />
+                        <Bar s={s} from={from} to={to} />
                       </span>
                     </Link>
                   </li>
@@ -216,8 +195,8 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
               })}
             </ul>
           </section>
-        ))}
-      </div>
+        );
+      })}
     </ChartFrame>
   );
 }
