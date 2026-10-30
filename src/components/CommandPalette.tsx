@@ -5,6 +5,7 @@ import { useCommandPalette } from "../context/CommandContext";
 import { useData } from "../context/DataContext";
 import { useTheme } from "../context/ThemeContext";
 import { SITE } from "../lib/constants";
+import { startResume } from "./LoadingScreen";
 import { useCopyToClipboard } from "../hooks";
 import { cn } from "../utils/format";
 import type { Project } from "../types";
@@ -68,7 +69,7 @@ export function CommandPalette() {
         perform: () => goProject(p),
       })),
       { id: "copy-email", label: "Copy email address", hint: "action", keywords: "email copy contact", icon: Mail, perform: () => { void copy(); close(); } },
-      { id: "resume", label: "Download resume", hint: "pdf", keywords: "resume cv pdf download", icon: FileDown, perform: () => { window.open(SITE.resume, "_blank"); close(); } },
+      { id: "resume", label: "Download resume", hint: "pdf", keywords: "resume cv pdf download", icon: FileDown, perform: () => { close(); startResume(); } },
       { id: "github", label: "Open GitHub", hint: "external", keywords: "github code repos", icon: ExternalLink, perform: () => { window.open(SITE.github, "_blank"); close(); } },
       { id: "linkedin", label: "Open LinkedIn", hint: "external", keywords: "linkedin job work", icon: ExternalLink, perform: () => { window.open(SITE.linkedin, "_blank"); close(); } },
       { id: "theme", label: theme === "dark" ? "Switch to light mode" : "Switch to dark mode", hint: "action", keywords: "theme dark light mode colour color", icon: theme === "dark" ? Sun : Moon, perform: () => { toggleTheme(); close(); } },
