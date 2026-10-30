@@ -18,6 +18,27 @@ npm run dev
 npm run build   # syncs data -> embedded snapshot, regenerates resume + sitemap, then tsc + vite build
 ```
 
+Checks: `npm run lint`, `npm run typecheck`, and `npx tsx scripts/check-portfolio.ts` (date, placement and
+cleanup helpers the homepage relies on).
+
+## design notes
+
+- Palette "Bench meter" (`src/index.css` tokens): test-gear yellow on graphite, probe red only for errors.
+  Dark by default; `<html class="light">` swaps the tokens. The first theme is picked before paint in
+  `index.html` (saved choice, else the device setting); the header toggle saves the choice. Yellow can't
+  carry text on a light page, so `accent` (text, lines) is deep amber in light mode, while filled buttons
+  use `accent-fill` + `on-accent`. Scales come from the UI Color Palette plugin (OKLCH, Tailwind stops);
+  chart series `--ch-1..5` are validated per mode with the dataviz palette checker against `--rk-surface`.
+- Hero stats are recounted by the server on every request (`deriveStats` in `server/services/content.ts`).
+  Each stat has a `source` set in /admin: projects, achievements, placements, dan badge, or typed by hand.
+- Type: Bricolage Grotesque (display + body), Instrument Serif italic for the hero accent, JetBrains Mono
+  only for part numbers and readouts.
+- Charts (`src/components/charts/`) are plain SVG, computed from the CMS data: the hero trace, projects per
+  year by field, field mix, most-used parts and the competition timeline. Each has hover/focus tooltips and
+  a "Show the numbers" table. Category -> field grouping lives in `src/lib/stats.ts`.
+- Project system diagrams live in `src/lib/diagrams.ts`, keyed by project id.
+- Share card source: `scripts/og-card.html` (regenerate `public/images/og-card.jpg` from it).
+
 ## env
 
 The whole project uses a single `.env` at the repo root (never committed):

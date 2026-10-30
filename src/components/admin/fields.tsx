@@ -1,18 +1,14 @@
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
+import { ArrowDown, ArrowUp, Plus, Trash2, Upload } from "lucide-react";
 import { cn } from "../../utils/format";
-
-const inputCls =
-  "w-full rounded-md border border-line bg-bg px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none";
-
-const btnCls =
-  "rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent disabled:opacity-30 disabled:hover:border-line disabled:hover:text-ink-dim";
+import { move, ui } from "./ui";
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
-    <label className="block">
-      <span className="mb-1 block font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">{label}</span>
+    <label className="block min-w-0">
+      {label ? <span className={ui.label}>{label}</span> : null}
       {children}
-      {hint ? <span className="mt-1 block text-xs text-ink-faint">{hint}</span> : null}
+      {hint ? <span className={ui.hint}>{hint}</span> : null}
     </label>
   );
 }
@@ -21,16 +17,19 @@ export function TextInput({
   value,
   onChange,
   placeholder,
+  invalid,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  invalid?: boolean;
 }) {
   return (
     <input
-      className={inputCls}
+      className={cn(ui.input, invalid && "border-warn focus:border-warn")}
       value={value}
       placeholder={placeholder}
+      aria-invalid={invalid || undefined}
       onChange={(e) => onChange(e.target.value)}
     />
   );
@@ -49,12 +48,34 @@ export function TextArea({
 }) {
   return (
     <textarea
-      className={cn(inputCls, "resize-y")}
+      className={cn(ui.area, "resize-y")}
       rows={rows}
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
     />
+  );
+}
+
+export function Select({
+  value,
+  onChange,
+  options,
+  ariaLabel,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  ariaLabel?: string;
+}) {
+  return (
+    <select className={cn(ui.input, "cursor-pointer pr-8")} value={value} aria-label={ariaLabel} onChange={(e) => onChange(e.target.value)}>
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
+        </option>
+      ))}
+    </select>
   );
 }
 
@@ -68,22 +89,52 @@ export function Toggle({
   label?: string;
 }) {
   return (
-    <label className="flex items-center gap-2 font-mono text-xs text-ink-dim">
+    <label className="inline-flex cursor-pointer items-center gap-2.5 text-[0.92rem] text-ink-dim">
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="size-4 accent-accent"
+        className="size-4 cursor-pointer accent-[var(--rk-accent)]"
       />
       {label}
     </label>
   );
 }
 
-const fileInputCls =
-  "font-mono text-xs text-ink-faint file:mr-3 file:cursor-pointer file:rounded file:border file:border-line file:bg-bg file:px-3 file:py-1.5 file:font-mono file:text-xs file:text-ink-dim hover:file:border-accent";
+function UploadButton({
+  multiple,
+  busy,
+  onFiles,
+  label,
+}: {
+  multiple?: boolean;
+  busy: boolean;
+  onFiles: (files: FileList) => void;
+  label: string;
+}) {
+  const id = useId();
+  return (
+    <>
+      <label htmlFor={id} className={cn(ui.small, busy && "pointer-events-none opacity-50")}>
+        <Upload className="size-3.5" aria-hidden />
+        {busy ? "Uploading…" : label}
+      </label>
+      <input
+        id={id}
+        type="file"
+        accept="image/*"
+        multiple={multiple}
+        className="sr-only"
+        onChange={(e) => {
+          if (e.target.files?.length) onFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+    </>
+  );
+}
 
-/** URL input + live preview + optional upload button (uploads via the admin upload API). */
+/** URL input + live preview + optional upload (via the admin upload API). */
 export function ImageField({
   label,
   value,
@@ -103,49 +154,45 @@ export function ImageField({
   const [uploadError, setUploadError] = useState("");
 
   return (
-    <Field label={label} hint={hint}>
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <TextInput value={value} placeholder="url or path" onChange={onChange} />
+    <div className="min-w-0">
+      {label ? <span className={ui.label}>{label}</span> : null}
+      <div className="flex items-start gap-3">
+        <div className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-[4px] border border-line bg-bg">
           {value ? (
-            <img
-              src={value}
-              alt=""
-              width={64}
-              height={64}
-              className={cn("size-16 shrink-0 rounded border border-line bg-bg", objectFit === "cover" ? "object-cover" : "object-contain")}
-            />
-          ) : null}
+            <img src={value} alt="" width={64} height={64} className={cn("size-full", objectFit === "cover" ? "object-cover" : "object-contain")} />
+          ) : (
+            <span className="text-[0.75rem] text-ink-faint">None</span>
+          )}
         </div>
-        {uploadImage ? (
-          <div className="flex items-center gap-3">
-            <input
-              type="file"
-              accept="image/*"
-              className={fileInputCls}
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) {
+        <div className="min-w-0 flex-1 space-y-2">
+          <TextInput value={value} placeholder="Image URL" onChange={onChange} />
+          {uploadImage ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <UploadButton
+                busy={uploading}
+                label="Upload"
+                onFiles={(files) => {
+                  const f = files[0];
+                  if (!f) return;
                   setUploading(true);
                   setUploadError("");
                   uploadImage(f)
                     .then(onChange)
                     .catch((err: unknown) => setUploadError(err instanceof Error ? err.message : "Upload failed"))
                     .finally(() => setUploading(false));
-                }
-                e.target.value = "";
-              }}
-            />
-            {uploading ? <span className="font-mono text-xs text-ink-faint">Uploading…</span> : null}
-            {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
-          </div>
-        ) : null}
+                }}
+              />
+              {uploadError ? <span className="text-[0.85rem] text-warn">{uploadError}</span> : null}
+            </div>
+          ) : null}
+        </div>
       </div>
-    </Field>
+      {hint ? <span className={ui.hint}>{hint}</span> : null}
+    </div>
   );
 }
 
-function RowActions({
+export function RowActions({
   index,
   count,
   onMove,
@@ -157,28 +204,28 @@ function RowActions({
   onRemove: () => void;
 }) {
   return (
-    <div className="flex shrink-0 items-center gap-1">
-      <button type="button" className={btnCls} disabled={index === 0} onClick={() => onMove(index, index - 1)} aria-label="move up">
-        ↑
+    <div className="flex shrink-0 items-center">
+      <button type="button" className={ui.icon} disabled={index === 0} onClick={() => onMove(index, index - 1)} aria-label="Move up" title="Move up">
+        <ArrowUp className="size-4" aria-hidden />
       </button>
-      <button type="button" className={btnCls} disabled={index === count - 1} onClick={() => onMove(index, index + 1)} aria-label="move down">
-        ↓
+      <button type="button" className={ui.icon} disabled={index === count - 1} onClick={() => onMove(index, index + 1)} aria-label="Move down" title="Move down">
+        <ArrowDown className="size-4" aria-hidden />
       </button>
-      <button type="button" className={btnCls} onClick={onRemove} aria-label="remove">
-        ×
+      <button type="button" className={cn(ui.icon, "hover:text-warn")} onClick={onRemove} aria-label="Remove" title="Remove">
+        <Trash2 className="size-4" aria-hidden />
       </button>
     </div>
   );
 }
 
-/** Manage many images: previews, per-image URL editing, reorder, remove, multi-file upload. */
+/** Many images: previews, per-image URL editing, reorder, remove, multi-file upload. */
 export function ImageList({
   label,
   value,
   onChange,
   uploadImage,
   hint,
-  emptyText = "No images yet - add a few below.",
+  emptyText = "No images yet.",
 }: {
   label: string;
   value: string[];
@@ -189,8 +236,8 @@ export function ImageList({
 }) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
-  const handleFiles = async (files: FileList | null) => {
-    if (!files || files.length === 0 || !uploadImage) return;
+  const handleFiles = async (files: FileList) => {
+    if (!uploadImage) return;
     setUploading(true);
     setUploadError("");
     try {
@@ -204,80 +251,57 @@ export function ImageList({
     }
   };
   return (
-    <Field label={label} hint={hint}>
-      <div className="space-y-3">
-        {value.length === 0 ? (
-          <p className="text-sm text-ink-faint">{emptyText}</p>
-        ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {value.map((url, i) => (
-              <div key={i} className="rounded-lg border border-line bg-bg p-2">
+    <div className="min-w-0">
+      {label ? <span className={ui.label}>{label}</span> : null}
+      {value.length === 0 ? (
+        <p className="rounded-[4px] border border-dashed border-line-strong px-4 py-5 text-center text-[0.9rem] text-ink-faint">{emptyText}</p>
+      ) : (
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+          {value.map((url, i) => (
+            <li key={i} className="min-w-0 rounded-[4px] border border-line bg-bg p-2">
+              <a href={url || undefined} target="_blank" rel="noopener noreferrer" title="Open full size" className="block">
                 {url ? (
-                  <a href={url} target="_blank" rel="noopener noreferrer" title="Open full size">
-                    <img src={url} alt="" className="aspect-[4/3] w-full rounded object-cover" />
-                  </a>
+                  <img src={url} alt="" className="aspect-[4/3] w-full rounded-[3px] bg-surface object-contain" />
                 ) : (
-                  <div className="flex aspect-[4/3] w-full items-center justify-center rounded bg-bg font-mono text-xs text-ink-faint">
-                    no image
-                  </div>
+                  <span className="grid aspect-[4/3] w-full place-items-center rounded-[3px] bg-surface text-[0.8rem] text-ink-faint">No image</span>
                 )}
-                <input
-                  className="mt-2 w-full rounded border border-line bg-bg px-2 py-1 font-mono text-xs text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
-                  value={url}
-                  placeholder="url or path"
-                  onChange={(e) => onChange(value.map((u, j) => (j === i ? e.target.value : u)))}
-                />
-                <div className="mt-2 flex items-center gap-1">
-                  <button type="button" className={btnCls} disabled={i === 0} onClick={() => onChange(move(value, i, i - 1))} title="Move up">
-                    ↑
-                  </button>
-                  <button type="button" className={btnCls} disabled={i === value.length - 1} onClick={() => onChange(move(value, i, i + 1))} title="Move down">
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    className="ml-auto rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-warn hover:border-warn hover:text-warn"
-                    onClick={() => onChange(value.filter((_, j) => j !== i))}
-                    title="Remove this image"
-                  >
-                    remove
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        {uploadImage ? (
-          <div className="flex flex-wrap items-center gap-3">
-            <label className="inline-flex cursor-pointer items-center rounded border border-line px-3 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent">
-              {uploading ? "Uploading…" : "+ add image(s)"}
+              </a>
               <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => {
-                  void handleFiles(e.target.files);
-                  e.target.value = "";
-                }}
+                className="mt-2 h-8 w-full rounded-[3px] border border-field bg-bg px-2 text-[0.8rem] text-ink focus:border-accent focus:outline-none"
+                value={url}
+                placeholder="Image URL"
+                aria-label={`Image ${i + 1} URL`}
+                onChange={(e) => onChange(value.map((u, j) => (j === i ? e.target.value : u)))}
               />
-            </label>
-            <span className="text-xs text-ink-faint">Pick several files at once. The first image is the cover.</span>
-            {uploadError ? <span className="text-xs text-warn">{uploadError}</span> : null}
-          </div>
-        ) : null}
-      </div>
-    </Field>
+              <div className="mt-1.5 flex items-center justify-between">
+                <span className="text-[0.78rem] text-ink-faint">{i === 0 ? "Cover" : `#${i + 1}`}</span>
+                <RowActions index={i} count={value.length} onMove={(a, b) => onChange(move(value, a, b))} onRemove={() => onChange(value.filter((_, j) => j !== i))} />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {uploadImage ? (
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <UploadButton multiple busy={uploading} label="Add images" onFiles={(f) => void handleFiles(f)} />
+          <span className="text-[0.82rem] text-ink-faint">You can pick several files. The first image is the cover.</span>
+          {uploadError ? <span className="text-[0.85rem] text-warn">{uploadError}</span> : null}
+        </div>
+      ) : null}
+      {hint ? <span className={ui.hint}>{hint}</span> : null}
+    </div>
   );
 }
 
-function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
+export function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <button type="button" className={cn(btnCls, "px-3 py-1")} onClick={onClick}>
-      + {label}
+    <button type="button" className={ui.add} onClick={onClick}>
+      <Plus className="size-4" aria-hidden /> {label}
     </button>
   );
 }
+
+const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Editable list of strings with reorder + remove. */
 export function StringList({
@@ -285,36 +309,52 @@ export function StringList({
   onChange,
   placeholder,
   itemLabel = "item",
+  multiline = false,
 }: {
   value: string[];
   onChange: (v: string[]) => void;
   placeholder?: string;
   itemLabel?: string;
+  multiline?: boolean;
 }) {
   return (
     <div className="space-y-2">
       {value.map((item, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <input
-            className={inputCls}
-            value={item}
-            placeholder={placeholder ?? itemLabel}
-            onChange={(e) => onChange(value.map((v, j) => (j === i ? e.target.value : v)))}
-          />
-          <RowActions index={i} count={value.length} onMove={(a, b) => onChange(move(value, a, b))} onRemove={() => onChange(value.filter((_, j) => j !== i))} />
+        <div key={i} className="flex items-start gap-1.5">
+          {multiline ? (
+            <textarea
+              className={cn(ui.area, "min-h-[4.5rem] resize-y")}
+              rows={2}
+              value={item}
+              placeholder={placeholder ?? cap(itemLabel)}
+              aria-label={`${cap(itemLabel)} ${i + 1}`}
+              onChange={(e) => onChange(value.map((v, j) => (j === i ? e.target.value : v)))}
+            />
+          ) : (
+            <input
+              className={ui.input}
+              value={item}
+              placeholder={placeholder ?? cap(itemLabel)}
+              aria-label={`${cap(itemLabel)} ${i + 1}`}
+              onChange={(e) => onChange(value.map((v, j) => (j === i ? e.target.value : v)))}
+            />
+          )}
+          <div className="shrink-0 pt-1">
+            <RowActions index={i} count={value.length} onMove={(a, b) => onChange(move(value, a, b))} onRemove={() => onChange(value.filter((_, j) => j !== i))} />
+          </div>
         </div>
       ))}
-      <AddButton label={itemLabel} onClick={() => onChange([...value, ""])} />
+      <AddButton label={`Add ${itemLabel}`} onClick={() => onChange([...value, ""])} />
     </div>
   );
 }
 
-/** Record<string, string> editor (e.g. socials, links). */
+/** Record<string, string> editor. */
 export function MapEditor({
   value,
   onChange,
-  keyPlaceholder = "key",
-  valuePlaceholder = "value",
+  keyPlaceholder = "Key",
+  valuePlaceholder = "Value",
   itemLabel = "entry",
 }: {
   value: Record<string, string>;
@@ -328,13 +368,13 @@ export function MapEditor({
   return (
     <div className="space-y-2">
       {entries.map(([k, v], i) => (
-        <div key={i} className="flex items-center gap-2">
-          <input className={cn(inputCls, "max-w-40")} value={k} placeholder={keyPlaceholder} onChange={(e) => set(entries.map(([k0, v0], j) => (j === i ? [e.target.value, v0] : [k0, v0])))} />
-          <input className={inputCls} value={v} placeholder={valuePlaceholder} onChange={(e) => set(entries.map(([k0, v0], j) => (j === i ? [k0, e.target.value] : [k0, v0])))} />
+        <div key={i} className="flex items-center gap-1.5">
+          <input className={cn(ui.input, "max-w-44")} value={k} placeholder={keyPlaceholder} onChange={(e) => set(entries.map(([k0, v0], j) => (j === i ? [e.target.value, v0] : [k0, v0])))} />
+          <input className={ui.input} value={v} placeholder={valuePlaceholder} onChange={(e) => set(entries.map(([k0, v0], j) => (j === i ? [k0, e.target.value] : [k0, v0])))} />
           <RowActions index={i} count={entries.length} onMove={(a, b) => set(move(entries, a, b))} onRemove={() => set(entries.filter((_, j) => j !== i))} />
         </div>
       ))}
-      <AddButton label={itemLabel} onClick={() => set([...entries, ["", ""]])} />
+      <AddButton label={`Add ${itemLabel}`} onClick={() => set([...entries, ["", ""]])} />
     </div>
   );
 }
@@ -364,31 +404,32 @@ export function PairList<T extends object>({
   };
   return (
     <div className="space-y-2">
+      {value.length > 0 ? (
+        <div className="hidden grid-cols-[minmax(0,1fr)_minmax(0,1fr)_6.5rem] gap-1.5 sm:grid">
+          <span className="text-[0.82rem] text-ink-faint">{cap(fields.labelA)}</span>
+          <span className="text-[0.82rem] text-ink-faint">{cap(fields.labelB)}</span>
+        </div>
+      ) : null}
       {value.map((item, i) => (
-        <div key={i} className="flex items-center gap-2">
+        <div key={i} className="grid gap-1.5 rounded-[4px] border border-line p-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-center sm:border-0 sm:p-0">
           <input
-            className={inputCls}
+            className={ui.input}
             value={get(item, fields.keyA)}
-            placeholder={fields.labelA}
+            placeholder={cap(fields.labelA)}
+            aria-label={`${cap(fields.labelA)} ${i + 1}`}
             onChange={(e) => onChange(value.map((v, j) => (j === i ? { ...v, [fields.keyA]: e.target.value } : v)))}
           />
           <input
-            className={inputCls}
+            className={ui.input}
             value={get(item, fields.keyB)}
-            placeholder={fields.labelB}
+            placeholder={cap(fields.labelB)}
+            aria-label={`${cap(fields.labelB)} ${i + 1}`}
             onChange={(e) => onChange(value.map((v, j) => (j === i ? { ...v, [fields.keyB]: e.target.value } : v)))}
           />
           <RowActions index={i} count={value.length} onMove={(a, b) => onChange(move(value, a, b))} onRemove={() => onChange(value.filter((_, j) => j !== i))} />
         </div>
       ))}
-      <AddButton label={itemLabel} onClick={() => onChange([...value, { [fields.keyA]: "", [fields.keyB]: "" } as T])} />
+      <AddButton label={`Add ${itemLabel}`} onClick={() => onChange([...value, { [fields.keyA]: "", [fields.keyB]: "" } as T])} />
     </div>
   );
-}
-
-function move<T>(arr: T[], from: number, to: number): T[] {
-  const next = [...arr];
-  const [item] = next.splice(from, 1);
-  next.splice(to, 0, item as T);
-  return next;
 }

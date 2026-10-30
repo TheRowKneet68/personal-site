@@ -1,9 +1,10 @@
 import { useRef, useState, type ReactNode } from "react";
-import { GripVertical } from "lucide-react";
-import type { Achievement, CaseStudy, ExperienceEntry, FeaturedIn, Principle, Profile, Project, SocialLink, Testimonial } from "../../types";
+import { ArrowDown, ArrowUp, ChevronDown, GripVertical, Trash2 } from "lucide-react";
+import type { Achievement, ExperienceEntry, FeaturedIn, Principle, Profile, SocialLink, Testimonial } from "../../types";
 import { cn } from "../../utils/format";
 import { detectPlatform, isValidHttpUrl, platformIcon, platformName, PLATFORMS } from "../../lib/platforms";
 import { Field, ImageField, ImageList, PairList, StringList, TextArea, TextInput, Toggle } from "./fields";
+import { ui } from "./ui";
 
 /* ---------------- generic repeater ---------------- */
 
@@ -68,7 +69,7 @@ export function Repeater<T extends object>({
     return undefined;
   };
   const btnCls =
-    "rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent disabled:opacity-30";
+    ui.small;
 
   return (
     <div className="space-y-3">
@@ -76,19 +77,19 @@ export function Repeater<T extends object>({
         <div className="flex flex-wrap items-center gap-2">
           {items.length > 6 ? (
             <input
-              className="min-w-52 flex-1 rounded-md border border-line bg-bg px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
-              placeholder={`search ${itemLabel}s by name…`}
+              className={cn(ui.input, "min-w-52 flex-1")}
+              placeholder={`Search ${itemLabel}s`}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
           ) : null}
           {sorts && sorts.length > 0 ? (
             <select
-              className="rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+              className={cn(ui.input, "w-auto cursor-pointer")}
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value)}
             >
-              <option value="manual">sort: manual order</option>
+              <option value="manual">Manual order</option>
               {sorts.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.label}
@@ -98,7 +99,7 @@ export function Repeater<T extends object>({
           ) : null}
         </div>
       ) : null}
-      {rows.length === 0 ? <p className="text-sm text-ink-faint">No {itemLabel}s match “{query}”.</p> : null}
+      {rows.length === 0 ? <p className="text-[0.92rem] text-ink-faint">No {itemLabel}s match “{query}”.</p> : null}
       {rows.map(({ item, i }, k) => {
         const img = thumb(item);
         const href = view?.(item);
@@ -114,7 +115,7 @@ export function Repeater<T extends object>({
           ...(summaryToggles ?? []),
         ];
         return (
-          <details key={i} className={cn("rounded-lg border border-line bg-surface", dragIdx === i && "opacity-50")}>
+          <details key={i} className={cn("group rounded-[6px] border border-line bg-surface", dragIdx === i && "opacity-50")}>
             <summary
               draggable={!sorted}
               onDragStart={(e) => {
@@ -139,15 +140,15 @@ export function Repeater<T extends object>({
                 <GripVertical className="size-4" />
               </span>
               {img ? (
-                <img src={img} alt="" className="size-10 shrink-0 rounded border border-line bg-bg object-cover" />
+                <img src={img} alt="" className="size-10 shrink-0 rounded-[4px] border border-line bg-bg object-cover" />
               ) : (
-                <span className="flex size-10 shrink-0 items-center justify-center rounded border border-line bg-bg font-mono text-sm text-ink-faint">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-[4px] border border-line bg-bg text-[0.9rem] font-semibold text-ink-faint">
                   {title.charAt(0).toUpperCase() || "·"}
                 </span>
               )}
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm text-ink">{title || `Untitled ${itemLabel}`}</span>
-                <span className="block font-mono text-[0.65rem] text-ink-faint">
+                <span className="block truncate text-[0.95rem] font-medium text-ink">{title || `Untitled ${itemLabel}`}</span>
+                <span className="block text-[0.8rem] text-ink-faint">
                   {k + 1} of {rows.length}
                 </span>
               </span>
@@ -157,15 +158,15 @@ export function Repeater<T extends object>({
                   <label
                     key={t.label}
                     className={cn(
-                      "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em]",
-                      on ? "border-accent bg-accent/10 text-accent-ink" : "border-line text-ink-faint",
+                      "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[4px] border px-2.5 py-1 text-[0.82rem]",
+                      on ? "border-accent/60 bg-accent-soft text-ink" : "border-line text-ink-faint",
                     )}
                     title={`${t.label} - toggle without opening`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <input
                       type="checkbox"
-                      className="size-3 accent-accent"
+                      className="size-3.5 accent-[var(--rk-accent)]"
                       checked={on}
                       onChange={(e) => update(i, t.patch(item, e.target.checked))}
                     />
@@ -179,15 +180,13 @@ export function Repeater<T extends object>({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="shrink-0 rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent"
+                  className={cn(ui.small, "shrink-0 max-sm:hidden")}
                   title="Open on the live site"
                 >
-                  view ↗
+                  View
                 </a>
               ) : null}
-              <span className="shrink-0 font-mono text-xs text-ink-faint" aria-hidden>
-                ▾
-              </span>
+              <ChevronDown className="size-4 shrink-0 text-ink-faint transition-transform group-open:rotate-180" aria-hidden />
             </summary>
             <div className="space-y-3 border-t border-line px-4 py-3">
               {fields.map((f) => {
@@ -213,13 +212,13 @@ export function Repeater<T extends object>({
                   return (
                     <Field key={f.key} label={f.label} hint={f.hint}>
                       <select
-                        className="w-full rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+                        className={cn(ui.input, "cursor-pointer")}
                         value={typeof val === "string" ? val : ""}
                         onChange={(e) => update(i, { [f.key]: e.target.value } as Partial<T>)}
                       >
                         {(f.options ?? []).map((o) => (
                           <option key={o} value={o}>
-                            {o === "" ? "- none -" : o}
+                            {o === "" ? "Not set" : o}
                           </option>
                         ))}
                       </select>
@@ -231,7 +230,7 @@ export function Repeater<T extends object>({
                     <Field key={f.key} label={f.label} hint={f.hint}>
                       <input
                         type="number"
-                        className="w-full rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+                        className={cn(ui.input, "cursor-pointer")}
                         value={typeof val === "number" ? val : ""}
                         placeholder="e.g. 1, 2, 3"
                         onChange={(e) => update(i, { [f.key]: e.target.value === "" ? undefined : Number(e.target.value) } as Partial<T>)}
@@ -248,10 +247,10 @@ export function Repeater<T extends object>({
               {renderDetail ? <div className="border-t border-line pt-3">{renderDetail(item, (patch) => update(i, patch))}</div> : null}
               <div className="flex flex-wrap items-center gap-2 border-t border-line pt-3">
                 <button type="button" className={btnCls} disabled={sorted || i === 0} onClick={() => move(i, i - 1)} title="Move this item up">
-                  ↑ up
+                  Move up
                 </button>
                 <button type="button" className={btnCls} disabled={sorted || i === items.length - 1} onClick={() => move(i, i + 1)} title="Move this item down">
-                  ↓ down
+                  Move down
                 </button>
                 <button
                   type="button"
@@ -265,15 +264,15 @@ export function Repeater<T extends object>({
                   }}
                   title="Duplicate this item"
                 >
-                  duplicate
+                  Duplicate
                 </button>
                 <button
                   type="button"
-                  className="ml-auto rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-warn hover:border-warn hover:text-warn"
+                  className={cn(ui.danger, "ml-auto")}
                   onClick={() => onChange(items.filter((_, j) => j !== i))}
                   title="Delete this item"
                 >
-                  remove
+                  Remove
                 </button>
               </div>
             </div>
@@ -282,10 +281,10 @@ export function Repeater<T extends object>({
       })}
       <button
         type="button"
-        className="rounded border border-line px-3 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent"
+        className={ui.add}
         onClick={() => onChange([...items, newItem()])}
       >
-        + add {itemLabel}
+        Add {itemLabel}
       </button>
     </div>
   );
@@ -391,11 +390,11 @@ export function JourneySection({ value, onChange }: { value: ExperienceEntry[]; 
         { key: "note", label: "Note", type: "textarea" },
       ]}
       newItem={() => ({ year: "", title: "", note: "" })}
-      titleOf={(i) => `${i.year} - ${i.title}`}
+      titleOf={(i) => [i.year, i.title].filter(Boolean).join("  ")}
       sorts={[
-        { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
-        { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
-        { id: "title", label: "sort: title A-Z", compare: (a, b) => a.title.localeCompare(b.title) },
+        { id: "year-new", label: "newest year", compare: (a, b) => b.year.localeCompare(a.year) },
+        { id: "year-old", label: "oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
+        { id: "title", label: "title A-Z", compare: (a, b) => a.title.localeCompare(b.title) },
       ]}
     />
   );
@@ -423,30 +422,30 @@ export function SkillsSection({ value, onChange }: { value: Record<string, strin
     set(next);
   };
   const btnCls =
-    "rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent disabled:opacity-30";
+    ui.small;
   return (
     <div className="space-y-4">
       {entries.map(([category, skills], i) => (
-        <div key={i} className="rounded-lg border border-line bg-surface p-4">
+        <div key={i} className="rounded-[6px] border border-line bg-surface p-4">
           <div className="mb-3 flex items-center gap-2">
             <input
-              className="w-48 rounded-md border border-line bg-bg px-3 py-2 text-sm text-ink focus:border-accent focus:outline-none"
+              className={cn(ui.input, "w-56")}
               value={category}
-              placeholder="category"
+              placeholder="Category"
               onChange={(e) => set(entries.map(([c, s], j) => (j === i ? [e.target.value, s] : [c, s])))}
             />
             <button type="button" className={btnCls} disabled={i === 0} onClick={() => move(i, i - 1)} title="Move category up">
-              ↑
+              <ArrowUp className="size-4" aria-hidden />
             </button>
             <button type="button" className={btnCls} disabled={i === entries.length - 1} onClick={() => move(i, i + 1)} title="Move category down">
-              ↓
+              <ArrowDown className="size-4" aria-hidden />
             </button>
             <button
               type="button"
-              className="rounded border border-line px-2 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent"
+              className={ui.small}
               onClick={() => set(entries.filter((_, j) => j !== i))}
             >
-              remove category
+              Remove category
             </button>
           </div>
           <StringList value={skills} itemLabel="skill" onChange={(v) => set(entries.map(([c, s], j) => (j === i ? [c, v] : [c, s])))} />
@@ -454,10 +453,10 @@ export function SkillsSection({ value, onChange }: { value: Record<string, strin
       ))}
       <button
         type="button"
-        className="rounded border border-line px-3 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent"
+        className={ui.add}
         onClick={() => set([...entries, ["", []]])}
       >
-        + category
+        Add category
       </button>
     </div>
   );
@@ -475,133 +474,6 @@ export function TestimonialsSection({ value, onChange }: { value: Testimonial[];
 }
 
 /* ---------------- collections ---------------- */
-
-function CaseStudyEditor({ value, update }: { value: CaseStudy | undefined; update: (patch: Partial<Project>) => void }) {
-  const cs = value;
-  const set = (patch: Partial<CaseStudy>) => update({ caseStudy: { ...(cs ?? {}), ...patch } } as Partial<Project>);
-  const list = (label: string, key: keyof CaseStudy) => (
-    <Field label={label}>
-      <StringList value={Array.isArray(cs?.[key]) ? (cs![key] as string[]) : []} itemLabel={label.toLowerCase()} onChange={(v) => set({ [key]: v })} />
-    </Field>
-  );
-  const btnCls = "rounded border border-line px-2 py-0.5 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent";
-  if (!cs) {
-    return (
-      <button type="button" className={btnCls} onClick={() => update({ caseStudy: {} } as Partial<Project>)}>
-        + add case study
-      </button>
-    );
-  }
-  return (
-    <div className="space-y-3 rounded-md border border-line p-3">
-      <div className="flex items-center justify-between">
-        <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-ink-faint">Case study</span>
-        <button type="button" className={btnCls} onClick={() => update({ caseStudy: undefined } as Partial<Project>)}>
-          remove
-        </button>
-      </div>
-      {list("Problem", "problem")}
-      {list("Solution", "solution")}
-      {list("Architecture", "architecture")}
-      {list("Stack", "stack")}
-      <Field label="Challenges">
-        <PairList
-          value={cs.challenges ?? []}
-          fields={{ keyA: "problem", labelA: "problem", keyB: "fix", labelB: "fix" }}
-          itemLabel="challenge"
-          onChange={(v) => set({ challenges: v as CaseStudy["challenges"] })}
-        />
-      </Field>
-      {list("Impact", "impact")}
-      {list("Lessons", "lessons")}
-      <Field label="Timeline">
-        <TextInput value={cs.timeline ?? ""} onChange={(v) => set({ timeline: v })} />
-      </Field>
-    </div>
-  );
-}
-
-export function ProjectsSection({
-  value,
-  onChange,
-  uploadImage,
-}: {
-  value: Project[];
-  onChange: (v: Project[]) => void;
-  uploadImage?: (file: File) => Promise<string>;
-}) {
-  return (
-    <Repeater<Project>
-      items={value}
-      onChange={onChange}
-      itemLabel="project"
-      fields={[
-        { key: "title", label: "Title", type: "text" },
-        { key: "tagline", label: "Tagline", type: "text" },
-        { key: "category", label: "Category", type: "text", placeholder: "e.g. web, ai, hardware" },
-        { key: "year", label: "Year", type: "text", placeholder: "e.g. 2026" },
-        { key: "status", label: "Status", type: "text", placeholder: "e.g. shipped, ongoing" },
-        { key: "featured", label: "Featured", type: "toggle" },
-        { key: "weight", label: "Weight", type: "number", hint: "Legacy tiebreak - use the ↑ / ↓ buttons to reorder; manual order wins on the site." },
-        { key: "tech", label: "Tech", type: "list", placeholder: "tech" },
-        { key: "description", label: "Description", type: "textarea" },
-        { key: "highlights", label: "Highlights", type: "list", placeholder: "highlight" },
-      ]}
-      newItem={() => ({
-        id: crypto.randomUUID().slice(0, 8),
-        title: "",
-        tagline: "",
-        category: "",
-        year: "",
-        status: "",
-        tech: [],
-        description: "",
-      })}
-      titleOf={(p) => `${p.year} - ${p.title}`}
-      view={(p) => (p.id ? `/projects/${p.id}` : undefined)}
-      summaryToggles={[
-        {
-          label: "Case Study",
-          checked: (p) => Boolean(p.caseStudy),
-          patch: (_p, on) => (on ? ({ caseStudy: {} } as Partial<Project>) : ({ caseStudy: undefined } as Partial<Project>)),
-        },
-      ]}
-      sorts={[
-        { id: "weight", label: "sort: weight (lowest first)", compare: (a, b) => (a.weight ?? 9999) - (b.weight ?? 9999) },
-        { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
-        { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
-        { id: "title", label: "sort: title A-Z", compare: (a, b) => a.title.localeCompare(b.title) },
-        { id: "featured", label: "sort: featured first", compare: (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) },
-      ]}
-      renderDetail={(raw, update) => {
-        const item = raw as Project;
-        return (
-          <div className="space-y-3">
-            <ImageList
-              label="Images"
-              hint="Screenshots / photos. First image is the card cover and detail hero."
-              value={item.images ?? []}
-              onChange={(v) => update({ images: v })}
-              uploadImage={uploadImage}
-            />
-            <div className="grid gap-3 md:grid-cols-2">
-              <Field label="ID" hint="Used in the URL /projects/:id. Change carefully.">
-                <TextInput value={item.id ?? ""} onChange={(v) => update({ id: v })} />
-              </Field>
-              <Field label="Links">
-                <div className="grid gap-2">
-                  <TextInput value={item.links?.github ?? ""} placeholder="github url" onChange={(v) => update({ links: { ...(item.links ?? {}), github: v } })} />
-                  <TextInput value={item.links?.demo ?? ""} placeholder="demo url" onChange={(v) => update({ links: { ...(item.links ?? {}), demo: v } })} />
-                </div>
-              </Field>
-            </div>
-            <CaseStudyEditor value={item.caseStudy} update={update} />
-          </div>
-        );
-      }}
-    />
-  );
-}
 
 export function AchievementsSection({
   value,
@@ -634,12 +506,12 @@ export function AchievementsSection({
         { key: "detail", label: "Detail", type: "textarea" },
       ]}
       newItem={() => ({ id: crypto.randomUUID().slice(0, 8), event: "", title: "", year: "", result: "", detail: "" })}
-      titleOf={(a) => `${a.year} - ${a.event}`}
-      view={() => "/#wins"}
+      titleOf={(a) => [a.date || a.year, a.event || a.title].filter(Boolean).join("  ")}
+      view={() => "/#recognition"}
       sorts={[
-        { id: "year-new", label: "sort: newest year", compare: (a, b) => b.year.localeCompare(a.year) },
-        { id: "year-old", label: "sort: oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
-        { id: "event", label: "sort: event A-Z", compare: (a, b) => a.event.localeCompare(b.event) },
+        { id: "year-new", label: "newest year", compare: (a, b) => b.year.localeCompare(a.year) },
+        { id: "year-old", label: "oldest year", compare: (a, b) => a.year.localeCompare(b.year) },
+        { id: "event", label: "event A-Z", compare: (a, b) => a.event.localeCompare(b.event) },
       ]}
       renderDetail={(raw, update) => {
         const item = raw as Achievement;
@@ -679,9 +551,9 @@ export function FeaturedInSection({
       ]}
       newItem={() => ({ name: "", url: "" })}
       titleOf={(o) => o.name}
-      view={() => "/#featured"}
+      view={() => "/#recognition"}
       sorts={[
-        { id: "name", label: "sort: name A-Z", compare: (a, b) => a.name.localeCompare(b.name) },
+        { id: "name", label: "name A-Z", compare: (a, b) => a.name.localeCompare(b.name) },
       ]}
       renderDetail={(raw, update) => {
         const item = raw as FeaturedIn;
@@ -704,7 +576,7 @@ export function FeaturedInSection({
 /* ---------------- /connect social link manager ---------------- */
 
 const linkInputCls =
-  "w-full rounded-md border border-line bg-bg px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none";
+  ui.input;
 
 export function ConnectSection({ value, onChange }: { value: SocialLink[]; onChange: (v: SocialLink[]) => void }) {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -731,7 +603,7 @@ export function ConnectSection({ value, onChange }: { value: SocialLink[]; onCha
         iconOverride: null,
       },
     ]);
-  const btnCls = "rounded border border-line px-2 py-1 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent disabled:opacity-30";
+  const btnCls = ui.small;
 
   return (
     <div className="space-y-3">
@@ -743,7 +615,7 @@ export function ConnectSection({ value, onChange }: { value: SocialLink[]; onCha
         ))}
       </datalist>
       {value.length === 0 ? (
-        <p className="text-sm text-ink-faint">No social links yet - paste a URL below and the platform is detected for you.</p>
+        <p className="text-[0.92rem] text-ink-faint">No social links yet - paste a URL below and the platform is detected for you.</p>
       ) : (
         value.map((link, i) => (
           <SocialLinkRow
@@ -763,10 +635,10 @@ export function ConnectSection({ value, onChange }: { value: SocialLink[]; onCha
       )}
       <button
         type="button"
-        className="rounded border border-line px-3 py-1 font-mono text-xs text-ink-dim hover:border-accent hover:text-accent"
+        className={ui.add}
         onClick={add}
       >
-        + add social link
+        Add social link
       </button>
     </div>
   );
@@ -818,7 +690,7 @@ function SocialLinkRow({
 
   return (
     <div
-      className={cn("rounded-lg border border-line bg-surface p-4", dragIdx === index && "opacity-50")}
+      className={cn("rounded-[6px] border border-line bg-surface p-4", dragIdx === index && "opacity-50")}
     >
       <div className="flex flex-wrap items-center gap-2">
         <span
@@ -841,13 +713,13 @@ function SocialLinkRow({
         >
           <GripVertical className="size-4" />
         </span>
-        <span className="grid size-8 shrink-0 place-items-center rounded border border-line bg-bg text-ink-dim" aria-hidden>
+        <span className="grid size-8 shrink-0 place-items-center rounded-[4px] border border-line bg-bg text-ink-dim" aria-hidden>
           <Icon className="size-4" />
         </span>
         <input
           className={cn(linkInputCls, "min-w-32 flex-1")}
           list="rk-platform-list"
-          placeholder="platform (type or paste URL)"
+          placeholder="Platform"
           value={link.platform}
           onChange={(e) => onPlatform(e.target.value)}
         />
@@ -859,16 +731,16 @@ function SocialLinkRow({
         />
         <div className="ml-auto flex items-center gap-1">
           <button type="button" className={buttonCls} disabled={index === 0} onClick={() => onMove(index, index - 1)} title="Move up">
-            ↑
+            <ArrowUp className="size-4" aria-hidden />
           </button>
           <button type="button" className={buttonCls} disabled={index === count - 1} onClick={() => onMove(index, index + 1)} title="Move down">
-            ↓
+            <ArrowDown className="size-4" aria-hidden />
           </button>
           <button type="button" className={buttonCls} onClick={onDuplicate} title="Duplicate this link">
-            copy
+            Duplicate
           </button>
           <button type="button" className={cn(buttonCls, "text-warn hover:border-warn hover:text-warn")} onClick={onRemove} title="Delete this link">
-            ×
+            <Trash2 className="size-4" aria-hidden />
           </button>
         </div>
       </div>
@@ -885,14 +757,14 @@ function SocialLinkRow({
             href={preview}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 rounded border border-line px-2 py-2 font-mono text-[0.65rem] text-ink-dim hover:border-accent hover:text-accent"
+            className={cn(ui.small, "h-10 shrink-0")}
             title="Open URL"
           >
-            ↗
+            Open
           </a>
         ) : null}
       </div>
-      {urlInvalid ? <p className="mt-1 text-xs text-warn">URL must start with http:// or https://</p> : null}
+      {urlInvalid ? <p className="mt-1.5 text-[0.85rem] text-warn">URL must start with http:// or https://</p> : null}
 
       <div className="mt-3 grid gap-3 md:grid-cols-2">
         <input
@@ -901,14 +773,14 @@ function SocialLinkRow({
           value={link.description}
           onChange={(e) => onPatch({ description: e.target.value })}
         />
-        <label className="flex items-center gap-2 font-mono text-xs text-ink-dim">
+        <label className="flex items-center gap-2 text-[0.9rem] text-ink-dim">
           Icon
           <select
-            className="w-full rounded-md border border-line bg-bg px-3 py-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
+            className={cn(ui.input, "cursor-pointer")}
             value={link.iconOverride ?? ""}
             onChange={(e) => onPatch({ iconOverride: e.target.value || null })}
           >
-            <option value="">auto</option>
+            <option value="">Automatic</option>
             {PLATFORMS.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
@@ -930,15 +802,15 @@ function SocialLinkRow({
 
 export function AdminCard({ title, kicker, actions, children }: { title: string; kicker?: string; actions?: ReactNode; children?: ReactNode }) {
   return (
-    <div className={cn("rounded-lg border border-line bg-surface p-5")}>
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <div>
-          <h2 className="font-serif text-xl text-ink">{title}</h2>
-          {kicker ? <p className="mt-1 text-sm text-ink-faint">{kicker}</p> : null}
+    <section className="min-w-0">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
+        <div className="min-w-0">
+          <h2 className="font-display text-[clamp(1.6rem,3vw,2.1rem)]">{title}</h2>
+          {kicker ? <p className="mt-1.5 max-w-[62ch] text-[0.95rem] text-ink-dim">{kicker}</p> : null}
         </div>
         {actions}
       </div>
       {children}
-    </div>
+    </section>
   );
 }

@@ -23,3 +23,6 @@ server/data.dynamic.json
 *.tsbuildinfo
 
 *.apk
+
+# browser automation artifacts
+.playwright-mcp/

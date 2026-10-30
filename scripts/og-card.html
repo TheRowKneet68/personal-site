@@ -1,0 +1,44 @@
+<!doctype html>
+<!-- Source for public/images/og-card.jpg (1200x630). To regenerate: open this file in a
+     browser at a 1200x630 viewport, screenshot it, save as JPEG over public/images/og-card.jpg.
+     The trace uses the real projects-per-year counts at the time of writing (1, 4, 11, 6, 17). -->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family: "Bricolage Grotesque"; font-weight: 400 800; src: url("../public/fonts/bricolage.woff2") format("woff2"); }
+  @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../public/fonts/instrument-serif-italic.woff2") format("woff2"); }
+  @font-face { font-family: "JetBrains Mono"; font-weight: 400 700; src: url("../public/fonts/jetbrains-mono.woff2") format("woff2"); }
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1200px; height: 630px; background: #18191b; color: #f1f2f4; font-family: "Bricolage Grotesque", sans-serif; overflow: hidden; }
+  .card { position: relative; width: 1200px; height: 630px; padding: 70px 76px; }
+  .grat { position: absolute; inset: 0; background-image: radial-gradient(rgba(143,144,147,.14) 1.2px, transparent 1.4px); background-size: 22px 22px; }
+  .who { position: relative; font-size: 24px; color: #bcbec0; font-weight: 500; }
+  .who b { color: #f1f2f4; font-weight: 700; }
+  h1 { position: relative; margin-top: 26px; font-weight: 800; font-size: 104px; line-height: .95; letter-spacing: -0.035em; }
+  h1 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: #ffc72c; letter-spacing: -0.01em; }
+  .cur { display: inline-block; width: .5ch; height: .8em; margin-left: .08em; background: #ffc72c; vertical-align: baseline; }
+  .trace { position: absolute; right: 76px; bottom: 118px; width: 420px; height: 120px; }
+  .meta { position: absolute; left: 76px; bottom: 70px; font-size: 22px; color: #bcbec0; display: flex; gap: 26px; align-items: center; }
+  .meta b { color: #f1f2f4; font-weight: 700; }
+  .lab { position: absolute; right: 76px; bottom: 246px; width: 420px; font-size: 16px; color: #8f9093; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="grat"></div>
+    <p class="who"><b>Ronit Baniya Gupta</b> &nbsp;Computer engineer, Pokhara, Nepal</p>
+    <h1>I build what<br /><em>doesn't</em> exist yet.<span class="cur"></span></h1>
+    <p class="lab"><span>Projects per year, 2022 to 2026</span></p>
+    <svg class="trace" viewBox="0 0 420 150" preserveAspectRatio="none">
+      <line x1="0" x2="420" y1="128" y2="128" stroke="#3d3e41" />
+      <path d="M10,122.2L110,105.9L210,65.3L310,92.4L410,10L410,128L10,128Z" fill="#ffc72c" opacity=".08" />
+      <path d="M10,122.2L110,105.9L210,65.3L310,92.4L410,10" fill="none" stroke="#ffc72c" stroke-width="2.5" stroke-linejoin="round" />
+      <g fill="#ffc72c" stroke="#18191b" stroke-width="2.5">
+        <circle cx="10" cy="122.2" r="5" /><circle cx="110" cy="105.9" r="5" /><circle cx="210" cy="65.3" r="5" /><circle cx="310" cy="92.4" r="5" /><circle cx="410" cy="10" r="5" />
+      </g>
+    </svg>
+    <div class="meta"><b>ronitbaniyagupta.com.np</b><span>Embedded systems, web and robotics</span></div>
+  </div>
+</body>
+</html>

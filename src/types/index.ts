@@ -1,6 +1,11 @@
+/** Where a hero stat's value comes from; the server recounts it on every
+    request. "" = typed by hand. */
+export type StatSource = "projects" | "awards" | "placements" | "dan";
+
 export interface ProfileStats {
   label: string;
   value: string;
+  source?: StatSource | "";
 }
 
 export interface Principle {
@@ -41,7 +46,24 @@ export interface SocialLink {
   iconOverride: string | null;
 }
 
+/** Hero copy. Empty fields fall back to the built-in defaults. */
+export interface HeroCopy {
+  /** First headline line, e.g. "I build what". */
+  line1?: string;
+  /** The serif-italic accent word, e.g. "doesn't". */
+  accent?: string;
+  /** Rest of the second line, e.g. "exist yet." */
+  line2?: string;
+  /** Sentence after "I'm {name} - {slogan}." */
+  lede?: string;
+}
+
+export type SectionKey = "work" | "numbers" | "recognition" | "about" | "contact";
+
 export interface Profile {
+  hero?: HeroCopy;
+  /** One-line intro beside each section title. */
+  intros?: Partial<Record<SectionKey, string>>;
   name: string;
   handle: string;
   logo?: string;
@@ -82,8 +104,39 @@ export interface CaseStudy {
   timeline?: string;
 }
 
+export interface DiagramNode {
+  /** Part number or component name. Rendered in mono when it is a part. */
+  name: string;
+  /** What it does in this system. */
+  role?: string;
+  part?: boolean;
+}
+
+export interface DiagramLane {
+  name: string;
+  nodes: DiagramNode[];
+  /** links[i] joins nodes[i] -> nodes[i + 1]; null = unlabelled wire. */
+  links: (string | null)[];
+}
+
+export interface Diagram {
+  caption: string;
+  lanes: DiagramLane[];
+}
+
 export interface Project {
   id: string;
+  /** Chart field key (embedded, software, robotics, ai, security, other). */
+  field?: string;
+  /** "YYYY-MM" or "YYYY-MM-DD" when work began / ended. */
+  started?: string;
+  finished?: string;
+  /** Where it was built: course, hackathon, client. */
+  context?: string;
+  /** Other people who built it. */
+  team?: string[];
+  supervisor?: string;
+  diagram?: Diagram;
   title: string;
   tagline: string;
   category: string;

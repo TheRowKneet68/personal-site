@@ -3,6 +3,7 @@ import { app } from "../app.js";
 import type { AddressInfo } from "node:net";
 import { hashPassword, verifyPassword } from "../middleware/auth.js";
 import { deepMerge } from "../services/storage.js";
+import { deriveStats } from "../services/content.js";
 
 let failures = 0;
 
@@ -167,6 +168,28 @@ try {
       images.includes("admin-added.jpg") &&
       outlet.images.includes("supabase-only.png") &&
       (merged.extra as boolean) === true,
+  );
+
+  // Hero stats recount from content: explicit source, legacy label, hand-typed.
+  const ach = (result: string) => ({ id: result, event: "e", title: "t", year: "2026", result, detail: "" });
+  const derived = deriveStats(
+    {
+      badges: ["3rd DAN Black Belt"],
+      stats: [
+        { label: "things built", value: "1", source: "projects" },
+        { label: "awards & wins", value: "1" },
+        { label: "podiums", value: "1", source: "placements" },
+        { label: "martial arts dan", value: "?" },
+        { label: "projects shipped", value: "7", source: "" },
+      ],
+    } as unknown as Parameters<typeof deriveStats>[0],
+    [{}, {}, {}] as unknown as Parameters<typeof deriveStats>[1],
+    [ach("1st Position"), ach("First Runner-Up"), ach("Participant")],
+  );
+  check(
+    "deriveStats: counts follow source, legacy labels migrate, hand-typed stays",
+    JSON.stringify(derived.map((s) => [s.label, s.value])) ===
+      JSON.stringify([["things built", "3+"], ["awards & recognitions", "3+"], ["podiums", "2+"], ["martial arts dan", "3rd DAN"], ["projects shipped", "7"]]),
   );
 } finally {
   server.close();
