@@ -65,8 +65,15 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
 
   const first = Math.floor(Math.min(...spans.map((s) => s.start)) / 12) * 12;
   const last = today + 1; // the axis ends today
-  const pct = (m: number): number => ((m - first) / (last - first)) * 100;
   const years = Array.from({ length: Math.ceil((last - first) / 12) }, (_, i) => first / 12 + i);
+  // Uneven axis: a year's width follows how many projects ran in it (floor of 3),
+  // so busy recent years get room and quiet early years stay visible but narrow.
+  const active = (y: number): number => spans.filter((s) => s.start < (y + 1) * 12 && s.end >= y * 12).length;
+  const weight = new Map(years.map((y) => [y, Math.max(3, active(y))]));
+  const cum = [0];
+  for (let m = first; m < last; m++) cum.push((cum.at(-1) ?? 0) + (weight.get(Math.floor(m / 12)) ?? 3) / 12);
+  const total = cum.at(-1) || 1;
+  const pct = (m: number): number => ((cum[Math.min(Math.max(m, first), last) - first] ?? 0) / total) * 100;
   const running = spans.filter((s) => s.ongoing).length;
 
   return (
@@ -74,7 +81,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
       title="Project timeline"
       summary={
         <>
-          Every project since {first / 12}, by when it started and how long it ran. {running} are still running. Hover for dates, click to open one.
+          Every project since {first / 12}, by when it started and how long it ran. {running} are still running. Busier years get more width. Hover for dates, click to open one.
         </>
       }
       tip={tip}
@@ -136,6 +143,14 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
             <h4 className="relative flex items-baseline gap-2 border-t border-line-strong pt-3 pb-1.5">
               <span className="font-semibold text-ink tabular">{year}</span>
               <span className="text-[0.8rem] text-ink-faint">{plural(rows.length, "project")}</span>
+              {/* repeat the year scale on every group so a tall chart stays readable */}
+              <span className={cn(PLOT, "max-sm:hidden")} aria-hidden>
+                {years.map((y) => (
+                  <span key={y} className="absolute top-3.5 pl-2 text-[0.72rem] font-normal text-ink-faint tabular" style={{ left: `${pct(y * 12)}%` }}>
+                    {y}
+                  </span>
+                ))}
+              </span>
             </h4>
             <ul>
               {rows.map((s) => {
