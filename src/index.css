@@ -831,14 +831,35 @@
   .rk-cursor {
     animation: none !important;
   }
-  .wipe,
-  .boot-pulses,
-  .boot-scan {
+  /* the boards, wipes and card scan stay, just calmer: no flying pulses,
+     glitch, flashes or glow; everything else on the page stays still */
+  .boot-pulses {
     display: none;
   }
-  *,
-  *::before,
-  *::after {
+  .boot .boot-logo-art {
+    animation: boot-reveal 0.65s steps(14, end) 0.95s forwards;
+  }
+  .boot.is-exit .boot-logo-art {
+    animation: none;
+  }
+  .boot.is-exit {
+    animation: rk-fade 0.45s ease reverse forwards;
+  }
+  .boot-scan,
+  .wipe-line,
+  .card-scan-line,
+  .theme-line {
+    box-shadow: none;
+  }
+  .boot-traces path,
+  .boot-chip,
+  .card-scan-frame rect,
+  .boot-logo-art {
+    filter: none;
+  }
+  *:not(.boot, .boot *, .wipe, .wipe *, .card-scan, .card-scan *),
+  *:not(.boot, .boot *, .wipe, .wipe *, .card-scan, .card-scan *)::before,
+  *:not(.boot, .boot *, .wipe, .wipe *, .card-scan, .card-scan *)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     animation-delay: 0ms !important;

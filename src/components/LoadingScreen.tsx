@@ -83,8 +83,7 @@ export function LoadingScreen({ show }: { show: boolean }) {
   const [skipped, setSkipped] = useState(false);
 
   useEffect(() => {
-    const quick = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const id = window.setTimeout(() => setMinDone(true), quick ? 0 : MIN_MS - (performance.now() - started.current));
+    const id = window.setTimeout(() => setMinDone(true), MIN_MS - (performance.now() - started.current));
     return () => clearTimeout(id);
   }, []);
 
@@ -279,7 +278,7 @@ clip-path:inset(0 0 100% 0);animation:r .35s steps(10,end) .35s forwards;filter:
 p{position:fixed;left:0;right:0;top:calc(50% + 9vmax + 1.5rem);text-align:center;margin:0}
 b{color:${accent};font-weight:600}
 @keyframes d{to{stroke-dashoffset:0}}@keyframes r{to{clip-path:inset(0)}}
-@media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;animation-delay:0s!important}}
+@media (prefers-reduced-motion:reduce){rect,.logo{filter:none}}
 </style></head><body>
 <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">${traces}<rect x="410" y="410" width="180" height="180" rx="6" pathLength="1"/></svg>
 <div class="logo"></div><p>${local ? "opening" : "connecting to"} <b>${host}</b> ...</p>
@@ -321,14 +320,13 @@ const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms
 export async function runBoard<T>(title: string, working: string, done: string, task: () => Promise<T>, minMs = 1300): Promise<T> {
   const show = showAction;
   if (!show) return task();
-  const quick = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const started = performance.now();
   show({ title, working, done, state: "work" });
   try {
     const result = await task();
-    await sleep(quick ? 0 : Math.max(0, minMs - (performance.now() - started)));
+    await sleep(Math.max(0, minMs - (performance.now() - started)));
     show({ title, working, done, state: "done" });
-    await sleep(quick ? 300 : 550);
+    await sleep(550);
     return result;
   } catch (err) {
     show({ title, working, done, state: "fail" });
