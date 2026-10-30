@@ -169,12 +169,16 @@ type Job = { url: string; got: number; total: number; state: "build" | "fail" | 
 export function ResumeDownload() {
   const [job, setJob] = useState<Job | null>(null);
   const [exit, setExit] = useState(false);
+  const [run, setRun] = useState(0);
   const busy = useRef(false);
+  const closing = useRef(0);
 
   useEffect(() => {
     const run = async (url: string): Promise<void> => {
       if (busy.current) return;
       busy.current = true;
+      clearTimeout(closing.current);
+      setRun((n) => n + 1);
       setExit(false);
       const set = (j: Partial<Job>): void => setJob((o) => ({ url, got: 0, total: 0, state: "build", ...o, ...j }));
       set({ got: 0, total: 0, state: "build" });
@@ -207,10 +211,8 @@ export function ResumeDownload() {
         location.assign(url); // a delayed window.open would be popup-blocked
       }
       setExit(true);
-      setTimeout(() => {
-        setJob(null);
-        busy.current = false;
-      }, 520);
+      busy.current = false; // a new click may start the next one straight away
+      closing.current = window.setTimeout(() => setJob(null), 520);
     };
 
     const onClick = (e: MouseEvent): void => {
@@ -234,7 +236,7 @@ export function ResumeDownload() {
   const status =
     job.state === "fail" ? "failed, opening directly" : job.state === "done" ? "downloaded" : job.got ? `received ${kb(job.got)}` : "building on the server";
   return (
-    <Board exit={exit}>
+    <Board key={run} exit={exit}>
       <div className="boot-readout absolute left-1/2 w-[16rem] -translate-x-1/2 rounded-[3px] border border-line bg-bg/90 px-4 py-3 font-mono text-[0.78rem] backdrop-blur-sm">
         <p className="boot-pct flex items-baseline justify-between border-b border-line pb-1.5">
           <span className="text-ink-faint">resume.pdf</span>
@@ -341,6 +343,7 @@ export async function runBoard<T>(title: string, working: string, done: string, 
 export function ActionBoard() {
   const [action, setAction] = useState<Action | null>(null);
   const [exit, setExit] = useState(false);
+  const [run, setRun] = useState(0);
   useEffect(() => {
     let t = 0;
     showAction = (a) => {
@@ -349,6 +352,7 @@ export function ActionBoard() {
         setExit(true);
         t = window.setTimeout(() => setAction(null), 520);
       } else {
+        if (a.state === "work") setRun((n) => n + 1);
         setExit(false);
         setAction(a);
       }
@@ -362,7 +366,7 @@ export function ActionBoard() {
   if (!action) return null;
   const line = action.state === "work" ? action.working : action.state === "done" ? action.done : "failed";
   return (
-    <Board exit={exit}>
+    <Board key={run} exit={exit}>
       <div className="boot-readout absolute left-1/2 w-[16rem] -translate-x-1/2 rounded-[3px] border border-line bg-bg/90 px-4 py-3 font-mono text-[0.78rem] backdrop-blur-sm">
         <p className="boot-pct flex items-baseline justify-between border-b border-line pb-1.5">
           <span className="text-ink-faint">{action.title}</span>
