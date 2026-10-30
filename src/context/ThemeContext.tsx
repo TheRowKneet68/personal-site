@@ -44,7 +44,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     } catch {
       /* private mode: the choice lasts for this visit only */
     }
-    setTheme(next);
+    const root = document.documentElement;
+    const apply = (): void => {
+      root.classList.add("rk-theme-switching");
+      root.classList.remove("dark", "light");
+      root.classList.add(next);
+      setTheme(next);
+    };
+    // the new theme pours down from the top behind a glowing line; instant where unsupported
+    if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) return apply();
+    const line = Object.assign(document.createElement("div"), { className: "theme-line" });
+    document
+      .startViewTransition(() => {
+        apply();
+        document.body.append(line);
+      })
+      .finished.finally(() => line.remove());
   }, [theme]);
 
   return <ThemeContext.Provider value={{ theme, toggle }}>{children}</ThemeContext.Provider>;

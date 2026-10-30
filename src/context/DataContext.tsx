@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { api } from "../services/api";
+import { applyColors } from "../lib/palette";
 import type {
   Achievement,
   Counts,
@@ -65,6 +66,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         tick("stats", api.getStats()),
       ]);
       if (!mounted.current) return;
+      applyColors(profileRes.profile.colors);
       setData({
         profile: profileRes.profile,
         achievements: profileRes.achievements,
@@ -94,6 +96,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         api.getStats(),
       ]);
       if (!mounted.current) return;
+      applyColors(profileRes.profile.colors);
       setData({
         profile: profileRes.profile,
         achievements: profileRes.achievements,

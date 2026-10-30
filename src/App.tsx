@@ -4,7 +4,7 @@ import { DataProvider, useData } from "./context/DataContext";
 import { CommandProvider } from "./context/CommandContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Layout } from "./components/Layout";
-import { LoadingScreen, OutboundLinks, ResumeDownload, RouteWipe } from "./components/LoadingScreen";
+import { ActionBoard, LoadingScreen, OutboundLinks, ResumeDownload, RouteWipe } from "./components/LoadingScreen";
 
 const HomePage = lazy(() => import("./pages/HomePage").then((m) => ({ default: m.HomePage })));
 const ProjectDetailPage = lazy(() =>
@@ -31,6 +31,7 @@ function RoutesShell() {
       <RouteWipe />
       <ResumeDownload />
       <OutboundLinks />
+      <ActionBoard />
       <Suspense fallback={null}>
         <Routes>
           <Route path="/admin" element={<AdminPage />} />

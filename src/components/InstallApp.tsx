@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Download, EllipsisVertical, Share, SquarePlus } from "lucide-react";
 import { useMediaQuery } from "../hooks";
 import { isNativeApp } from "../lib/native";
+import { runBoard } from "./LoadingScreen";
 
 type PromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
 
@@ -56,11 +57,22 @@ export function InstallApp({ className, icon = false }: { className?: string; ic
 
   const onClick = async (): Promise<void> => {
     const e = deferred;
-    if (mode !== "prompt" || !e) return dialog.current?.showModal();
+    if (mode !== "prompt" || !e) {
+      await runBoard("app", "preparing install steps", "ready", () => Promise.resolve(), 900);
+      return dialog.current?.showModal();
+    }
     await e.prompt();
-    await e.userChoice; // the event is single-use either way
+    const { outcome } = await e.userChoice; // the event is single-use either way
     deferred = null;
     notify();
+    if (outcome !== "accepted") return;
+    // the browser installs in the background; cover it until it says it's done
+    await runBoard("app", "installing app", "installed", () =>
+      new Promise<void>((done) => {
+        window.addEventListener("appinstalled", () => done(), { once: true });
+        setTimeout(done, 5000);
+      }),
+    ).catch(() => undefined);
   };
 
   return (

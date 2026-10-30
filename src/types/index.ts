@@ -1,3 +1,4 @@
+import type { SiteColors } from "../lib/palette";
 /** Where a hero stat's value comes from; the server recounts it on every
     request. "" = typed by hand. */
 export type StatSource = "projects" | "awards" | "placements" | "dan";
@@ -61,6 +62,8 @@ export interface HeroCopy {
 export type SectionKey = "work" | "numbers" | "recognition" | "about" | "contact";
 
 export interface Profile {
+  /** Admin-picked site colours; absent = the built-in palette. */
+  colors?: SiteColors;
   hero?: HeroCopy;
   /** One-line intro beside each section title. */
   intros?: Partial<Record<SectionKey, string>>;

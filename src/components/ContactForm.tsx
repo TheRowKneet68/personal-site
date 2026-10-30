@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { runBoard } from "./LoadingScreen";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { api, ApiClientError } from "../services/api";
 import { Button } from "./Button";
@@ -35,7 +36,8 @@ export function ContactForm() {
     if (form.name.trim().length < 2) next.name = "Enter your name so I know who to reply to.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) next.email = "Enter a valid email address, like name@example.com.";
     if (form.subject.trim().length > 200) next.subject = "Keep the subject under 200 characters.";
-    if (form.message.trim().length < 10) next.message = "Write at least 10 characters so I know what you need.";
+    if (!form.message.trim()) next.message = "Write a message first.";
+    else if (form.message.trim().length > 4000) next.message = "Keep the message under 4000 characters.";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -46,13 +48,15 @@ export function ContactForm() {
     setState("submitting");
     setServerError("");
     try {
-      await api.postContact({
-        name: form.name,
-        email: form.email,
-        subject: form.subject,
-        message: form.message,
-        ...(form.website ? { website: form.website } : {}),
-      });
+      await runBoard("message", "transmitting message", "delivered", () =>
+        api.postContact({
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          ...(form.website ? { website: form.website } : {}),
+        }),
+      );
       setState("success");
       setForm(EMPTY);
     } catch (err) {

@@ -18,6 +18,8 @@ import {
 } from "../components/admin/sections";
 import { ProjectsEditor } from "../components/admin/ProjectsEditor";
 import { SiteCopySection } from "../components/admin/SiteCopySection";
+import { ColorsSection } from "../components/admin/ColorsSection";
+import { applyColors } from "../lib/palette";
 import { projectErrors } from "../components/admin/checks";
 import { ui } from "../components/admin/ui";
 import { QrCode } from "../components/QrCode";
@@ -28,6 +30,7 @@ const TOKEN_KEY = ADMIN_TOKEN_KEY;
 
 type Tab =
   | "copy"
+  | "colors"
   | "basics"
   | "about"
   | "journey"
@@ -47,6 +50,7 @@ const GROUPS: { title: string; tabs: { id: Tab; label: string }[] }[] = [
     title: "Site",
     tabs: [
       { id: "copy", label: "Hero and intros" },
+      { id: "colors", label: "Colours" },
       { id: "basics", label: "Profile and contact" },
       { id: "about", label: "About" },
       { id: "journey", label: "Journey" },
@@ -284,6 +288,7 @@ export function AdminPage() {
     setSaveError("");
     try {
       await api.saveAdminContent(token, content);
+      applyColors(content.profile.colors); // the saved colours take over this browser straight away
       setSaved(JSON.stringify(content));
       setSaveState("idle");
     } catch (err) {
@@ -493,6 +498,11 @@ export function AdminPage() {
                 {tab === "copy" && (
                   <AdminCard title="Hero and intros" kicker="The headline, the four stats and the sentence beside each section title.">
                     <SiteCopySection value={content.profile} onChange={patchProfile} />
+                  </AdminCard>
+                )}
+                {tab === "colors" && (
+                  <AdminCard title="Colours" kicker="The accent and background tint for the whole site, in both light and dark mode.">
+                    <ColorsSection value={content.profile} onChange={patchProfile} />
                   </AdminCard>
                 )}
                 {tab === "basics" && (

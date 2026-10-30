@@ -708,6 +708,87 @@
   100% { clip-path: inset(50% 50% 50% 50%); filter: brightness(2.5); }
 }
 
+/* "Share this card": replays each time the fold-out opens (display:none restarts it) */
+.card-scan-img {
+  clip-path: inset(0 0 100% 0);
+  animation: boot-reveal 0.7s steps(16, end) 0.35s forwards;
+}
+.card-scan-line {
+  position: absolute;
+  inset-inline: -4%;
+  top: 0;
+  height: 2px;
+  background: var(--rk-accent);
+  box-shadow: 0 0 12px 2px var(--rk-accent);
+  opacity: 0;
+  animation: boot-scan 0.7s linear 0.35s;
+}
+.card-scan-frame {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  overflow: visible;
+  pointer-events: none;
+}
+.card-scan-frame rect {
+  fill: none;
+  stroke: var(--rk-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 6px var(--rk-accent));
+  animation: boot-chip 0.45s ease-out forwards, card-frame-out 0.6s ease 1.2s forwards;
+}
+@keyframes card-frame-out { to { opacity: 0.35; filter: none; } }
+
+/* Theme switch: the new theme pours down behind a glowing line (ThemeContext).
+   Both halves animate, so the pour still shows on browsers that drop one of them. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1);
+  animation-fill-mode: both;
+}
+::view-transition-new(root) {
+  animation-name: theme-pour;
+}
+::view-transition-old(root) {
+  z-index: 1; /* on top, cut away from the top down to uncover the new theme */
+  animation-name: theme-drain;
+}
+.theme-line {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  background: var(--rk-accent);
+  box-shadow: 0 0 16px 4px var(--rk-accent);
+  pointer-events: none;
+  view-transition-name: theme-line;
+}
+::view-transition-group(theme-line) {
+  z-index: 2;
+  animation: theme-line 0.65s cubic-bezier(0.45, 0, 0.35, 1) both;
+}
+::view-transition-new(theme-line) {
+  animation: none;
+}
+@keyframes theme-pour {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes theme-drain {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(100% 0 0 0); }
+}
+@keyframes theme-line {
+  from { transform: translateY(0); }
+  to { transform: translateY(100vh); transform: translateY(100lvh); } /* phones: match the snapshot under the address bar */
+}
+
 .wipe-panel {
   background-image: radial-gradient(color-mix(in oklab, var(--rk-ink) 9%, transparent) 1px, transparent 1.4px);
   background-size: 22px 22px;
