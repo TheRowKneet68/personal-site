@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useRevealOnce } from "../../hooks";
+import { useElementWidth, useRevealOnce } from "../../hooks";
 import { dateRange } from "../../lib/portfolio";
 import { fieldOfProject, projectSpans, type ProjectSpan } from "../../lib/stats";
 import { cn } from "../../utils/format";
@@ -21,13 +21,10 @@ const lengthText = (months: number): string => {
 /** The plot sits beside a fixed name column (stacked under the name on phones). */
 const PLOT = "pointer-events-none absolute inset-y-0 left-0 right-0 sm:left-[14rem]";
 
-/** One bar on its year's own Jan-to-Dec axis. A project that carries on past the
-    year runs to the right edge and fades out there instead of ending in a cap. */
-const FADE = "linear-gradient(to right, #000 calc(100% - 72px), transparent)";
+/** One bar on its group's axis, which always reaches the latest end in the group. */
 
 function Bar({ s, from, to }: { s: ProjectSpan; from: number; to: number }) {
   const pct = (m: number): number => ((Math.min(Math.max(m, from), to) - from) / (to - from)) * 100;
-  const clipped = s.end + 1 > to;
   const left = pct(s.start);
   const width = Math.max(pct(s.end + 1) - left, 1.5);
   return (
@@ -35,12 +32,12 @@ function Bar({ s, from, to }: { s: ProjectSpan; from: number; to: number }) {
       data-bar
       className={cn(
         "ch-grow-x absolute top-1/2 h-3 -translate-y-1/2",
-        clipped ? "rounded-l-full" : "rounded-full",
+        "rounded-full",
         s.approx ? "border border-dashed border-accent bg-accent/15" : s.ongoing ? "bg-accent" : "bg-accent/55",
       )}
-      style={{ left: `${left}%`, width: `${width}%`, ...(clipped ? { maskImage: FADE, WebkitMaskImage: FADE } : {}) }}
+      style={{ left: `${left}%`, width: `${width}%` }}
     >
-      {!clipped && s.ongoing && !s.approx ? (
+      {s.ongoing && !s.approx ? (
         <span className="absolute -right-1.5 top-1/2 size-3.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
       ) : null}
     </span>
@@ -53,6 +50,8 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
   const bodyRef = useRef<HTMLDivElement>(null);
   const { armed, on } = useRevealOnce(bodyRef);
   const { tip, bind, onBodyPointerDown } = useChartTip(bodyRef);
+  const plotRef = useRef<HTMLDivElement>(null);
+  const plotW = useElementWidth(plotRef);
 
   const spans = useMemo(() => projectSpans(projects), [projects]);
   const today = useMemo(() => {
@@ -110,41 +109,54 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
           Finished
         </li>
         <li className="flex items-center gap-2">
-          <span
-            className="h-3 w-8 rounded-l-full bg-accent/55"
-            style={{ maskImage: "linear-gradient(to right, #000 30%, transparent)", WebkitMaskImage: "linear-gradient(to right, #000 30%, transparent)" }}
-            aria-hidden
-          />
-          Carries on into a later year
-        </li>
-        <li className="flex items-center gap-2">
           <span className="h-3 w-6 rounded-full border border-dashed border-accent bg-accent/15" aria-hidden />
           Only the year is known
         </li>
       </ul>
 
+      <div ref={plotRef} className="h-0 sm:ml-[14rem]" aria-hidden />
       {groups.map(([year, rows]) => {
         const from = year * 12;
-        const current = from <= today && today < from + 12;
-        const to = current ? today + 1 : from + 12; // this year's axis ends today
+        // the axis starts in January of the group's year and runs to the latest end in
+        // the group (at least a full year), so every bar shows where it really ends
+        const latest = Math.max(...rows.map((r) => r.end + 1));
+        const to = Math.min(today + 1, Math.max(from + 12, latest));
+        const toToday = to === today + 1;
         const pos = (m: number): number => ((m - from) / (to - from)) * 100;
-        const quarters = [0, 3, 6, 9].map((q) => from + q).filter((m) => m < to);
+        const perMonth = plotW / (to - from);
+        const step = perMonth >= 34 ? 1 : perMonth >= 17 ? 2 : perMonth >= 11 ? 3 : 6;
+        const ticks = Array.from({ length: to - from }, (_, i) => from + i).filter((m) => m % step === 0);
+        const years = Array.from({ length: Math.ceil((to - from) / 12) }, (_, i) => year + i);
         return (
           <section key={year} aria-label={`Started in ${year}`} className="relative">
-            {/* this year's month grid, behind its rows */}
+            {/* this group's month grid, behind its rows */}
             <div className={PLOT} aria-hidden>
-              {quarters.map((m, i) => (
-                <div
-                  key={m}
-                  className={cn("absolute inset-y-0 border-l border-line", i % 2 === 1 && "bg-raised/50")}
-                  style={{ left: `${pos(m)}%`, width: `${pos(Math.min(m + 3, to)) - pos(m)}%` }}
-                >
-                  <span className="absolute top-4 left-2 text-[0.72rem] text-ink-faint max-sm:hidden">{MONTHS[m % 12]}</span>
-                </div>
-              ))}
-              {current ? (
+              {years.map((y, i) =>
+                i % 2 === 1 ? (
+                  <div
+                    key={y}
+                    className="absolute inset-y-0 bg-raised/50"
+                    style={{ left: `${pos(y * 12)}%`, width: `${pos(Math.min((y + 1) * 12, to)) - pos(y * 12)}%` }}
+                  />
+                ) : null,
+              )}
+              {ticks.map((m) => {
+                const x = (pos(m) / 100) * plotW;
+                // keep labels clear of the "today" marker at the right edge
+                const label = !(toToday && x > plotW - 24);
+                return (
+                  <div key={m} className={cn("absolute inset-y-0 border-l", m % 12 === 0 ? "border-line-strong" : "border-line")} style={{ left: `${pos(m)}%` }}>
+                    {label ? (
+                      <span className={cn("absolute top-5 left-1.5 text-[0.72rem] tabular max-sm:hidden", m % 12 === 0 && m !== from ? "font-semibold text-ink-dim" : "text-ink-faint")}>
+                        {m % 12 === 0 && m !== from ? m / 12 : MONTHS[m % 12]}
+                      </span>
+                    ) : null}
+                  </div>
+                );
+              })}
+              {toToday ? (
                 <div className="absolute inset-y-0 right-0 border-r border-dashed border-accent">
-                  <span className="absolute top-4 right-1.5 text-[0.72rem] font-semibold text-accent max-sm:hidden">today</span>
+                  <span className="absolute top-0.5 right-1.5 text-[0.72rem] font-semibold text-accent max-sm:hidden">today</span>
                 </div>
               ) : null}
             </div>
