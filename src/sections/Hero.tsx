@@ -67,15 +67,17 @@ export function Hero() {
             </div>
           </div>
 
-          <figure className="rk-rise mx-auto w-full max-w-[22rem] sm:max-w-[26rem] lg:col-span-4 lg:max-w-none" style={{ ["--d" as string]: 2 }}>
-            <img
-              src={portrait}
-              alt={`${profile.name} speaking at a podium`}
-              width={640}
-              height={800}
-              {...{ fetchpriority: "high" } /* React 18 only knows the lowercase attribute */}
-              className="aspect-[4/5] w-full rounded-[4px] border border-line object-cover object-top"
-            />
+          <figure className="rk-rise mx-auto w-full max-w-[19rem] sm:max-w-[22rem] lg:col-span-4 lg:max-w-[24rem]" style={{ ["--d" as string]: 2 }}>
+            <div className="rounded-full border border-line bg-surface p-2">
+              <img
+                src={portrait}
+                alt={`${profile.name} speaking at a podium`}
+                width={640}
+                height={640}
+                {...{ fetchpriority: "high" } /* React 18 only knows the lowercase attribute */}
+                className="aspect-square w-full rounded-full object-cover object-top"
+              />
+            </div>
           </figure>
         </div>
 
