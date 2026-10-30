@@ -22,22 +22,49 @@ const lengthText = (months: number): string => {
     so grid lines and the today marker share one coordinate box with the bars. */
 const PLOT = "absolute inset-y-0 left-0 right-0 sm:left-[14rem]";
 
+const shortLength = (months: number): string => {
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return [y ? `${y} yr` : "", m ? `${m} mo` : ""].filter(Boolean).join(" ");
+};
+
 function Bar({ s, pct }: { s: ProjectSpan; pct: (m: number) => number }) {
   const left = pct(s.start);
-  const width = Math.max(pct(s.end + 1) - left, 0.8);
+  const end = pct(s.end + 1);
+  const width = Math.max(end - left, 0.8);
+  const [sy, ey] = [Math.floor(s.start / 12), Math.floor(s.end / 12)];
+  const label = s.approx
+    ? sy === ey
+      ? `${sy}, month unknown`
+      : `${sy} to ${ey}, months unknown` : `${shortLength(s.end - s.start + 1)}${s.ongoing ? " so far" : ""}`;
+  // the label sits before the bar on a dotted leader from the name; bars that start
+  // near the left edge have no room there, so their label follows the bar instead
+  const before = left > 14;
   return (
-    <span
-      data-bar
-      className={cn(
-        "ch-grow-x absolute top-1/2 h-2 -translate-y-1/2 rounded-full",
-        s.approx ? "border border-dashed border-accent bg-accent/10" : s.ongoing ? "bg-accent" : "bg-accent/50",
+    <>
+      {before ? (
+        <span className="absolute inset-y-0 left-0 flex items-center gap-2 pr-2 max-sm:hidden" style={{ width: `${left}%` }} aria-hidden>
+          <span className="h-px min-w-2 flex-1 border-b border-dotted border-line-strong" />
+          <span className="whitespace-nowrap text-[0.75rem] text-ink-faint tabular group-hover:text-ink-dim">{label}</span>
+        </span>
+      ) : (
+        <span className="absolute top-1/2 -translate-y-1/2 pl-2 whitespace-nowrap text-[0.75rem] text-ink-faint tabular group-hover:text-ink-dim max-sm:hidden" style={{ left: `${end}%` }} aria-hidden>
+          {label}
+        </span>
       )}
-      style={{ left: `${left}%`, width: `${width}%` }}
-    >
-      {s.ongoing && !s.approx ? (
-        <span className="absolute -right-1 top-1/2 size-2.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
-      ) : null}
-    </span>
+      <span
+        data-bar
+        className={cn(
+          "ch-grow-x absolute top-1/2 h-3 -translate-y-1/2 rounded-full",
+          s.approx ? "border border-dashed border-accent bg-accent/15" : s.ongoing ? "bg-accent" : "bg-accent/55",
+        )}
+        style={{ left: `${left}%`, width: `${width}%` }}
+      >
+        {s.ongoing && !s.approx ? (
+          <span className="absolute -right-1.5 top-1/2 size-3.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
+        ) : null}
+      </span>
+    </>
   );
 }
 
@@ -104,17 +131,17 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
     >
       <ul className="mb-5 flex flex-wrap gap-x-6 gap-y-1.5 text-[0.85rem] text-ink-dim">
         <li className="flex items-center gap-2">
-          <span className="relative h-2 w-6 rounded-full bg-accent" aria-hidden>
+          <span className="relative h-3 w-6 rounded-full bg-accent" aria-hidden>
             <span className="absolute -right-1 top-1/2 size-2.5 -translate-y-1/2 rounded-full border-2 border-surface bg-accent" />
           </span>
           Still running
         </li>
         <li className="flex items-center gap-2">
-          <span className="h-2 w-6 rounded-full bg-accent/50" aria-hidden />
+          <span className="h-3 w-6 rounded-full bg-accent/55" aria-hidden />
           Finished
         </li>
         <li className="flex items-center gap-2">
-          <span className="h-2 w-6 rounded-full border border-dashed border-accent bg-accent/10" aria-hidden />
+          <span className="h-3 w-6 rounded-full border border-dashed border-accent bg-accent/15" aria-hidden />
           Only the year is known
         </li>
       </ul>
@@ -138,13 +165,13 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
 
         <div className="relative h-8" aria-hidden />
 
-        {groups.map(([year, rows]) => (
+        {groups.map(([year, rows], gi) => (
           <section key={year} aria-label={`Started in ${year}`}>
             <h4 className="relative flex items-baseline gap-2 border-t border-line-strong pt-3 pb-1.5">
               <span className="font-semibold text-ink tabular">{year}</span>
               <span className="text-[0.8rem] text-ink-faint">{plural(rows.length, "project")}</span>
               {/* repeat the year scale on every group so a tall chart stays readable */}
-              <span className={cn(PLOT, "max-sm:hidden")} aria-hidden>
+              <span className={cn(PLOT, "max-sm:hidden", gi === 0 && "hidden")} aria-hidden>
                 {years.map((y) => (
                   <span key={y} className="absolute top-3.5 pl-2 text-[0.72rem] font-normal text-ink-faint tabular" style={{ left: `${pct(y * 12)}%` }}>
                     {y}
@@ -166,7 +193,7 @@ export function Timeline({ projects, className }: { projects: Project[]; classNa
                     <Link
                       to={`/projects/${s.project.id}`}
                       aria-label={`${s.project.title}: ${when}, ${lengthText(months)}. Opens the project.`}
-                      className="group relative grid items-center rounded-[3px] outline-none transition-colors hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent sm:h-8 sm:grid-cols-[14rem_1fr] max-sm:py-1.5"
+                      className="group relative grid items-center rounded-[3px] outline-none transition-colors hover:bg-raised focus-visible:ring-2 focus-visible:ring-accent sm:h-9 sm:grid-cols-[14rem_1fr] max-sm:py-1.5"
                       {...bind(
                         s.project.title,
                         [
