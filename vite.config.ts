@@ -12,7 +12,8 @@ export default defineConfig({
     /* Offline-first PWA. Caching policy:
        - PRECACHE the public portfolio shell + code (code is secret-free by
          design - Phase 1 keeps all credentials server-side).
-       - NEVER cache /api/* (auth responses, IoT state) and never serve the
+       - NEVER cache /api/* (auth responses, IoT state), except the five public
+         content reads below (network first, cache only offline); never serve the
          SPA shell for /terminal offline - the deck stays network-only.
        - Images are served directly by the browser/CDN - no SW caching to
          avoid stale cross-origin fetch failures. */
@@ -29,14 +30,13 @@ export default defineConfig({
         start_url: "/",
         scope: "/",
         display: "standalone",
-        orientation: "portrait",
         theme_color: "#18181b",
         background_color: "#18181b",
         categories: ["portfolio", "productivity"],
         icons: [
           { src: "/images/icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "/images/icon-512.png", sizes: "512x512", type: "image/png" },
-          { src: "/images/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+          { src: "/images/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
       },
       workbox: {
@@ -45,6 +45,18 @@ export default defineConfig({
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//, /^\/terminal$/, /^\/resume\.pdf$/],
         runtimeCaching: [
+          {
+            // public portfolio content only, so the installed app still opens offline;
+            // admin, auth and device endpoints never match this
+            urlPattern: ({ url }) => /^\/api\/(profile|projects|skills|experience|stats)$/.test(url.pathname),
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "portfolio-content",
+              networkTimeoutSeconds: 5,
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
           {
             urlPattern: /\/resume\.pdf$/,
             handler: "CacheFirst",

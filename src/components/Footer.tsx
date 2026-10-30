@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useData } from "../context/DataContext";
 import { SITE, socialName } from "../lib/constants";
+import { InstallApp } from "./InstallApp";
 
 export function Footer() {
   const { profile } = useData();
@@ -20,6 +21,7 @@ export function Footer() {
           <a href={`mailto:${SITE.email}`} className="link w-fit text-ink-dim">Email</a>
           <a href={SITE.resume} download className="link w-fit text-ink-dim">Résumé (PDF)</a>
           <Link to="/connect" className="link w-fit text-ink-dim">Contact card</Link>
+          <InstallApp className="link w-fit cursor-pointer text-left text-ink-dim" />
           {socials.map(([key, url]) => (
             <a key={key} href={url} target="_blank" rel="noopener noreferrer" className="link w-fit text-ink-dim">
               {socialName(key)}

@@ -7,6 +7,7 @@ import { useCommandPalette } from "../context/CommandContext";
 import { useData } from "../context/DataContext";
 import { useScrolled } from "../hooks";
 import { ThemeToggle } from "./ThemeToggle";
+import { InstallApp } from "./InstallApp";
 
 function NavLink({ label, href, onNavigate, className }: { label: string; href: string; onNavigate?: () => void; className?: string }) {
   const { pathname, hash } = useLocation();
@@ -109,6 +110,7 @@ export function Header() {
           <a href={SITE.resume} download className="py-3.5 text-[1.1rem] font-medium text-ink-dim hover:text-ink">
             Résumé (PDF)
           </a>
+          <InstallApp className="cursor-pointer border-t border-line py-3.5 text-left text-[1.1rem] font-medium text-ink-dim hover:text-ink" />
         </div>
       </nav>
     </header>
