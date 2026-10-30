@@ -73,7 +73,7 @@ export function Trace({ rows }: { rows: YearRow[] }) {
                 { label: r.total === 1 ? "project" : "projects", value: String(r.total) },
                 ...fields.map((f) => ({ label: f.label, value: String(r.counts[f.key]), color: f.color })),
               ],
-              (el) => el.ownerSVGElement?.querySelector(`[data-point="${i}"]`) ?? null,
+              (el) => (el as SVGGraphicsElement).ownerSVGElement?.querySelector(`[data-point="${i}"]`) ?? null,
             );
             return (
               <rect
